@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "testmod-emirate-of-granada:blue_crystal_ore"
+  },
+  "result": "testmod-emirate-of-granada:blue_crystal",
+  "experience": 0.3,
+  "cookingtime": 200
+}

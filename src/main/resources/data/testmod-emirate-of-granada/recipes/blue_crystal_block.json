@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "xxx",
+    "xxx",
+    "xxx"
+  ],
+  "key":
+  {
+    "x":
+    {
+      "item": "testmod-emirate-of-granada:blue_crystal"
+    }
+  },
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:blue_crystal_block",
+    "count": 1
+  }
+}
