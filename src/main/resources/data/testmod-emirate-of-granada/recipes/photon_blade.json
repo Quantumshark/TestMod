@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    " gx",
+    "gxg",
+    "sg "
+  ],
+  "key":
+  {
+    "x":
+    {
+      "item": "testmod-emirate-of-granada:blue_crystal"
+    },
+    "g":
+    {
+      "item": "minecraft:glowstone"
+    },
+    "s":
+    {
+      "item": "minecraft:stick"
+    }
+  },
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:photon_blade",
+    "count": 1
+  }
+}
