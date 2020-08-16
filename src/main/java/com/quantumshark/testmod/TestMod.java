@@ -3,16 +3,21 @@ package com.quantumshark.testmod;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.quantumshark.testmod.utill.RegistryHandler;
+import com.quantumshark.testmod.world.gen.ModOreGen;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("testmod-emirate-of-granada")
+@Mod.EventBusSubscriber(modid = TestMod.MOD_ID, bus = Bus.MOD)
 public class TestMod
 {
     // Directly reference a log4j logger.
@@ -48,4 +53,9 @@ public class TestMod
     		return new ItemStack(RegistryHandler.BLUECRYSTAL.get());
     	}
     };
+    
+    @SubscribeEvent
+    public static void loadCompleteEvent(FMLLoadCompleteEvent event) {
+    	ModOreGen.generateOres();
+    }
 }
