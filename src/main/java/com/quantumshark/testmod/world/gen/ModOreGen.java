@@ -23,6 +23,11 @@ public class ModOreGen {
 						RegistryHandler.BLUECRYSTALORE_BLOCK.get().getDefaultState(), 32);
 				biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
 						Feature.ORE.withConfiguration(ofc).withPlacement(customConfig)); // 16 = vein size
+				ConfiguredPlacement gritConfig = Placement.COUNT_RANGE.configure(new CountRangeConfig(9, 72, 1, 253));
+				OreFeatureConfig gritofc = new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						RegistryHandler.MILLSTONEGRIT_BLOCK.get().getDefaultState(), 62);
+				biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
+						Feature.ORE.withConfiguration(gritofc).withPlacement(gritConfig)); // 16 = vein size
 			}
 		}
 	}

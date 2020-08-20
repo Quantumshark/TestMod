@@ -5,6 +5,7 @@ import com.quantumshark.testmod.armor.ModArmorMaterial;
 import com.quantumshark.testmod.blocks.BlockItemBase;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
+import com.quantumshark.testmod.blocks.MillstoneGrit;
 import com.quantumshark.testmod.items.ItemBase;
 import com.quantumshark.testmod.tools.ModItemTier;
 
@@ -35,11 +36,13 @@ public class RegistryHandler {
 	// Blocks
 	public static final RegistryObject<Block> BLUECRYSTALBLOCK_BLOCK = BLOCKS.register("blue_crystal_block", BlueCrystalBlock::new);
 	public static final RegistryObject<Block> BLUECRYSTALORE_BLOCK = BLOCKS.register("blue_crystal_ore", BlueCrystalOre::new);
+	public static final RegistryObject<Block> MILLSTONEGRIT_BLOCK = BLOCKS.register("millstone_grit", MillstoneGrit::new);
 	
 	
 	// Block Items
 	public static final RegistryObject<Item> BLUECRYSTALBLOCK_BLOCK_ITEM = ITEMS.register("blue_crystal_block", () -> new BlockItemBase(BLUECRYSTALBLOCK_BLOCK.get()));
 	public static final RegistryObject<Item> BLUECRYSTALORE_BLOCK_ITEM = ITEMS.register("blue_crystal_ore", () -> new BlockItemBase(BLUECRYSTALORE_BLOCK.get()));
+	public static final RegistryObject<Item> MILLSTONEGRIT_BLOCK_ITEM = ITEMS.register("millstone_grit", () -> new BlockItemBase(MILLSTONEGRIT_BLOCK.get()));
 	
 	
 	// Items
