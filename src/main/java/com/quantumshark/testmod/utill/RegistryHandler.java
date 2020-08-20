@@ -47,6 +47,11 @@ public class RegistryHandler {
 	
 	// Items
 	public static final RegistryObject<Item> BLUECRYSTAL = ITEMS.register("blue_crystal", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDANDESITE = ITEMS.register("pulverised_andesite", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDDIORITE = ITEMS.register("pulverised_diorite", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDGOLDORE = ITEMS.register("pulverised_gold_ore", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDGRANITE = ITEMS.register("pulverised_granite", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDIRONORE = ITEMS.register("pulverised_iron_ore", ItemBase::new);
 	
 	
 	// Tools
