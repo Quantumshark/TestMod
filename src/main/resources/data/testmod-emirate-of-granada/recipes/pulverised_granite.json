@@ -1,0 +1,10 @@
+{
+	"type": "testmod-emirate-of-granada:example",
+	"output": {
+		"item": "testmod-emirate-of-granada:pulverised_granite"
+	},
+	
+	"input": {
+		"item": "minecraft:granite"
+	}
+}

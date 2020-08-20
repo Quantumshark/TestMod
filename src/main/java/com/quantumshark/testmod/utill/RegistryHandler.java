@@ -44,6 +44,7 @@ public class RegistryHandler {
 		BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
 		CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+		RecipeSerializerInit.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
 	// Blocks
