@@ -9,9 +9,9 @@ public class MillstoneGrit extends Block {
 	
 	public MillstoneGrit() {
 		super(Block.Properties.create(Material.ROCK)
-				.hardnessAndResistance(2.4f, 9f)
+				.hardnessAndResistance(5f, 9f)
 				.sound(SoundType.STONE)
-				.harvestLevel(1)
+				.harvestLevel(2)
 				.harvestTool(ToolType.PICKAXE)
 				);
 	}
