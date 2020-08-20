@@ -1,0 +1,13 @@
+{
+    "variants": {
+        "facing=north,lit=false":  { "model": "testmod-emirate-of-granada:block/example_furnace" },
+        "facing=east,lit=false":   { "model": "testmod-emirate-of-granada:block/example_furnace", "y": 90 },
+        "facing=south,lit=false":   { "model": "testmod-emirate-of-granada:block/example_furnace", "y": 180 },
+        "facing=west,lit=false":   { "model": "testmod-emirate-of-granada:block/example_furnace", "y": 270 },
+        
+        "facing=north,lit=true":  { "model": "testmod-emirate-of-granada:block/lit_example_furnace" },
+        "facing=east,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_example_furnace", "y": 90 },
+        "facing=south,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_example_furnace", "y": 180 },
+        "facing=west,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_example_furnace", "y": 270 }
+    }
+}

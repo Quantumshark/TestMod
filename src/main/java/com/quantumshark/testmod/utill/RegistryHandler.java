@@ -5,8 +5,11 @@ import com.quantumshark.testmod.armor.ModArmorMaterial;
 import com.quantumshark.testmod.blocks.BlockItemBase;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
+import com.quantumshark.testmod.blocks.ExampleFurnaceBlock;
 import com.quantumshark.testmod.blocks.MillstoneGrit;
+import com.quantumshark.testmod.container.ExampleFurnaceContainer;
 import com.quantumshark.testmod.items.ItemBase;
+import com.quantumshark.testmod.tileentity.ExampleFurnaceTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
 
 import net.minecraft.item.ArmorItem;
@@ -16,21 +19,31 @@ import net.minecraft.item.Item;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 
 public class RegistryHandler {
 
 	public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, TestMod.MOD_ID);
 	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, TestMod.MOD_ID);
+	public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = new DeferredRegister<>(
+			ForgeRegistries.TILE_ENTITIES, TestMod.MOD_ID);	
+	public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = new DeferredRegister<>(
+			ForgeRegistries.CONTAINERS, TestMod.MOD_ID);	
 	
 	public static void init() {
 		ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+		TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+		CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
 	// Blocks
@@ -68,5 +81,20 @@ public class RegistryHandler {
 	public static final RegistryObject<ArmorItem> BLUECRYSTALCHESTPLATE = ITEMS.register("blue_crystal_chestplate", () -> new ArmorItem(ModArmorMaterial.BLUECRYSTAL, EquipmentSlotType.CHEST, new Item.Properties().group(TestMod.TAB)));
 	public static final RegistryObject<ArmorItem> BLUECRYSTALLEGGINGS = ITEMS.register("blue_crystal_leggings", () -> new ArmorItem(ModArmorMaterial.BLUECRYSTAL, EquipmentSlotType.LEGS, new Item.Properties().group(TestMod.TAB)));
 	public static final RegistryObject<ArmorItem> BLUECRYSTALBOOTS = ITEMS.register("blue_crystal_boots", () -> new ArmorItem(ModArmorMaterial.BLUECRYSTAL, EquipmentSlotType.FEET, new Item.Properties().group(TestMod.TAB)));
+	
+	// Machine Blocks
+	public static final RegistryObject<Block> EXAMPLE_FURNACE_BLOCK = BLOCKS.register("example_furnace", () -> new ExampleFurnaceBlock(Block.Properties.from(Blocks.FURNACE)));
+	
+	// Machine Block Items
+	public static final RegistryObject<Item> EXAMPLE_FURNACE_BLOCK_ITEM = ITEMS.register("example_furnace", () -> new BlockItemBase(EXAMPLE_FURNACE_BLOCK.get()));
+
+	// tile entity types
+	public static final RegistryObject<TileEntityType<ExampleFurnaceTileEntity>> EXAMPLE_FURNACE_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("example_furnace", () -> TileEntityType.Builder
+					.create(ExampleFurnaceTileEntity::new, EXAMPLE_FURNACE_BLOCK.get()).build(null));
+	
+	// Containers
+	public static final RegistryObject<ContainerType<ExampleFurnaceContainer>> EXAMPLE_FURNACE_CONTAINER = CONTAINER_TYPES
+			.register("example_furnace", () -> IForgeContainerType.create(ExampleFurnaceContainer::new));	
 	
 }
