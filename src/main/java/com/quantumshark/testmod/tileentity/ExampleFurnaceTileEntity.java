@@ -74,20 +74,35 @@ public class ExampleFurnaceTileEntity extends TileEntity implements ITickableTil
 
 		if (this.world != null && !this.world.isRemote) {
 			if (this.world.isBlockPowered(this.getPos())) {
-				if (this.getRecipe(this.inventory.getStackInSlot(0)) != null) {
-					if (this.currentSmeltTime != this.maxSmeltTime) {
-						this.world.setBlockState(this.getPos(),
-								this.getBlockState().with(ExampleFurnaceBlock.LIT, true));
-						this.currentSmeltTime++;
-						dirty = true;
-					} else {
-						this.world.setBlockState(this.getPos(),
-								this.getBlockState().with(ExampleFurnaceBlock.LIT, false));
-						this.currentSmeltTime = 0;
-						ItemStack output = this.getRecipe(this.inventory.getStackInSlot(0)).getRecipeOutput();
-						this.inventory.insertItem(1, output.copy(), false);
-						this.inventory.decrStackSize(0, 1);
-						dirty = true;
+				ItemStack inputStack = this.inventory.getStackInSlot(0);
+				// reset progess if you remove the input item. 
+				if(inputStack == null || inputStack.isEmpty())
+				{
+					this.currentSmeltTime = 0;
+				}
+				else
+				{
+					ExampleRecipe recipe =this.getRecipe(inputStack);
+					if(recipe != null)
+					{
+						ItemStack outputStack = this.inventory.getStackInSlot(1);
+						if(outputStack == null || outputStack.isEmpty() || canCombine(outputStack, recipe.getRecipeOutput()))
+						{
+							if (this.currentSmeltTime != this.maxSmeltTime) {
+								this.world.setBlockState(this.getPos(),
+										this.getBlockState().with(ExampleFurnaceBlock.LIT, true));
+								this.currentSmeltTime++;
+								dirty = true;
+							} else {
+								this.world.setBlockState(this.getPos(),
+										this.getBlockState().with(ExampleFurnaceBlock.LIT, false));
+								this.currentSmeltTime = 0;
+								ItemStack output = this.getRecipe(this.inventory.getStackInSlot(0)).getRecipeOutput();
+								this.inventory.insertItem(1, output.copy(), false);
+								this.inventory.decrStackSize(0, 1);
+								dirty = true;
+							}
+						}
 					}
 				}
 			}
@@ -98,6 +113,22 @@ public class ExampleFurnaceTileEntity extends TileEntity implements ITickableTil
 			this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(),
 					Constants.BlockFlags.BLOCK_UPDATE);
 		}
+	}
+	
+	public static boolean canCombine(ItemStack stack1, ItemStack stack2)
+	{
+		if(stack1 == null || stack2 == null)
+		{
+			// can shove anything in an empty slot
+			return true;
+		}
+		// check types, tags ...
+		if(!ItemStack.areItemsEqual(stack1,  stack2))
+		{
+			return false;
+		}
+		// check for overflow
+		return (stack1.getCount() + stack2.getCount() <= stack1.getMaxStackSize());
 	}
 
 	public void setCustomName(ITextComponent name) {
@@ -167,8 +198,14 @@ public class ExampleFurnaceTileEntity extends TileEntity implements ITickableTil
 	}
 
 	public static Set<IRecipe<?>> findRecipesByType(IRecipeType<?> typeIn, World world) {
-		return world != null ? world.getRecipeManager().getRecipes().stream()
-				.filter(recipe -> recipe.getType() == typeIn).collect(Collectors.toSet()) : Collections.emptySet();
+		if(world == null)
+		{
+			return Collections.emptySet();
+		}
+		Set<IRecipeType<?>> recipeTypes = world.getRecipeManager().getRecipes().stream().map(x->x.getType()).distinct().collect(Collectors.toSet());
+		
+		return world.getRecipeManager().getRecipes().stream()
+				.filter(recipe -> recipe.getType() == typeIn).collect(Collectors.toSet());
 	}
 
 	@SuppressWarnings("resource")
