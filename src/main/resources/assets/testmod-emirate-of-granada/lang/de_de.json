@@ -18,7 +18,7 @@
 	"block.testmod-emirate-of-granada.blue_crystal_block": "Chalcanthite Block",
 	"block.testmod-emirate-of-granada.blue_crystal_ore": "Chalcanthite Ore",
 	"block.testmod-emirate-of-granada.millstone_grit": "Millstone Grit",
-	"block.testmod-emirate-of-granada.example_furnace": "Example Furnace",
-	"container.testmod-emirate-of-granada.example_furnace": "Example Furnace",
+	"block.testmod-emirate-of-granada.example_furnace": "Beispiel Ofen",
+	"container.testmod-emirate-of-granada.example_furnace": "Beispiel Ofen",
 	"itemGroup.TestTab": "Test Items"
 }
