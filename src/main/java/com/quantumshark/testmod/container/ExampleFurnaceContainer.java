@@ -81,33 +81,59 @@ public class ExampleFurnaceContainer extends Container {
 		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.EXAMPLE_FURNACE_BLOCK.get());
 	}
 
+	@Override
+	// todo: make this class much more generic (perhaps by wrapping the actual tile thing in an interface).
+	// make sure we know which are our slots and which the player's.
+	// also differentiate between input and output slots
+	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+		// this (getRecipe) doesn't work quite as we expect - it ignores stack and looks at inventory. Rewrite.
+		if(startIndex == 36 && !tileEntity.hasRecipe(stack))
+		{
+			return false;
+		}
+		return super.mergeItemStack(stack, startIndex, endIndex, reverseDirection);
+	}
+	
 	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
+		// currently it's shifting from inventory slots to player slots 0-1
+		// and from player slots 0-1 to both inventory slots, output first
+		// and regardless of whether it's useful.
+		// elsewhere also reject any insert ...
+		// 0-8 toolbar
+		// 9-35 inventory
+		// 36+ machine slots.
 		ItemStack returnStack = ItemStack.EMPTY;
 		final Slot slot = this.inventorySlots.get(index);
-		if (slot != null && slot.getHasStack()) {
-			final ItemStack slotStack = slot.getStack();
-			returnStack = slotStack.copy();
-
-			final int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
-			if (index < containerSlots) {
-				if (!mergeItemStack(slotStack, containerSlots, this.inventorySlots.size(), true)) {
-					return ItemStack.EMPTY;
-				}
-			} else if (!mergeItemStack(slotStack, 0, containerSlots, false)) {
-				return ItemStack.EMPTY;
-			}
-			if (slotStack.getCount() == 0) {
-				slot.putStack(ItemStack.EMPTY);
-			} else {
-				slot.onSlotChanged();
-			}
-			if (slotStack.getCount() == returnStack.getCount()) {
-				return ItemStack.EMPTY;
-			}
-			slot.onTake(player, slotStack);
+		if (slot == null || !slot.getHasStack()) {
+			return returnStack;
 		}
+		final ItemStack slotStack = slot.getStack();
+		returnStack = slotStack.copy();
+		
+		int playerSlotCount = player.inventory.mainInventory.size();
+
+		final int containerSlotCount = this.inventorySlots.size() - playerSlotCount;
+		if (index < playerSlotCount) {	// from player to input
+			if (!mergeItemStack(slotStack, playerSlotCount, playerSlotCount+1, false)) {	// 1 input slot
+				return ItemStack.EMPTY;
+			}
+		} else if (!mergeItemStack(slotStack, 0, playerSlotCount, false)) {
+			return ItemStack.EMPTY;
+		}
+		if (slotStack.getCount() == 0) {
+			slot.putStack(ItemStack.EMPTY);
+		} else {
+			slot.onSlotChanged();
+		}
+		if (slotStack.getCount() == returnStack.getCount()) {
+			return ItemStack.EMPTY;
+		}
+		
+		// note: overriding this might be good
+		slot.onTake(player, slotStack);
+
 		return returnStack;
 	}
 

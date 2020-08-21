@@ -115,6 +115,7 @@ public class ExampleFurnaceTileEntity extends TileEntity implements ITickableTil
 		}
 	}
 	
+	// todo: make this very public.
 	public static boolean canCombine(ItemStack stack1, ItemStack stack2)
 	{
 		if(stack1 == null || stack2 == null)
@@ -181,7 +182,7 @@ public class ExampleFurnaceTileEntity extends TileEntity implements ITickableTil
 	}
 
 	@Nullable
-	private ExampleRecipe getRecipe(ItemStack stack) {
+	public ExampleRecipe getRecipe(ItemStack stack) {
 		if (stack == null) {
 			return null;
 		}
@@ -195,6 +196,24 @@ public class ExampleFurnaceTileEntity extends TileEntity implements ITickableTil
 		}
 
 		return null;
+	}
+	
+	public boolean hasRecipe(ItemStack stack) {
+		if (stack == null) {
+			return false;
+		}
+	
+		Set<IRecipe<?>> recipes = findRecipesByType(RecipeSerializerInit.EXAMPLE_TYPE, this.world);
+		for (IRecipe<?> iRecipe : recipes) {
+			ExampleRecipe recipe = (ExampleRecipe) iRecipe;
+			for(Ingredient ing : recipe.getIngredients()) {
+				if(ing.test(stack)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public static Set<IRecipe<?>> findRecipesByType(IRecipeType<?> typeIn, World world) {
