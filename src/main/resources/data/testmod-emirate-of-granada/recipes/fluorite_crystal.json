@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "testmod-emirate-of-granada:fluorite_block"
+    }
+  ],
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:fluorite_crystal",
+    "count": 9
+  }
+}

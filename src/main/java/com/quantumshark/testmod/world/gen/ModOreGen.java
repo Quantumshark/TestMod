@@ -23,6 +23,9 @@ public class ModOreGen {
 			
 			// Chalcanthite
 			AddOreSpawn(biome, 4,32,5,20,RegistryHandler.BLUECRYSTALORE_BLOCK, 4, FillerBlockType.NATURAL_STONE);
+
+			// Fluorite
+			AddOreSpawn(biome, 12,2,5,200,RegistryHandler.BLUECRYSTALORE_BLOCK, 1, FillerBlockType.NATURAL_STONE);
 			
 			// Millstone Grit
 			// todo: replace with correct block 
