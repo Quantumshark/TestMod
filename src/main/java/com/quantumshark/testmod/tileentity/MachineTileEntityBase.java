@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.quantumshark.testmod.recipes.ExampleRecipe;
+import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.utill.ExampleItemHandler;
 import com.quantumshark.testmod.utill.RecipeSerializerInit;
 
@@ -68,7 +68,7 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 		return inventory.getStackInSlot(getInputSlotCount() + index);
 	}
 
-	protected ItemStack processRecipe(ExampleRecipe recipe) {
+	protected ItemStack processRecipe(GrinderRecipe recipe) {
 		// todo: make this handle more complex recipes.
 		// use a recipe interface.
 		ItemStack output = recipe.getRecipeOutput();
@@ -127,15 +127,19 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 		return this.inventory;
 	}
 	
+	private Set<IRecipe<?>> findRecipes() {
+		return findRecipesByType(RecipeSerializerInit.EXAMPLE_TYPE, this.world);
+	}
+	
 	@Nullable
-	public ExampleRecipe getRecipe(ItemStack stack) {
+	public GrinderRecipe getRecipe(ItemStack stack) {
 		if (stack == null) {
 			return null;
 		}
 
-		Set<IRecipe<?>> recipes = findRecipesByType(RecipeSerializerInit.EXAMPLE_TYPE, this.world);
+		Set<IRecipe<?>> recipes = findRecipes();
 		for (IRecipe<?> iRecipe : recipes) {
-			ExampleRecipe recipe = (ExampleRecipe) iRecipe;
+			GrinderRecipe recipe = (GrinderRecipe) iRecipe;
 			if (recipe.matches(new RecipeWrapper(this.inventory), this.world)) {
 				return recipe;
 			}
@@ -149,9 +153,9 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 			return false;
 		}
 	
-		Set<IRecipe<?>> recipes = findRecipesByType(RecipeSerializerInit.EXAMPLE_TYPE, this.world);
+		Set<IRecipe<?>> recipes = findRecipes();
 		for (IRecipe<?> iRecipe : recipes) {
-			ExampleRecipe recipe = (ExampleRecipe) iRecipe;
+			GrinderRecipe recipe = (GrinderRecipe) iRecipe;
 			for(Ingredient ing : recipe.getIngredients()) {
 				if(ing.test(stack)) {
 					return true;

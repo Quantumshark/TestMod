@@ -1,30 +1,17 @@
 package com.quantumshark.testmod.recipes;
 
-import javax.annotation.Nonnull;
-
-import com.quantumshark.testmod.TestMod;
-
+import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public interface IExampleRecipe extends IRecipe<RecipeWrapper> {
-
-	ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(TestMod.MOD_ID, "example");
-	
-	@Nonnull
-	@Override
-	default IRecipeType<?> getType() {
-		return Registry.RECIPE_TYPE.getValue(RECIPE_TYPE_ID).get();
-	}
-	
+public interface IMachineRecipe extends IRecipe<RecipeWrapper> {
 	@Override
 	default boolean canFit(int width, int height) {
 		return false;
 	}
 	
-	Ingredient getInput();
+	void read(JsonObject json);
+	void read(PacketBuffer buffer);
+	void write(PacketBuffer buffer);	
 }

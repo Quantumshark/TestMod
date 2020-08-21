@@ -3,7 +3,7 @@ package com.quantumshark.testmod.tileentity;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.blocks.ExampleFurnaceBlock;
 import com.quantumshark.testmod.container.ExampleFurnaceContainer;
-import com.quantumshark.testmod.recipes.ExampleRecipe;
+import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,7 +56,7 @@ public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
 				}
 				else
 				{
-					ExampleRecipe recipe =this.getRecipe(inputStack);
+					GrinderRecipe recipe =this.getRecipe(inputStack);
 					if(recipe != null)
 					{
 						ItemStack outputStack = getOutputStack(0);

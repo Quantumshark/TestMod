@@ -1,9 +1,9 @@
 package com.quantumshark.testmod.utill;
 
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.recipes.ExampleRecipe;
-import com.quantumshark.testmod.recipes.ExampleRecipeSerializer;
-import com.quantumshark.testmod.recipes.IExampleRecipe;
+import com.quantumshark.testmod.recipes.GrinderRecipe;
+import com.quantumshark.testmod.recipes.RecipeSerializer;
+import com.quantumshark.testmod.recipes.IMachineRecipe;
 
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -16,8 +16,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeSerializerInit {
 
-	public static final IRecipeSerializer<ExampleRecipe> EXAMPLE_RECIPE_SERIALIZER = new ExampleRecipeSerializer();
-	public static final IRecipeType<IExampleRecipe> EXAMPLE_TYPE = registerType(IExampleRecipe.RECIPE_TYPE_ID);
+	public static final IRecipeSerializer<GrinderRecipe> EXAMPLE_RECIPE_SERIALIZER = new RecipeSerializer(new GrinderRecipe.RecipeFactory());
+	public static final IRecipeType<IMachineRecipe> EXAMPLE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
 
 	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = new DeferredRegister<>(
 			ForgeRegistries.RECIPE_SERIALIZERS, TestMod.MOD_ID);
