@@ -76,7 +76,8 @@ public class GrinderBlock extends Block {
 	@SuppressWarnings("deprecation")
 	@Override
 	public int getLightValue(BlockState state) {
-		return state.get(LIT) ? super.getLightValue(state) : 0;
+		return 0;	// note: this overrides the base value which we probably get from furnace. 
+//		return state.get(LIT) ? super.getLightValue(state) : 0;
 	}
 
 	@Override
@@ -117,14 +118,6 @@ public class GrinderBlock extends Block {
 						false);
 			}
 
-			Direction direction = stateIn.get(FACING);
-			Direction.Axis direction$axis = direction.getAxis();
-			double d4 = rand.nextDouble() * 0.6D - 0.3D;
-			double d5 = direction$axis == Direction.Axis.X ? (double) direction.getXOffset() * 0.52D : d4;
-			double d6 = rand.nextDouble() * 6.0D / 16.0D;
-			double d7 = direction$axis == Direction.Axis.Z ? (double) direction.getZOffset() * 0.52D : d4;
-			worldIn.addParticle(ParticleTypes.SMOKE, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0.0D, 0.0D);
-			worldIn.addParticle(ParticleTypes.FLAME, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
