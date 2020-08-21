@@ -1,0 +1,13 @@
+{
+    "variants": {
+        "facing=north,lit=false":  { "model": "testmod-emirate-of-granada:block/grinder" },
+        "facing=east,lit=false":   { "model": "testmod-emirate-of-granada:block/grinder", "y": 90 },
+        "facing=south,lit=false":   { "model": "testmod-emirate-of-granada:block/grinder", "y": 180 },
+        "facing=west,lit=false":   { "model": "testmod-emirate-of-granada:block/grinder", "y": 270 },
+        
+        "facing=north,lit=true":  { "model": "testmod-emirate-of-granada:block/lit_grinder" },
+        "facing=east,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_grinder", "y": 90 },
+        "facing=south,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_grinder", "y": 180 },
+        "facing=west,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_grinder", "y": 270 }
+    }
+}

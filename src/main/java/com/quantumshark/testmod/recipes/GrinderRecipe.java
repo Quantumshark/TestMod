@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import com.google.gson.JsonObject;
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.utill.RecipeSerializerInit;
+import com.quantumshark.testmod.utill.RecipeInit;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -31,7 +31,7 @@ public class GrinderRecipe implements IMachineRecipe {
 		}
 	}
 
-	public static ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(TestMod.MOD_ID, "example");
+	public static ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(TestMod.MOD_ID, "grinder");
 	
 	@Nonnull
 	@Override
@@ -72,7 +72,7 @@ public class GrinderRecipe implements IMachineRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return RecipeSerializerInit.EXAMPLE_SERIALIZER.get();
+		return RecipeInit.GRINDER_RECIPE_SERIALIZER.get();
 	}
 
 //	@Override

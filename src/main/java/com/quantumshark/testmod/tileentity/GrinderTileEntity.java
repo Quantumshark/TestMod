@@ -1,32 +1,35 @@
 package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.blocks.ExampleFurnaceBlock;
-import com.quantumshark.testmod.container.ExampleFurnaceContainer;
+import com.quantumshark.testmod.blocks.GrinderBlock;
+import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.recipes.GrinderRecipe;
+import com.quantumshark.testmod.recipes.IMachineRecipe;
+import com.quantumshark.testmod.utill.RecipeInit;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
-public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
+public class GrinderTileEntity extends MachineTileEntityBase {
 
 	public int currentSmeltTime;
 	public final int maxSmeltTime = 100;
 
-	public ExampleFurnaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
+	public GrinderTileEntity(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 	}
 
-	public ExampleFurnaceTileEntity() {
-		this(RegistryHandler.EXAMPLE_FURNACE_TILE_ENTITY.get());
+	public GrinderTileEntity() {
+		this(RegistryHandler.GRINDER_TILE_ENTITY.get());
 	}
 	
 	@Override
@@ -37,7 +40,7 @@ public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
 
 	@Override
 	public Container createMenu(final int windowID, final PlayerInventory playerInv, final PlayerEntity playerIn) {
-		return new ExampleFurnaceContainer(windowID, playerInv, this);
+		return new GrinderContainer(windowID, playerInv, this);
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
 				{
 					this.currentSmeltTime = 0;
 					this.world.setBlockState(this.getPos(),
-							this.getBlockState().with(ExampleFurnaceBlock.LIT, false));
+							this.getBlockState().with(GrinderBlock.LIT, false));
 				}
 				else
 				{
@@ -64,12 +67,12 @@ public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
 						{
 							if (this.currentSmeltTime != this.maxSmeltTime) {
 								this.world.setBlockState(this.getPos(),
-										this.getBlockState().with(ExampleFurnaceBlock.LIT, true));
+										this.getBlockState().with(GrinderBlock.LIT, true));
 								this.currentSmeltTime++;
 								dirty = true;
 							} else {
 								this.world.setBlockState(this.getPos(),
-										this.getBlockState().with(ExampleFurnaceBlock.LIT, false));
+										this.getBlockState().with(GrinderBlock.LIT, false));
 								this.currentSmeltTime = 0;
 								
 								ItemStack output = processRecipe(this.getRecipe(getInputStack(0)));
@@ -91,7 +94,7 @@ public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
 	
 	@Override
 	protected ITextComponent getDefaultName() {
-		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".example_furnace");
+		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".grinder");
 	}
 
 	@Override
@@ -108,4 +111,10 @@ public class ExampleFurnaceTileEntity extends MachineTileEntityBase {
 
 		return compound;
 	}
+	
+	@Override
+	protected IRecipeType<IMachineRecipe> getRecipeType() {
+		 return RecipeInit.GRINDER_RECIPE_TYPE;
+	}
+	
 }

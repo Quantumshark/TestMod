@@ -1,0 +1,9 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "testmod-emirate-of-granada:blocks/grinder_top",
+        "bottom": "testmod-emirate-of-granada:blocks/grinder_bottom",
+        "front": "testmod-emirate-of-granada:blocks/grinder_side",
+        "side": "testmod-emirate-of-granada:blocks/grinder_side"
+    }
+}

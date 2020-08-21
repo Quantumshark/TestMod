@@ -2,19 +2,19 @@ package com.quantumshark.testmod.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.container.ExampleFurnaceContainer;
+import com.quantumshark.testmod.container.GrinderContainer;
 
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class ExampleFurnaceScreen extends ContainerScreen<ExampleFurnaceContainer> {
+public class ExampleFurnaceScreen extends ContainerScreen<GrinderContainer> {
 
 	private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MOD_ID,
-			"textures/gui/example_furnace.png");
+			"textures/gui/grinder.png");
 
-	public ExampleFurnaceScreen(ExampleFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+	public ExampleFurnaceScreen(GrinderContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
 
 		this.guiLeft = 0;

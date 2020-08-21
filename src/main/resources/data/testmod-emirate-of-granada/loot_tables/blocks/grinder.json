@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "testmod-emirate-of-granada:example_furnace"
+          "name": "testmod-emirate-of-granada:grinder"
         }
       ]
     }

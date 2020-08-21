@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import com.quantumshark.testmod.tileentity.ExampleFurnaceTileEntity;
+import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.utill.FunctionalIntReferenceHolder;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
@@ -20,16 +20,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class ExampleFurnaceContainer extends Container {
+public class GrinderContainer extends Container {
 
-	public ExampleFurnaceTileEntity tileEntity;
+	public GrinderTileEntity tileEntity;
 	private IWorldPosCallable canInteractWithCallable;
 	public FunctionalIntReferenceHolder currentSmeltTime;
 
 	// Server Constructor
-	public ExampleFurnaceContainer(final int windowID, final PlayerInventory playerInv,
-			final ExampleFurnaceTileEntity tile) {
-		super(RegistryHandler.EXAMPLE_FURNACE_CONTAINER.get(), windowID);
+	public GrinderContainer(final int windowID, final PlayerInventory playerInv,
+			final GrinderTileEntity tile) {
+		super(RegistryHandler.GRINDER_CONTAINER.get(), windowID);
 
 		this.tileEntity = tile;
 		this.canInteractWithCallable = IWorldPosCallable.of(tile.getWorld(), tile.getPos());
@@ -62,23 +62,23 @@ public class ExampleFurnaceContainer extends Container {
 	}
 
 	// Client Constructor
-	public ExampleFurnaceContainer(final int windowID, final PlayerInventory playerInv, final PacketBuffer data) {
+	public GrinderContainer(final int windowID, final PlayerInventory playerInv, final PacketBuffer data) {
 		this(windowID, playerInv, getTileEntity(playerInv, data));
 	}
 
-	private static ExampleFurnaceTileEntity getTileEntity(final PlayerInventory playerInv, final PacketBuffer data) {
+	private static GrinderTileEntity getTileEntity(final PlayerInventory playerInv, final PacketBuffer data) {
 		Objects.requireNonNull(playerInv, "playerInv cannot be null");
 		Objects.requireNonNull(data, "data cannot be null");
 		final TileEntity tileAtPos = playerInv.player.world.getTileEntity(data.readBlockPos());
-		if (tileAtPos instanceof ExampleFurnaceTileEntity) {
-			return (ExampleFurnaceTileEntity) tileAtPos;
+		if (tileAtPos instanceof GrinderTileEntity) {
+			return (GrinderTileEntity) tileAtPos;
 		}
 		throw new IllegalStateException("TileEntity is not correct " + tileAtPos);
 	}
 
 	@Override
 	public boolean canInteractWith(PlayerEntity playerIn) {
-		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.EXAMPLE_FURNACE_BLOCK.get());
+		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.GRINDER_BLOCK.get());
 	}
 
 	@Override

@@ -24,6 +24,6 @@ public class ClientEventBusSubscriber {
 
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent event) {
-		ScreenManager.registerFactory(RegistryHandler.EXAMPLE_FURNACE_CONTAINER.get(), ExampleFurnaceScreen::new);
+		ScreenManager.registerFactory(RegistryHandler.GRINDER_CONTAINER.get(), ExampleFurnaceScreen::new);
 	}
 }

@@ -5,13 +5,13 @@ import com.quantumshark.testmod.armor.ModArmorMaterial;
 import com.quantumshark.testmod.blocks.BlockItemBase;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
-import com.quantumshark.testmod.blocks.ExampleFurnaceBlock;
+import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
 import com.quantumshark.testmod.blocks.MillstoneGrit;
-import com.quantumshark.testmod.container.ExampleFurnaceContainer;
+import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.items.ItemBase;
-import com.quantumshark.testmod.tileentity.ExampleFurnaceTileEntity;
+import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
 
 import net.minecraft.item.ArmorItem;
@@ -46,7 +46,7 @@ public class RegistryHandler {
 		BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
 		CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-		RecipeSerializerInit.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
+		RecipeInit.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
 	// Blocks
@@ -100,18 +100,18 @@ public class RegistryHandler {
 	public static final RegistryObject<ArmorItem> FLUORITEBOOTS = ITEMS.register("fluorite_boots", () -> new ArmorItem(ModArmorMaterial.FLUORITE, EquipmentSlotType.FEET, new Item.Properties().group(TestMod.TAB)));
 	
 	// Machine Blocks
-	public static final RegistryObject<Block> EXAMPLE_FURNACE_BLOCK = BLOCKS.register("example_furnace", () -> new ExampleFurnaceBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> GRINDER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
 	
 	// Machine Block Items
-	public static final RegistryObject<Item> EXAMPLE_FURNACE_BLOCK_ITEM = ITEMS.register("example_furnace", () -> new BlockItemBase(EXAMPLE_FURNACE_BLOCK.get()));
+	public static final RegistryObject<Item> GRINDER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(GRINDER_BLOCK.get()));
 
 	// tile entity types
-	public static final RegistryObject<TileEntityType<ExampleFurnaceTileEntity>> EXAMPLE_FURNACE_TILE_ENTITY = TILE_ENTITY_TYPES
-			.register("example_furnace", () -> TileEntityType.Builder
-					.create(ExampleFurnaceTileEntity::new, EXAMPLE_FURNACE_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("grinder", () -> TileEntityType.Builder
+					.create(GrinderTileEntity::new, GRINDER_BLOCK.get()).build(null));
 	
 	// Containers
-	public static final RegistryObject<ContainerType<ExampleFurnaceContainer>> EXAMPLE_FURNACE_CONTAINER = CONTAINER_TYPES
-			.register("example_furnace", () -> IForgeContainerType.create(ExampleFurnaceContainer::new));	
+	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
+			.register("grinder", () -> IForgeContainerType.create(GrinderContainer::new));	
 	
 }

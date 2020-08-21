@@ -8,8 +8,9 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.quantumshark.testmod.recipes.GrinderRecipe;
+import com.quantumshark.testmod.recipes.IMachineRecipe;
 import com.quantumshark.testmod.utill.ExampleItemHandler;
-import com.quantumshark.testmod.utill.RecipeSerializerInit;
+import com.quantumshark.testmod.utill.RecipeInit;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
@@ -49,6 +50,7 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 		this.inventory = new ExampleItemHandler(getInputSlotCount() + getOutputSlotCount());
 	}
 	
+	protected abstract IRecipeType<IMachineRecipe> getRecipeType();
 	public abstract int getInputSlotCount();
 	public abstract int getOutputSlotCount();
 	
@@ -128,7 +130,7 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 	}
 	
 	private Set<IRecipe<?>> findRecipes() {
-		return findRecipesByType(RecipeSerializerInit.EXAMPLE_TYPE, this.world);
+		return findRecipesByType(getRecipeType(), this.world);
 	}
 	
 	@Nullable

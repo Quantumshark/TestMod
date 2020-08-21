@@ -1,5 +1,5 @@
 {
-	"type": "testmod-emirate-of-granada:example",
+	"type": "testmod-emirate-of-granada:grinder",
 	"output": {
 		"item": "testmod-emirate-of-granada:pulverised_iron_ore"
 	},

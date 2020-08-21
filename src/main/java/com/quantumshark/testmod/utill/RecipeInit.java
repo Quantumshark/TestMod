@@ -14,16 +14,15 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class RecipeSerializerInit {
-
-	public static final IRecipeSerializer<GrinderRecipe> EXAMPLE_RECIPE_SERIALIZER = new RecipeSerializer(new GrinderRecipe.RecipeFactory());
-	public static final IRecipeType<IMachineRecipe> EXAMPLE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
-
+public class RecipeInit {
 	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = new DeferredRegister<>(
 			ForgeRegistries.RECIPE_SERIALIZERS, TestMod.MOD_ID);
 
-	public static final RegistryObject<IRecipeSerializer<?>> EXAMPLE_SERIALIZER = RECIPE_SERIALIZERS.register("example",
-			() -> EXAMPLE_RECIPE_SERIALIZER);
+	// grinder recipes
+	public static final IRecipeSerializer<GrinderRecipe> GRINDER_RECIPE_SERIALIZER_INST = new RecipeSerializer(new GrinderRecipe.RecipeFactory());
+	public static final IRecipeType<IMachineRecipe> GRINDER_RECIPE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
+	public static final RegistryObject<IRecipeSerializer<?>> GRINDER_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("grinder",
+			() -> GRINDER_RECIPE_SERIALIZER_INST);
 
 	private static class RecipeType<T extends IRecipe<?>> implements IRecipeType<T> {
 		@Override

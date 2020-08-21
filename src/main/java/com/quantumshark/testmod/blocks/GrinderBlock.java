@@ -2,7 +2,7 @@ package com.quantumshark.testmod.blocks;
 
 import java.util.Random;
 
-import com.quantumshark.testmod.tileentity.ExampleFurnaceTileEntity;
+import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.utill.ExampleItemHandler;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
@@ -37,12 +37,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ExampleFurnaceBlock extends Block {
+public class GrinderBlock extends Block {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
-	public ExampleFurnaceBlock(Properties properties) {
+	public GrinderBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
 	}
@@ -54,7 +54,7 @@ public class ExampleFurnaceBlock extends Block {
 
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return RegistryHandler.EXAMPLE_FURNACE_TILE_ENTITY.get().create();
+		return RegistryHandler.GRINDER_TILE_ENTITY.get().create();
 	}
 
 	@Override
@@ -89,8 +89,8 @@ public class ExampleFurnaceBlock extends Block {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		if (stack.hasDisplayName()) {
 			TileEntity tile = worldIn.getTileEntity(pos);
-			if (tile instanceof ExampleFurnaceTileEntity) {
-				((ExampleFurnaceTileEntity) tile).setCustomName(stack.getDisplayName());
+			if (tile instanceof GrinderTileEntity) {
+				((GrinderTileEntity) tile).setCustomName(stack.getDisplayName());
 			}
 		}
 	}
@@ -133,7 +133,7 @@ public class ExampleFurnaceBlock extends Block {
 			Hand handIn, BlockRayTraceResult hit) {
 		if (worldIn != null && !worldIn.isRemote) {
 			TileEntity tile = worldIn.getTileEntity(pos);
-			if (tile instanceof ExampleFurnaceTileEntity) {
+			if (tile instanceof GrinderTileEntity) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, pos);
 				return ActionResultType.SUCCESS;
 			}
@@ -144,8 +144,8 @@ public class ExampleFurnaceBlock extends Block {
 	@Override
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		TileEntity tile = worldIn.getTileEntity(pos);
-		if (tile instanceof ExampleFurnaceTileEntity && state.getBlock() != newState.getBlock()) {
-			ExampleFurnaceTileEntity furnace = (ExampleFurnaceTileEntity) tile;
+		if (tile instanceof GrinderTileEntity && state.getBlock() != newState.getBlock()) {
+			GrinderTileEntity furnace = (GrinderTileEntity) tile;
 			((ExampleItemHandler) furnace.getInventory()).toNonNullList().forEach(item -> {
 				ItemEntity itemEntity = new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), item);
 				worldIn.addEntity(itemEntity);

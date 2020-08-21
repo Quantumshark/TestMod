@@ -30,7 +30,7 @@
 	"block.testmod-emirate-of-granada.fluorite_block": "Fluorite Block",
 	"block.testmod-emirate-of-granada.fluorite_ore": "Fluorite Ore",
 	"block.testmod-emirate-of-granada.millstone_grit": "Millstone Grit",
-	"block.testmod-emirate-of-granada.example_furnace": "Example Furnace",
-	"container.testmod-emirate-of-granada.example_furnace": "Example Furnace",
+	"block.testmod-emirate-of-granada.grinder": "Grinder",
+	"container.testmod-emirate-of-granada.grinder": "Grinder",
 	"itemGroup.TestTab": "Test Items"
 }
