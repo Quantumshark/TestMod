@@ -1,0 +1,19 @@
+{
+  "elements": [
+    {
+      "from": [ 0, 6, 6 ],
+      "to": [ 16, 10, 10 ],
+      "faces": {
+        "down":  { "texture": "#one" },
+        "up":    { "texture": "#one" },
+        "north": { "texture": "#one" },
+        "south": { "texture": "#one" },
+        "west":  { "texture": "#one" },
+        "east":  { "texture": "#one" }
+      }
+    }
+  ],
+    "textures": {
+        "one": "testmod-emirate-of-granada:blocks/grinder_side"
+    }
+}
