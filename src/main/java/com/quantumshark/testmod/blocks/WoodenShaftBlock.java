@@ -2,16 +2,25 @@ package com.quantumshark.testmod.blocks;
 
 import javax.annotation.Nullable;
 
+import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.utill.RegistryHandler;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 // todo: create a base class for all pipe-related things
 public class WoodenShaftBlock extends Block {
@@ -65,18 +74,39 @@ public class WoodenShaftBlock extends Block {
             boolean isMoving) {
     	Direction updateDir = Direction.getFacingFromVector(fromPos.getX()-pos.getX(),fromPos.getY()-pos.getY(),fromPos.getZ()-pos.getZ());
     	BooleanProperty prop = getPropFromDir(updateDir);
-    	BlockState newState = state.with(getPropFromDir(updateDir),  canConnect(world.getBlockState(fromPos)));
-    	world.setBlockState(pos, newState);
+		boolean current = state.get(prop);
+		boolean newVal = canConnect(world, fromPos, updateDir);
+		// don't update if no change!
+		if(current != newVal)
+		{
+			BlockState newState = state.with(getPropFromDir(updateDir),  newVal);
+			world.setBlockState(pos, newState);
+		}
 
     	super.neighborChanged(state, world, pos, blockIn, fromPos, isMoving);
     }
     
-    public boolean canConnect(BlockState other)
+
+	@Override
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+		return RegistryHandler.WOODEN_SHAFT_TILE_ENTITY.get().create();
+	}    
+    
+    public boolean canConnect(World world, BlockPos pos, Direction dir)
     {
-    	if(other == null) return false;
-		Block relBlock = other.getBlock();
-		if(relBlock == null) return false;
-		return relBlock.getClass().equals(getClass());
+		if (world != null) {
+			TileEntity tile = world.getTileEntity(pos);
+			if(tile != null && tile instanceof ICapabilityProvider)
+			{
+				return (null != ((ICapabilityProvider)tile).getCapability(RegistryHandler.CAPABILITY_SHAFT_POWER, dir));
+			}
+		}
+		return false;
     }
     
 	@Override
@@ -87,7 +117,9 @@ public class WoodenShaftBlock extends Block {
 		{
 			BlockPos relPos = context.getPos().offset(face);
 			BlockState relBlockState =context.getWorld().getBlockState(relPos);
-			bs = bs.with(getPropFromDir(face),  canConnect(relBlockState));
+			BooleanProperty prop = getPropFromDir(face);
+			boolean newVal = canConnect(context.getWorld(), relPos, face.getOpposite());
+			bs = bs.with(prop, newVal);
 		}
 		return bs;
 	}

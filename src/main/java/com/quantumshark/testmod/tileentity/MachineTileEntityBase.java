@@ -10,12 +10,9 @@ import javax.annotation.Nullable;
 import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.recipes.IMachineRecipe;
 import com.quantumshark.testmod.utill.ExampleItemHandler;
-import com.quantumshark.testmod.utill.RecipeInit;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -24,25 +21,21 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 // base class for machines
-public abstract class MachineTileEntityBase extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public abstract class MachineTileEntityBase extends NameableTitleEntityBase implements ITickableTileEntity {
 	private ExampleItemHandler inventory;
-	private ITextComponent customName;
 
 	public MachineTileEntityBase(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
@@ -80,32 +73,9 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 		return output;
 	}
 	
-	public void setCustomName(ITextComponent name) {
-		this.customName = name;
-	}
-
-	public ITextComponent getName() {
-		return this.customName != null ? this.customName : this.getDefaultName();
-	}
-
-	protected abstract ITextComponent getDefaultName();
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return this.getName();
-	}
-
-	@Nullable
-	public ITextComponent getCustomName() {
-		return this.customName;
-	}	
-	
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		if (compound.contains("CustomName", Constants.NBT.TAG_STRING)) {
-			this.customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
-		}
 
 		NonNullList<ItemStack> inv = NonNullList.<ItemStack>withSize(this.inventory.getSlots(), ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, inv);
@@ -115,9 +85,6 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		if (this.customName != null) {
-			compound.putString("CustomName", ITextComponent.Serializer.toJson(this.customName));
-		}
 
 		ItemStackHelper.saveAllItems(compound, this.inventory.toNonNullList());
 
@@ -245,6 +212,10 @@ public abstract class MachineTileEntityBase extends TileEntity implements ITicka
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.inventory));
+		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.inventory));
+		}
+		return super.getCapability(cap, side);
 	}
 }

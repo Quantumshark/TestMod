@@ -2,6 +2,7 @@ package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.blocks.GrinderBlock;
+import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.recipes.IMachineRecipe;
@@ -15,17 +16,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class GrinderTileEntity extends MachineTileEntityBase {
+	private ShaftPowerDefImpl shaft;
 
 	public int currentSmeltTime;
 	public final int maxSmeltTime = 100;
 
 	public GrinderTileEntity(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
+		
+		shaft = new ShaftPowerDefImpl();
 	}
 
 	public GrinderTileEntity() {
@@ -116,5 +124,17 @@ public class GrinderTileEntity extends MachineTileEntityBase {
 	protected IRecipeType<IMachineRecipe> getRecipeType() {
 		 return RecipeInit.GRINDER_RECIPE_TYPE;
 	}
-	
+
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if(cap == RegistryHandler.CAPABILITY_SHAFT_POWER)
+		{
+			if(side == Direction.UP)
+			{
+				return RegistryHandler.CAPABILITY_SHAFT_POWER.orEmpty(cap, LazyOptional.of(() -> this.shaft));
+			}
+			else return null;
+		}
+		return super.getCapability(cap, side);
+	}	
 }

@@ -6,6 +6,9 @@ import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
 import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
+import com.quantumshark.testmod.capability.IShaftPower;
+import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
+import com.quantumshark.testmod.capability.ShaftPowerStorage;
 import com.quantumshark.testmod.blocks.ThermalGlass;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
@@ -13,6 +16,7 @@ import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
 import com.quantumshark.testmod.items.ItemBase;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.tileentity.ShaftTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
 
 import net.minecraft.item.ArmorItem;
@@ -35,6 +39,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 
 public class RegistryHandler {
@@ -125,9 +132,15 @@ public class RegistryHandler {
 	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("grinder", () -> TileEntityType.Builder
 					.create(GrinderTileEntity::new, GRINDER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<ShaftTileEntity>> WOODEN_SHAFT_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("wooden_shaft", () -> TileEntityType.Builder
+					.create(ShaftTileEntity::new).build(null));
 	
 	// Containers
 	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
 			.register("grinder", () -> IForgeContainerType.create(GrinderContainer::new));	
 	
+	// Capabilities
+	@CapabilityInject(IShaftPower.class)
+	public static final Capability<IShaftPower> CAPABILITY_SHAFT_POWER = null;
 }
