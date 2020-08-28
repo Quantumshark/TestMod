@@ -1,11 +1,12 @@
 package com.quantumshark.testmod.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.GlassBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ToolType;
 
-public class ThermalGlass extends Block {
+public class ThermalGlass extends GlassBlock {
 	
 	public ThermalGlass() {
 		super(Block.Properties.create(Material.GLASS)
