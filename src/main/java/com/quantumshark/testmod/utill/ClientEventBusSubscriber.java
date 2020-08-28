@@ -25,5 +25,6 @@ public class ClientEventBusSubscriber {
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent event) {
 		ScreenManager.registerFactory(RegistryHandler.GRINDER_CONTAINER.get(), ExampleFurnaceScreen::new);
+		RenderTypeLookup.setRenderLayer(RegistryHandler.THERMALGLASS_BLOCK.get(), RenderType.getCutout());
 	}
 }

@@ -14,6 +14,7 @@ public class ThermalGlass extends GlassBlock {
 				.sound(SoundType.GLASS)
 				.harvestLevel(1)
 				.harvestTool(ToolType.PICKAXE)
+				.notSolid()
 				);
 	}
 
