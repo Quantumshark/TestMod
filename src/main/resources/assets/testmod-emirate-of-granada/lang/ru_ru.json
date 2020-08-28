@@ -30,7 +30,7 @@
 	"block.testmod-emirate-of-granada.fluorite_block": "Флюоритовий блок",
 	"block.testmod-emirate-of-granada.fluorite_ore": "Флюоритовая руда",
 	"block.testmod-emirate-of-granada.millstone_grit": "Гравелит",
-	"block.testmod-emirate-of-granada.example_furnace": "Пример печь",
-	"container.testmod-emirate-of-granada.example_furnace": "Пример печь",
+	"block.testmod-emirate-of-granada.grinder": "Жернов",
+	"container.testmod-emirate-of-granada.grinder": "Жернов",
 	"itemGroup.TestTab": "Испытание вещи"
 }
