@@ -83,6 +83,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> PULVERISEDIRONORE = ITEMS.register("pulverised_iron_ore", ItemBase::new);
 	public static final RegistryObject<Item> PULVERISEDCHALCANTHITE = ITEMS.register("pulverised_chalcanthite", ItemBase::new);
 	public static final RegistryObject<Item> IRONCHALCANTHITEBLEND = ITEMS.register("iron_chalcanthite_blend", ItemBase::new);
+	public static final RegistryObject<Item> ANDESITEDIORITEBLEND = ITEMS.register("andesite_diorite_blend", ItemBase::new);
 	public static final RegistryObject<Item> COPPERINGOT = ITEMS.register("copper_ingot", ItemBase::new);
 	
 	
