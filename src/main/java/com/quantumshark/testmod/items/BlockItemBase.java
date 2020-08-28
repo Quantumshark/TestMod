@@ -1,4 +1,4 @@
-package com.quantumshark.testmod.blocks;
+package com.quantumshark.testmod.items;
 
 import com.quantumshark.testmod.TestMod;
 
