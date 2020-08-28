@@ -36,6 +36,7 @@
 	"block.testmod-emirate-of-granada.millstone_grit": "Гравелит",
 	"block.testmod-emirate-of-granada.thermal_glass": "Термостойкое стекло",
 	"block.testmod-emirate-of-granada.grinder": "Жернов",
+	"block.testmod-emirate-of-granada.wooden_shaft": "Деревянный ось",
 	"container.testmod-emirate-of-granada.grinder": "Жернов",
 	"itemGroup.TestTab": "Испытание вещи"
 }
