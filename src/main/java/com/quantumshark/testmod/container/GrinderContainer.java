@@ -97,10 +97,6 @@ public class GrinderContainer extends Container {
 	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
-		// currently it's shifting from inventory slots to player slots 0-1
-		// and from player slots 0-1 to both inventory slots, output first
-		// and regardless of whether it's useful.
-		// elsewhere also reject any insert ...
 		// 0-8 toolbar
 		// 9-35 inventory
 		// 36+ machine slots.
