@@ -6,6 +6,7 @@ import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
 import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
+import com.quantumshark.testmod.blocks.ThermalGlass;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
 import com.quantumshark.testmod.container.GrinderContainer;
@@ -57,6 +58,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Block> BLUECRYSTALORE_BLOCK = BLOCKS.register("blue_crystal_ore", BlueCrystalOre::new);
 	public static final RegistryObject<Block> FLUORITEBLOCK_BLOCK = BLOCKS.register("fluorite_block", FluoriteBlock::new);
 	public static final RegistryObject<Block> FLUORITEORE_BLOCK = BLOCKS.register("fluorite_ore", FluoriteOre::new);
+	public static final RegistryObject<Block> THERMALGLASS_BLOCK = BLOCKS.register("thermal_glass", ThermalGlass::new);
 	public static final RegistryObject<Block> MILLSTONEGRIT_BLOCK = BLOCKS.register("millstone_grit", ()->new Block(Block.Properties.create(Material.ROCK)
 												.hardnessAndResistance(5f, 9f)
 												.sound(SoundType.STONE)
@@ -68,6 +70,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> BLUECRYSTALORE_BLOCK_ITEM = ITEMS.register("blue_crystal_ore", () -> new BlockItemBase(BLUECRYSTALORE_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEBLOCK_BLOCK_ITEM = ITEMS.register("fluorite_block", () -> new BlockItemBase(FLUORITEBLOCK_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEORE_BLOCK_ITEM = ITEMS.register("fluorite_ore", () -> new BlockItemBase(FLUORITEORE_BLOCK.get()));
+	public static final RegistryObject<Item> THERMALGLASS_BLOCK_ITEM = ITEMS.register("thermal_glass", () -> new BlockItemBase(THERMALGLASS_BLOCK.get()));
 	public static final RegistryObject<Item> MILLSTONEGRIT_BLOCK_ITEM = ITEMS.register("millstone_grit", () -> new BlockItemBase(MILLSTONEGRIT_BLOCK.get()));
 	
 	
@@ -79,6 +82,10 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> PULVERISEDGOLDORE = ITEMS.register("pulverised_gold_ore", ItemBase::new);
 	public static final RegistryObject<Item> PULVERISEDGRANITE = ITEMS.register("pulverised_granite", ItemBase::new);
 	public static final RegistryObject<Item> PULVERISEDIRONORE = ITEMS.register("pulverised_iron_ore", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDCHALCANTHITE = ITEMS.register("pulverised_chalcanthite", ItemBase::new);
+	public static final RegistryObject<Item> IRONCHALCANTHITEBLEND = ITEMS.register("iron_chalcanthite_blend", ItemBase::new);
+	public static final RegistryObject<Item> ANDESITEDIORITEBLEND = ITEMS.register("andesite_diorite_blend", ItemBase::new);
+	public static final RegistryObject<Item> COPPERINGOT = ITEMS.register("copper_ingot", ItemBase::new);
 	
 	
 	// Tools
