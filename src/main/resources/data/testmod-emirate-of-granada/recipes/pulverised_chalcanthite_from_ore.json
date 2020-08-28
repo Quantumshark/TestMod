@@ -1,0 +1,11 @@
+{
+	"type": "testmod-emirate-of-granada:grinder",
+	"output": {
+		"item": "testmod-emirate-of-granada:pulverised_chalcanthite",
+    	"count": 3
+	},
+	
+	"input": {
+		"item": "testmod-emirate-of-granada:blue_crystal_ore"
+	}
+}
