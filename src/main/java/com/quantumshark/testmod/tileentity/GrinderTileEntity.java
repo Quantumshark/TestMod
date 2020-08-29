@@ -90,6 +90,11 @@ public class GrinderTileEntity extends MachineTileEntityBase {
 					}
 				}
 			}
+			else
+			{
+				this.world.setBlockState(this.getPos(),
+						this.getBlockState().with(GrinderBlock.LIT, false));
+			}
 		}
 
 		if (dirty) {

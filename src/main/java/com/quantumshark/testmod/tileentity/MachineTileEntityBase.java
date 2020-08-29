@@ -34,6 +34,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 // base class for machines
+// todo: this currently hard-codes the recipe type.
 public abstract class MachineTileEntityBase extends NameableTitleEntityBase implements ITickableTileEntity {
 	private ExampleItemHandler inventory;
 
@@ -169,6 +170,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase impl
 	}
 	
 	// todo: make this very public.
+	// todo: not necessary. Call     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+	// on the inventory with simulate true instead.
 	public static boolean canCombine(ItemStack stack1, ItemStack stack2)
 	{
 		if(stack1 == null || stack2 == null)

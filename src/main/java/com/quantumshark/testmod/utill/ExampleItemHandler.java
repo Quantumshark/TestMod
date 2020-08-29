@@ -1,5 +1,7 @@
 package com.quantumshark.testmod.utill;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
@@ -61,6 +63,13 @@ public class ExampleItemHandler extends ItemStackHandler {
 		}
 	}
 
+	// todo: this is how we stop the wrong things being stuck in. 
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+    {
+        return true;
+    }
+    
 	@Override
 	public String toString() {
 		return this.stacks.toString();
