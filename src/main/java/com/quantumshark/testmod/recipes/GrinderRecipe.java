@@ -12,7 +12,8 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
-public class GrinderRecipe extends MachineRecipeBase {
+// in <> put the template class name
+public class GrinderRecipe extends MachineRecipeBase<RecipeTemplateOneInOneOut> {
 	
 	// return a new recipe of this type - used for reading recipes.
 	public static class RecipeFactory implements RecipeSerializer.IRecipeFactory<GrinderRecipe> {
@@ -28,10 +29,10 @@ public class GrinderRecipe extends MachineRecipeBase {
 		super(id);
 	}
 
-	// the recipe template (combination of inputs and secondary outputs if any)
+	// the recipe template (combination of inputs and secondary outputs if any). Just update the template class name.
 	@Override
-	public RecipeTemplate getRecipeTemplate() {
-		return RecipeTemplate.ONE_IN_ONE_OUT;
+	public RecipeTemplateOneInOneOut getRecipeTemplate() {
+		return RecipeTemplateOneInOneOut.INST;
 	}
 	
 	// return the recipe type id for this type of recipe

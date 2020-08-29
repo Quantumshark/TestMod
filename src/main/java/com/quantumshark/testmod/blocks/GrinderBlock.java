@@ -3,7 +3,7 @@ package com.quantumshark.testmod.blocks;
 import java.util.Random;
 
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
-import com.quantumshark.testmod.utill.ExampleItemHandler;
+import com.quantumshark.testmod.utill.MachineItemHandler;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.block.Block;
@@ -120,7 +120,7 @@ public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
 		TileEntity tile = worldIn.getTileEntity(pos);
 		if (tile instanceof GrinderTileEntity && state.getBlock() != newState.getBlock()) {
 			GrinderTileEntity furnace = (GrinderTileEntity) tile;
-			((ExampleItemHandler) furnace.getInventory()).toNonNullList().forEach(item -> {
+			((MachineItemHandler) furnace.getInventory()).toNonNullList().forEach(item -> {
 				ItemEntity itemEntity = new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), item);
 				worldIn.addEntity(itemEntity);
 			});

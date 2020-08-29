@@ -11,16 +11,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public abstract class MachineRecipeBase implements IMachineRecipe {
+public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IMachineRecipe {
 	private final ResourceLocation id;
 	private ItemStack output;
 	
-	abstract RecipeTemplate getRecipeTemplate();
+	abstract T getRecipeTemplate();
 	
 	public MachineRecipeBase(ResourceLocation id) {
 		this.id = id;
 		
-		RecipeTemplate rt = getRecipeTemplate();
+		T rt = getRecipeTemplate();
 		inputs = NonNullList.withSize(rt.getInputs().size(), Ingredient.EMPTY);
 		secondaryOutputs = NonNullList.withSize(rt.getSecondaryOutputs().size(), ItemStack.EMPTY);
 	}
@@ -96,7 +96,7 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 	public void read(JsonObject json) {
 		output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "output"), true);
 	
-		RecipeTemplate rt = getRecipeTemplate();
+		T rt = getRecipeTemplate();
 		// copy this for each input slot
 		for(int i=0;i<rt.getInputs().size();++i)
 		{
@@ -113,7 +113,7 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 
 	@Override
 	public void read(PacketBuffer buffer) {
-		RecipeTemplate rt = getRecipeTemplate();
+		T rt = getRecipeTemplate();
 		for(int i=0;i<rt.getInputs().size();++i)
 		{
 			inputs.set(i, Ingredient.read(buffer));
@@ -130,7 +130,7 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 	
 	@Override
 	public void write(PacketBuffer buffer) {
-		RecipeTemplate rt = getRecipeTemplate();
+		T rt = getRecipeTemplate();
 		for(int i=0;i<rt.getInputs().size();++i)
 		{
 			inputs.get(i).write(buffer);

@@ -109,7 +109,6 @@ public class WoodenShaftBlock extends BlockWithTileEntityBase<WoodenShaftTileEnt
 		for (Direction face : Direction.values())
 		{
 			BlockPos relPos = context.getPos().offset(face);
-			BlockState relBlockState =context.getWorld().getBlockState(relPos);
 			BooleanProperty prop = getPropFromDir(face);
 			boolean newVal = canConnect(context.getWorld(), relPos, face.getOpposite());
 			bs = bs.with(prop, newVal);

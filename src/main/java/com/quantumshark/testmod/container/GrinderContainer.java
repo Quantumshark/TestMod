@@ -80,7 +80,7 @@ public class GrinderContainer extends Container {
 	public boolean canInteractWith(PlayerEntity playerIn) {
 		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.GRINDER_BLOCK.get());
 	}
-
+/*
 	@Override
 	// todo: make this class much more generic (perhaps by wrapping the actual tile thing in an interface).
 	// make sure we know which are our slots and which the player's.
@@ -93,7 +93,7 @@ public class GrinderContainer extends Container {
 		}
 		return super.mergeItemStack(stack, startIndex, endIndex, reverseDirection);
 	}
-	
+*/	
 	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
