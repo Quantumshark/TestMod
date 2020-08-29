@@ -12,6 +12,7 @@ import com.quantumshark.testmod.utill.ISlotValidator;
 import com.quantumshark.testmod.utill.MachineItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -78,11 +79,18 @@ public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends N
 		if (!simulate) {
 			for (int i = 0; i < inputSlotCount; ++i) {
 				Ingredient ing = recipe.getIngredients().get(i);
-				// todo: later, could handle recipes with quantity
 				if (ing != Ingredient.EMPTY) {
 					this.inventory.decrStackSize(i, 1);
 				}
-				// todo: drop otherOutputs.get(i);
+
+				// drop any left-over buckets
+				// totally-untested-and-highly-dangerous
+				ItemStack dropBucket = otherOutputs.get(i);
+				if(dropBucket != null && dropBucket != ItemStack.EMPTY)
+				{
+					ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), dropBucket.copy());
+					world.addEntity(itemEntity);
+				}
 			}
 		}
 		
@@ -141,23 +149,6 @@ public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends N
 				.filter(recipe -> recipe.getType() == typeIn).collect(Collectors.toSet()) : Collections.emptySet();
 	}
 
-	// todo: make this very public.
-	// todo: not necessary. Call public ItemStack insertItem(int slot, @Nonnull
-	// ItemStack stack, boolean simulate)
-	// on the inventory with simulate true instead.
-	public static boolean canCombineOld(ItemStack stack1, ItemStack stack2) {
-		if (stack1 == null || stack2 == null) {
-			// can shove anything in an empty slot
-			return true;
-		}
-		// check types, tags ...
-		if (!ItemStack.areItemsEqual(stack1, stack2)) {
-			return false;
-		}
-		// check for overflow
-		return (stack1.getCount() + stack2.getCount() <= stack1.getMaxStackSize());
-	}
-
 	@Nullable
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
@@ -195,7 +186,6 @@ public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends N
 	public boolean isItemValid(int slot, ItemStack stack) {
 		if (slot < 0 || slot >= inputSlotCount) {
 			// don't allow insertion into output slots.
-			// hope that we don't get tripped up on this when running recipes!
 			return false;
 		}
 		
