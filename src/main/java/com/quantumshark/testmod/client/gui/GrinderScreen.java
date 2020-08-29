@@ -9,12 +9,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class ExampleFurnaceScreen extends ContainerScreen<GrinderContainer> {
+public class GrinderScreen extends ContainerScreen<GrinderContainer> {
 
 	private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MOD_ID,
 			"textures/gui/grinder.png");
 
-	public ExampleFurnaceScreen(GrinderContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+	public GrinderScreen(GrinderContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
 
 		this.guiLeft = 0;
@@ -28,7 +28,6 @@ public class ExampleFurnaceScreen extends ContainerScreen<GrinderContainer> {
 		RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 		this.minecraft.getTextureManager().bindTexture(TEXTURE);
 		this.blit(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-
 		this.blit(this.guiLeft + 79, this.guiTop + 35, 176, 0, this.container.getSmeltProgressionScaled(), 16);
 	}
 
