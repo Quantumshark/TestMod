@@ -8,7 +8,6 @@ import com.quantumshark.testmod.utill.RegistryHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -40,7 +39,7 @@ public class ModOreGen {
 			filler = OreFeatureConfig.FillerBlockType.NATURAL_STONE; 
 		}
 		// freq, from-bottom, from-surface, thickness of band
-		ConfiguredPlacement customConfig = Placement.COUNT_RANGE.configure(new CountRangeConfig(freq, fromBottom, fromSurface, thickness));
+		ConfiguredPlacement<CountRangeConfig> customConfig = Placement.COUNT_RANGE.configure(new CountRangeConfig(freq, fromBottom, fromSurface, thickness));
 		OreFeatureConfig ofc = new OreFeatureConfig(filler,
 				blockType.get().getDefaultState(), veinSize);
 		biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,

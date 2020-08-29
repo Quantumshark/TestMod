@@ -2,28 +2,26 @@ package com.quantumshark.testmod.blocks;
 
 import javax.annotation.Nullable;
 
-import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fml.RegistryObject;
 
 // todo: create a base class for all pipe-related things
-public class WoodenShaftBlock extends Block {
+public class WoodenShaftBlock extends BlockWithTileEntityBase<WoodenShaftTileEntity> {
 	public static final BooleanProperty CONNECTED_UP = BlockStateProperties.UP;
 	public static final BooleanProperty CONNECTED_DOWN = BlockStateProperties.DOWN;
 	public static final BooleanProperty CONNECTED_NORTH = BlockStateProperties.NORTH;
@@ -36,6 +34,10 @@ public class WoodenShaftBlock extends Block {
 		this.setDefaultState(this.stateContainer.getBaseState());
 	}
 	
+	@Override
+	protected RegistryObject<TileEntityType<WoodenShaftTileEntity>> getRegistry() {
+		return RegistryHandler.WOODEN_SHAFT_TILE_ENTITY;
+	}	
 
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
@@ -69,6 +71,8 @@ public class WoodenShaftBlock extends Block {
     }
     
     // todo: how do we do this in 1.15.2? This is deprecated
+	// note: it may be that it's only the base class version that's deprecated because it doesn't need to be chained
+    @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
@@ -85,17 +89,6 @@ public class WoodenShaftBlock extends Block {
 
     	super.neighborChanged(state, world, pos, blockIn, fromPos, isMoving);
     }
-    
-
-	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
-	}
-
-	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return RegistryHandler.WOODEN_SHAFT_TILE_ENTITY.get().create();
-	}    
     
     public boolean canConnect(World world, BlockPos pos, Direction dir)
     {

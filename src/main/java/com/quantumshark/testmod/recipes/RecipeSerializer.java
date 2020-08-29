@@ -2,14 +2,9 @@ package com.quantumshark.testmod.recipes;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 // todo. Make this generic? Why can't the recipe read and write itself?

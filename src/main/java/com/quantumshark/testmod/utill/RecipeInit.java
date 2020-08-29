@@ -19,7 +19,7 @@ public class RecipeInit {
 			ForgeRegistries.RECIPE_SERIALIZERS, TestMod.MOD_ID);
 
 	// grinder recipes
-	public static final IRecipeSerializer<GrinderRecipe> GRINDER_RECIPE_SERIALIZER_INST = new RecipeSerializer(new GrinderRecipe.RecipeFactory());
+	public static final IRecipeSerializer<GrinderRecipe> GRINDER_RECIPE_SERIALIZER_INST = new RecipeSerializer<GrinderRecipe>(new GrinderRecipe.RecipeFactory());
 	public static final IRecipeType<IMachineRecipe> GRINDER_RECIPE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
 	public static final RegistryObject<IRecipeSerializer<?>> GRINDER_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("grinder",
 			() -> GRINDER_RECIPE_SERIALIZER_INST);
@@ -31,7 +31,7 @@ public class RecipeInit {
 		}
 	}
 	
-	private static <T extends IRecipeType> T registerType(ResourceLocation recipeTypeId) {
+	private static <T extends IRecipeType<?>> T registerType(ResourceLocation recipeTypeId) {
 		return (T) Registry.register(Registry.RECIPE_TYPE, recipeTypeId, new RecipeType<>());
 	}
 }

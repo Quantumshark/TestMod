@@ -8,19 +8,18 @@ import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -30,13 +29,13 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class GrinderBlock extends Block {
+public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
@@ -47,15 +46,10 @@ public class GrinderBlock extends Block {
 	}
 
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	protected RegistryObject<TileEntityType<GrinderTileEntity>> getRegistry() {
+		return RegistryHandler.GRINDER_TILE_ENTITY;
 	}
-
-	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return RegistryHandler.GRINDER_TILE_ENTITY.get().create();
-	}
-
+	
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
@@ -72,7 +66,6 @@ public class GrinderBlock extends Block {
 		return state.with(FACING, rot.rotate(state.get(FACING)));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public int getLightValue(BlockState state) {
 		return 0;	// note: this overrides the base value which we probably get from furnace. 
@@ -82,17 +75,6 @@ public class GrinderBlock extends Block {
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
-	}
-
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-		if (stack.hasDisplayName()) {
-			TileEntity tile = worldIn.getTileEntity(pos);
-			if (tile instanceof GrinderTileEntity) {
-				((GrinderTileEntity) tile).setCustomName(stack.getDisplayName());
-			}
-		}
 	}
 
 	@Override
@@ -144,8 +126,7 @@ public class GrinderBlock extends Block {
 			});
 		}
 
-		if (state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
-			worldIn.removeTileEntity(pos);
-		}
+		// need to call super after custom logic as we're tearing things apart
+		super.onReplaced(state, worldIn, pos, newState, isMoving);
 	}
 }
