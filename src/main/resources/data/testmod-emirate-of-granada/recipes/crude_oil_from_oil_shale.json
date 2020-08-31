@@ -1,0 +1,11 @@
+{
+	"type": "testmod-emirate-of-granada:grinder",
+	"output": {
+		"fluid": "testmod-emirate-of-granada:crude_oil",
+    	"amount": 200
+	},
+	
+	"input": {
+		"item": "testmod-emirate-of-granada:oil_shale"
+	}
+}
