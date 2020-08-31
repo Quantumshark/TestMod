@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "item": "testmod-emirate-of-granada:andesite_diorite_blend"
+    "item": "testmod-emirate-of-granada:granite_sand_blend"
   },
   "result": "testmod-emirate-of-granada:thermal_glass",
   "experience": 0.1,
