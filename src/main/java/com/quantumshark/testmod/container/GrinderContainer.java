@@ -2,45 +2,37 @@ package com.quantumshark.testmod.container;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.utill.FunctionalIntReferenceHolder;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class GrinderContainer extends Container {
+public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 
-	public GrinderTileEntity tileEntity;
-	private IWorldPosCallable canInteractWithCallable;
 	public FunctionalIntReferenceHolder currentSmeltTime;
 
 	// Server Constructor
 	public GrinderContainer(final int windowID, final PlayerInventory playerInv,
 			final GrinderTileEntity tile) {
-		super(RegistryHandler.GRINDER_CONTAINER.get(), windowID);
+		super(RegistryHandler.GRINDER_CONTAINER.get(), windowID, playerInv, tile);
 
-		this.tileEntity = tile;
-		this.canInteractWithCallable = IWorldPosCallable.of(tile.getWorld(), tile.getPos());
-
-		final int slotSizePlus2 = 18;
+		// this class. Sets up slots. 
+		// could have a base method for player inventory though (perhaps with an offset x and y)
+		final int rowPitch = 18;
+		final int columnPitch = 18;
 		final int startX = 8;
 
 		// Hotbar
 		int hotbarY = 142;
 		for (int column = 0; column < 9; column++) {
-			this.addSlot(new Slot(playerInv, column, startX + (column * slotSizePlus2), hotbarY));
+			this.addSlot(new Slot(playerInv, column, startX + (column * columnPitch), hotbarY));
 		}
 
 		// Main Player Inventory
@@ -48,8 +40,8 @@ public class GrinderContainer extends Container {
 
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 9; column++) {
-				this.addSlot(new Slot(playerInv, 9 + (row * 9) + column, startX + (column * slotSizePlus2),
-						startY + (row * slotSizePlus2)));
+				this.addSlot(new Slot(playerInv, 9 + (row * 9) + column, startX + (column * columnPitch),
+						startY + (row * rowPitch)));
 			}
 		}
 
@@ -74,63 +66,6 @@ public class GrinderContainer extends Container {
 			return (GrinderTileEntity) tileAtPos;
 		}
 		throw new IllegalStateException("TileEntity is not correct " + tileAtPos);
-	}
-
-	@Override
-	public boolean canInteractWith(PlayerEntity playerIn) {
-		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.GRINDER_BLOCK.get());
-	}
-/*
-	@Override
-	// todo: make this class much more generic (perhaps by wrapping the actual tile thing in an interface).
-	// make sure we know which are our slots and which the player's.
-	// also differentiate between input and output slots
-	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
-		// this (getRecipe) doesn't work quite as we expect - it ignores stack and looks at inventory. Rewrite.
-		if(startIndex == 36 && !tileEntity.hasRecipe(stack))
-		{
-			return false;
-		}
-		return super.mergeItemStack(stack, startIndex, endIndex, reverseDirection);
-	}
-*/	
-	@Nonnull
-	@Override
-	public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
-		// 0-8 toolbar
-		// 9-35 inventory
-		// 36+ machine slots.
-		ItemStack returnStack = ItemStack.EMPTY;
-		final Slot slot = this.inventorySlots.get(index);
-		if (slot == null || !slot.getHasStack()) {
-			return returnStack;
-		}
-		final ItemStack slotStack = slot.getStack();
-		returnStack = slotStack.copy();
-		
-		int playerSlotCount = player.inventory.mainInventory.size();
-
-		final int containerSlotCount = this.inventorySlots.size() - playerSlotCount;
-		if (index < playerSlotCount) {	// from player to input
-			if (!mergeItemStack(slotStack, playerSlotCount, playerSlotCount+1, false)) {	// 1 input slot
-				return ItemStack.EMPTY;
-			}
-		} else if (!mergeItemStack(slotStack, 0, playerSlotCount, false)) {
-			return ItemStack.EMPTY;
-		}
-		if (slotStack.getCount() == 0) {
-			slot.putStack(ItemStack.EMPTY);
-		} else {
-			slot.onSlotChanged();
-		}
-		if (slotStack.getCount() == returnStack.getCount()) {
-			return ItemStack.EMPTY;
-		}
-		
-		// note: overriding this might be good
-		slot.onTake(player, slotStack);
-
-		return returnStack;
 	}
 
 	@OnlyIn(Dist.CLIENT)

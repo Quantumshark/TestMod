@@ -1,9 +1,11 @@
 package com.quantumshark.testmod.utill;
 
+import com.quantumshark.testmod.CrudeOilFluidBase;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.armor.ModArmorMaterial;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
+import com.quantumshark.testmod.blocks.CrudeOilBlock;
 import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
 import com.quantumshark.testmod.capability.IShaftPower;
@@ -12,6 +14,7 @@ import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
+import com.quantumshark.testmod.items.BucketItemBase;
 import com.quantumshark.testmod.items.ItemBase;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
@@ -19,16 +22,20 @@ import com.quantumshark.testmod.tools.ModItemTier;
 
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.fluid.FlowingFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.fml.RegistryObject;
@@ -39,6 +46,18 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Food;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.Properties;
+import net.minecraft.item.MusicDiscItem;
+import net.minecraft.item.Rarity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.Tag;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class RegistryHandler {
 
@@ -48,14 +67,29 @@ public class RegistryHandler {
 			ForgeRegistries.TILE_ENTITIES, TestMod.MOD_ID);	
 	public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = new DeferredRegister<>(
 			ForgeRegistries.CONTAINERS, TestMod.MOD_ID);	
+	public static final DeferredRegister<Fluid> FLUIDS = new DeferredRegister<>(ForgeRegistries.FLUIDS, TestMod.MOD_ID);
 	
 	public static void init() {
 		ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
 		CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+		FLUIDS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		RecipeInit.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
+	
+	// Tags
+	public static final Tag<Fluid> CRUDE_OIL_TAG = new FluidTags.Wrapper(new ResourceLocation(TestMod.MOD_ID,"crude_oil"));
+	
+	// Fluids
+	public static final RegistryObject<CrudeOilFluidBase.Flowing> CRUDE_OIL_FLUID_FLOWING = FLUIDS.register("crude_oil_flowing", () -> new CrudeOilFluidBase.Flowing());
+	public static final RegistryObject<CrudeOilFluidBase.Source> CRUDE_OIL_FLUID = FLUIDS.register("crude_oil", () -> new CrudeOilFluidBase.Source());
+
+	// Fluid buckets
+	public static final RegistryObject<BucketItem> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket", () -> new BucketItemBase(() -> CRUDE_OIL_FLUID.get(), new Properties().maxStackSize(1)));
+	
+	// Fluid blocks
+	public static final RegistryObject<CrudeOilBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil", CrudeOilBlock::new);
 	
 	// Blocks
 	public static final RegistryObject<Block> BLUECRYSTALBLOCK_BLOCK = BLOCKS.register("blue_crystal_block", BlueCrystalBlock::new);
