@@ -1,0 +1,10 @@
+{
+	"type": "testmod-emirate-of-granada:grinder",
+	"output": {
+		"item": "testmod-emirate-of-granada:pulverised_chalcanthite"
+	},
+	
+	"input": {
+		"item": "testmod-emirate-of-granada:blue_crystal"
+	}
+}

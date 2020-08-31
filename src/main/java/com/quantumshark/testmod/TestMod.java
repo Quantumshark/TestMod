@@ -3,6 +3,8 @@ package com.quantumshark.testmod;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -11,6 +13,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.quantumshark.testmod.capability.IShaftPower;
+import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
+import com.quantumshark.testmod.capability.ShaftPowerStorage;
 import com.quantumshark.testmod.utill.RegistryHandler;
 import com.quantumshark.testmod.world.gen.ModOreGen;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -25,15 +31,25 @@ public class TestMod
     public static final String MOD_ID = "testmod-emirate-of-granada";
 
     public TestMod() {
+    	IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    	
+		
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    	modEventBus.addListener(this::setup);
         // Register the doClientStuff method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+    	modEventBus.addListener(this::doClientStuff);
+        modEventBus.addListener(this::commonSetup);
 
         RegistryHandler.init();
         
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+    }
+    
+    private void commonSetup(FMLCommonSetupEvent event) 
+    {
+    	// try running this at different points to see when I can do it without crashing. I can't find any documentation to explain :(
+		CapabilityManager.INSTANCE.register(IShaftPower.class, new ShaftPowerStorage(), ()->new ShaftPowerDefImpl());
     }
 
     private void setup(final FMLCommonSetupEvent event)

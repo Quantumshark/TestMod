@@ -14,6 +14,10 @@ public enum ModItemTier implements IItemTier {
 	BLUECRYSTAL(1, 151, 5.0F, 1.2F, 20, () -> {
 		return Ingredient.fromItems(RegistryHandler.BLUECRYSTAL.get());
 	}),
+	
+	FLUORITE(1, 221, 5.5F, 1.7F, 15, () -> {
+		return Ingredient.fromItems(RegistryHandler.FLUORITECRYSTAL.get());
+	}),
 
 	PHOTON(3, 5001, 12.0F, 5.6F, 2, () -> {
 		return Ingredient.fromItems(Items.GLOWSTONE_DUST);

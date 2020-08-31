@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "xx ",
+    "xx ",
+    "   "
+  ],
+  "key":
+  {
+    "x":
+    {
+      "item": "testmod-emirate-of-granada:blast_brick"
+    }
+  },
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:blast_bricks",
+    "count": 1
+  }
+}

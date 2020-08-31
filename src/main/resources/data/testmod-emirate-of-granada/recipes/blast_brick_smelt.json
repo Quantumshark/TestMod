@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "testmod-emirate-of-granada:andesite_diorite_blend"
+  },
+  "result": "testmod-emirate-of-granada:blast_brick",
+  "experience": 0.2,
+  "cookingtime": 200
+}

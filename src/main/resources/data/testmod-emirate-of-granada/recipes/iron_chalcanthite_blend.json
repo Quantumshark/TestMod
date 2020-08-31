@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "testmod-emirate-of-granada:pulverised_chalcanthite"
+    },
+    {
+      "item": "testmod-emirate-of-granada:pulverised_iron_ore"
+    }
+  ],
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:iron_chalcanthite_blend",
+    "count": 1
+  }
+}

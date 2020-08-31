@@ -18,6 +18,10 @@ public enum ModArmorMaterial implements IArmorMaterial {
 	
 	BLUECRYSTAL(TestMod.MOD_ID + ":blue_crystal", 12, new int[] {2, 4, 5, 1}, 23, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0.0F, () -> { 
 		return Ingredient.fromItems(RegistryHandler.BLUECRYSTAL.get());
+	}),
+
+	FLUORITE(TestMod.MOD_ID + ":fluorite", 14, new int[] {2, 5, 5, 2}, 16, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0.0F, () -> { 
+		return Ingredient.fromItems(RegistryHandler.FLUORITECRYSTAL.get());
 	});
 	
 	private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };

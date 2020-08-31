@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "testmod-emirate-of-granada:fluorite_ore"
+  },
+  "result": "testmod-emirate-of-granada:fluorite_crystal",
+  "experience": 0.3,
+  "cookingtime": 200
+}

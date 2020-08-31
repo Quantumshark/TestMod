@@ -1,8 +1,0 @@
-{
-    "parent": "block/orientable",
-    "textures": {
-        "top": "testmod-emirate-of-granada:blocks/example_furnace_top",
-        "front": "testmod-emirate-of-granada:blocks/lit_example_furnace_front",
-        "side": "testmod-emirate-of-granada:blocks/example_furnace_side"
-    }
-}
