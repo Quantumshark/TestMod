@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "testmod-emirate-of-granada:pulverised_granite"
+    },
+    {
+      "item": "minecraft:sand"
+    }
+  ],
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:granite_sand_blend",
+    "count": 2
+  }
+}
