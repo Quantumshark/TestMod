@@ -103,6 +103,11 @@ public class RegistryHandler {
 												.sound(SoundType.STONE)
 												.harvestLevel(2)
 												.harvestTool(ToolType.PICKAXE)));
+	public static final RegistryObject<Block> LIMESTONE_BLOCK = BLOCKS.register("limestone", ()->new Block(Block.Properties.create(Material.ROCK)
+			.hardnessAndResistance(1f, 4f)
+			.sound(SoundType.STONE)
+			.harvestLevel(1)
+			.harvestTool(ToolType.PICKAXE)));
 	
 	// Block Items
 	public static final RegistryObject<Item> BLASTBRICKS_BLOCK_ITEM = ITEMS.register("blast_bricks", () -> new BlockItemBase(BLASTBRICKS_BLOCK.get()));
@@ -112,6 +117,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> FLUORITEORE_BLOCK_ITEM = ITEMS.register("fluorite_ore", () -> new BlockItemBase(FLUORITEORE_BLOCK.get()));
 	public static final RegistryObject<Item> THERMALGLASS_BLOCK_ITEM = ITEMS.register("thermal_glass", () -> new BlockItemBase(THERMALGLASS_BLOCK.get()));
 	public static final RegistryObject<Item> MILLSTONEGRIT_BLOCK_ITEM = ITEMS.register("millstone_grit", () -> new BlockItemBase(MILLSTONEGRIT_BLOCK.get()));
+	public static final RegistryObject<Item> LIMESTONE_BLOCK_ITEM = ITEMS.register("limestone", () -> new BlockItemBase(LIMESTONE_BLOCK.get()));
 	
 	
 	// Items
