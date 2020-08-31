@@ -2,11 +2,11 @@ package com.quantumshark.testmod.recipes;
 
 import net.minecraft.util.NonNullList;
 
-public class RecipeTemplateOneInOneOut implements IRecipeTemplate {
+public class RecipeTemplateGrinder implements IRecipeTemplate {
 	private final NonNullList<String> inputs = NonNullList.from(null, "input");
 	private final NonNullList<String> secondaryOutputs = NonNullList.create();
 	private final NonNullList<String> fluidInputs = NonNullList.create();
-	private final NonNullList<String> fluidOutputs = NonNullList.create();
+	private final NonNullList<String> fluidOutputs = NonNullList.from(null, "fluid_output");
 
 	@Override
 	public final NonNullList<String> getInputs() {
@@ -18,9 +18,9 @@ public class RecipeTemplateOneInOneOut implements IRecipeTemplate {
 		return secondaryOutputs;
 	}
 
-	private RecipeTemplateOneInOneOut() {}
+	private RecipeTemplateGrinder() {}
 	
-	public static final RecipeTemplateOneInOneOut INST = new RecipeTemplateOneInOneOut();
+	public static final RecipeTemplateGrinder INST = new RecipeTemplateGrinder();
 
 	@Override
 	public NonNullList<String> getFluidInputs() {

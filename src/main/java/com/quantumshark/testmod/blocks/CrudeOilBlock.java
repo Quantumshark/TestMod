@@ -1,7 +1,5 @@
 package com.quantumshark.testmod.blocks;
 
-import com.quantumshark.testmod.TestMod;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;

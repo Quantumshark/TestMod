@@ -51,7 +51,7 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase<?>> e
 
 		final int containerSlotCount = this.inventorySlots.size() - playerSlotCount;
 		if (index < playerSlotCount) {	// from player to input
-			if (!mergeItemStack(slotStack, playerSlotCount, this.inventorySlots.size()+1, false)) {	// any input or output slot
+			if (!mergeItemStack(slotStack, playerSlotCount, this.inventorySlots.size(), false)) {	// any input or output slot
 				return ItemStack.EMPTY;
 			}
 		} else if (!mergeItemStack(slotStack, 0, playerSlotCount, false)) {
