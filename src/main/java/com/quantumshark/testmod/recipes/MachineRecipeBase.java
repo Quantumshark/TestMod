@@ -9,6 +9,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IMachineRecipe {
@@ -23,6 +24,7 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 		T rt = getRecipeTemplate();
 		inputs = NonNullList.withSize(rt.getInputs().size(), Ingredient.EMPTY);
 		secondaryOutputs = NonNullList.withSize(rt.getSecondaryOutputs().size(), ItemStack.EMPTY);
+		fluidOutputs = NonNullList.withSize(rt.getFluidOutputs().size(), FluidStack.EMPTY);
 	}
 
 	@Override
@@ -70,6 +72,7 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 	// note: can definitely use FluidStack here ... not sure beyond that
 	private NonNullList<Ingredient> inputs;
 	private NonNullList<ItemStack> secondaryOutputs;
+	private NonNullList<FluidStack> fluidOutputs;
 
 	@Override
 	public boolean matches(RecipeWrapper inv, World worldIn) {
@@ -94,7 +97,8 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 
 	@Override
 	public void read(JsonObject json) {
-		output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "output"), true);
+		ItemStack temp;
+		output = RecipeSerializer.getItemStack(json, "output", true);
 	
 		T rt = getRecipeTemplate();
 		// copy this for each input slot
@@ -107,7 +111,13 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 		for(int i=0;i<rt.getSecondaryOutputs().size();++i)
 		{
 			String name = rt.getSecondaryOutputs().get(i);
-			secondaryOutputs.set(i, CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, name), true));
+			secondaryOutputs.set(i, RecipeSerializer.getItemStack(json, name, true));
+		}
+
+		for(int i=0;i<rt.getFluidOutputs().size();++i)
+		{
+			String name = rt.getFluidOutputs().get(i);
+			fluidOutputs.set(i, RecipeSerializer.getFluidStack(json, name, true));
 		}
 	}
 
@@ -125,6 +135,11 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 		{
 			secondaryOutputs.set(i, buffer.readItemStack());
 		}
+
+		for(int i=0;i<rt.getFluidOutputs().size();++i)
+		{
+			fluidOutputs.set(i, buffer.readFluidStack());
+		}		
 	}
 
 	
@@ -141,6 +156,11 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 		for(int i=0;i<rt.getSecondaryOutputs().size();++i)
 		{
 			buffer.writeItemStack(secondaryOutputs.get(i), false);
+		}
+		
+		for(int i=0;i<rt.getFluidOutputs().size();++i)
+		{
+			buffer.writeFluidStack(fluidOutputs.get(i));
 		}		
 	}
 }

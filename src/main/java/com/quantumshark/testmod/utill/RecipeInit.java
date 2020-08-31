@@ -3,7 +3,7 @@ package com.quantumshark.testmod.utill;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.recipes.RecipeSerializer;
-import com.quantumshark.testmod.recipes.RecipeTemplateOneInOneOut;
+import com.quantumshark.testmod.recipes.RecipeTemplateGrinder;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 
 import net.minecraft.item.crafting.IRecipe;
@@ -21,7 +21,7 @@ public class RecipeInit {
 
 	// grinder recipes
 	public static final IRecipeSerializer<GrinderRecipe> GRINDER_RECIPE_SERIALIZER_INST = new RecipeSerializer<GrinderRecipe>(new GrinderRecipe.RecipeFactory());
-	public static final IRecipeType<MachineRecipeBase<RecipeTemplateOneInOneOut>> GRINDER_RECIPE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
+	public static final IRecipeType<MachineRecipeBase<RecipeTemplateGrinder>> GRINDER_RECIPE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
 	public static final RegistryObject<IRecipeSerializer<?>> GRINDER_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("grinder",
 			() -> GRINDER_RECIPE_SERIALIZER_INST);
 

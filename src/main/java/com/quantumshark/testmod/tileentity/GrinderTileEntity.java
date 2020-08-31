@@ -5,7 +5,7 @@ import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
-import com.quantumshark.testmod.recipes.RecipeTemplateOneInOneOut;
+import com.quantumshark.testmod.recipes.RecipeTemplateGrinder;
 import com.quantumshark.testmod.utill.RecipeInit;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
@@ -22,7 +22,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateOneInOneOut> {
+public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateGrinder> {
 	private ShaftPowerDefImpl shaft;
 
 	public int currentSmeltTime;
@@ -46,7 +46,7 @@ public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateOneIn
 		if (this.world != null && !this.world.isRemote) {
 			if (this.world.isBlockPowered(this.getPos())) {
 				// reset progress if you remove the input item. 
-				MachineRecipeBase<RecipeTemplateOneInOneOut> recipe = this.findMatchingRecipe();
+				MachineRecipeBase<RecipeTemplateGrinder> recipe = this.findMatchingRecipe();
 				if(recipe == null)
 				{
 					this.currentSmeltTime = 0;
@@ -106,14 +106,14 @@ public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateOneIn
 	}
 	
 	@Override
-	protected IRecipeType<MachineRecipeBase<RecipeTemplateOneInOneOut>> getRecipeType() {
+	protected IRecipeType<MachineRecipeBase<RecipeTemplateGrinder>> getRecipeType() {
 		 return RecipeInit.GRINDER_RECIPE_TYPE;
 	}
 	
 	// the recipe template (combination of inputs and secondary outputs if any)
 	@Override
-	public RecipeTemplateOneInOneOut getRecipeTemplate() {
-		return RecipeTemplateOneInOneOut.INST;
+	public RecipeTemplateGrinder getRecipeTemplate() {
+		return RecipeTemplateGrinder.INST;
 	}	
 
 	@Override

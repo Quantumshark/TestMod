@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 // in <> put the template class name
-public class GrinderRecipe extends MachineRecipeBase<RecipeTemplateOneInOneOut> {
+public class GrinderRecipe extends MachineRecipeBase<RecipeTemplateGrinder> {
 	
 	// return a new recipe of this type - used for reading recipes.
 	public static class RecipeFactory implements RecipeSerializer.IRecipeFactory<GrinderRecipe> {
@@ -31,8 +31,8 @@ public class GrinderRecipe extends MachineRecipeBase<RecipeTemplateOneInOneOut> 
 
 	// the recipe template (combination of inputs and secondary outputs if any). Just update the template class name.
 	@Override
-	public RecipeTemplateOneInOneOut getRecipeTemplate() {
-		return RecipeTemplateOneInOneOut.INST;
+	public RecipeTemplateGrinder getRecipeTemplate() {
+		return RecipeTemplateGrinder.INST;
 	}
 	
 	// return the recipe type id for this type of recipe

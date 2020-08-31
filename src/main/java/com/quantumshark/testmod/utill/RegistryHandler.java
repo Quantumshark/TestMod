@@ -34,7 +34,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ContainerType;
@@ -46,18 +45,9 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
-import net.minecraft.item.MusicDiscItem;
-import net.minecraft.item.Rarity;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class RegistryHandler {
 
