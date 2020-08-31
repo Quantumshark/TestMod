@@ -7,6 +7,7 @@ import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
 import com.quantumshark.testmod.blocks.CrudeOilBlock;
 import com.quantumshark.testmod.blocks.GrinderBlock;
+import com.quantumshark.testmod.blocks.OilShale;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
 import com.quantumshark.testmod.capability.IShaftPower;
 import com.quantumshark.testmod.blocks.ThermalGlass;
@@ -87,6 +88,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Block> BLUECRYSTALORE_BLOCK = BLOCKS.register("blue_crystal_ore", BlueCrystalOre::new);
 	public static final RegistryObject<Block> FLUORITEBLOCK_BLOCK = BLOCKS.register("fluorite_block", FluoriteBlock::new);
 	public static final RegistryObject<Block> FLUORITEORE_BLOCK = BLOCKS.register("fluorite_ore", FluoriteOre::new);
+	public static final RegistryObject<Block> OILSHALE_BLOCK = BLOCKS.register("oil_shale", OilShale::new);
 	public static final RegistryObject<Block> THERMALGLASS_BLOCK = BLOCKS.register("thermal_glass", ThermalGlass::new);
 	public static final RegistryObject<Block> MILLSTONEGRIT_BLOCK = BLOCKS.register("millstone_grit", ()->new Block(Block.Properties.create(Material.ROCK)
 												.hardnessAndResistance(5f, 9f)
@@ -105,6 +107,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> BLUECRYSTALORE_BLOCK_ITEM = ITEMS.register("blue_crystal_ore", () -> new BlockItemBase(BLUECRYSTALORE_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEBLOCK_BLOCK_ITEM = ITEMS.register("fluorite_block", () -> new BlockItemBase(FLUORITEBLOCK_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEORE_BLOCK_ITEM = ITEMS.register("fluorite_ore", () -> new BlockItemBase(FLUORITEORE_BLOCK.get()));
+	public static final RegistryObject<Item> OILSHALE_BLOCK_ITEM = ITEMS.register("oil_shale", () -> new BlockItemBase(OILSHALE_BLOCK.get()));
 	public static final RegistryObject<Item> THERMALGLASS_BLOCK_ITEM = ITEMS.register("thermal_glass", () -> new BlockItemBase(THERMALGLASS_BLOCK.get()));
 	public static final RegistryObject<Item> MILLSTONEGRIT_BLOCK_ITEM = ITEMS.register("millstone_grit", () -> new BlockItemBase(MILLSTONEGRIT_BLOCK.get()));
 	public static final RegistryObject<Item> LIMESTONE_BLOCK_ITEM = ITEMS.register("limestone", () -> new BlockItemBase(LIMESTONE_BLOCK.get()));
