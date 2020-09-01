@@ -8,7 +8,6 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
@@ -66,6 +65,7 @@ public class RecipeSerializer<T extends IMachineRecipe> extends ForgeRegistryEnt
 		if (!json.has(memberName)) {
 			return ItemStack.EMPTY;
 		}
+
 		return CraftingHelper.getItemStack(JSONUtils.getJsonObject(json.get(memberName), memberName), readNBT);
 	}
 

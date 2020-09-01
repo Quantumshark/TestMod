@@ -14,7 +14,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
 
-public abstract class MachineContainerBase<T extends MachineTileEntityBase<?>> extends Container {
+public abstract class MachineContainerBase<T extends MachineTileEntityBase> extends Container {
 	protected final T tileEntity;
 	private IWorldPosCallable canInteractWithCallable;
 
@@ -49,7 +49,6 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase<?>> e
 		
 		int playerSlotCount = player.inventory.mainInventory.size();
 
-		final int containerSlotCount = this.inventorySlots.size() - playerSlotCount;
 		if (index < playerSlotCount) {	// from player to input
 			if (!mergeItemStack(slotStack, playerSlotCount, this.inventorySlots.size(), false)) {	// any input or output slot
 				return ItemStack.EMPTY;

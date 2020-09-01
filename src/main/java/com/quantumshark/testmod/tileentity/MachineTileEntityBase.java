@@ -6,18 +6,20 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.quantumshark.testmod.recipes.IRecipeTemplate;
+import com.quantumshark.testmod.recipes.MachineInventoryRecipeWrapper;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
+import com.quantumshark.testmod.recipes.RecipeAndWrapper;
+import com.quantumshark.testmod.recipes.RecipeComponent;
+import com.quantumshark.testmod.utill.IItemDropper;
 import com.quantumshark.testmod.utill.ISlotValidator;
 import com.quantumshark.testmod.utill.MachineItemHandler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -32,26 +34,26 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
+import net.minecraftforge.items.ItemStackHandler;
 
 // base class for machines
-// todo: this currently hard-codes the recipe type.
-// since this now knows what pattern of recipe it implements, it can be a lot more powerful
-public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends NameableTitleEntityBase
+public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		implements ITickableTileEntity, ICapabilityProvider, ISlotValidator {
-	private MachineItemHandler inventory;
-	private int inputSlotCount = getRecipeTemplate().getInputs().size();
-	private int outputSlotCount = 1 + getRecipeTemplate().getSecondaryOutputs().size();
+	// note: if you set these fields other than in constructor, expect to die.
+	// can't make final as that doesn't allow assignment in child constructor
+	// and can't pass into base constructor as that doesn't allow calling class
+	// methods to calculate (?)
+	// note: this is just for items. Do other types too
+	protected MachineItemHandler inventory;
+	// todo: this is just for item slots, need to add fluid slots etc. too
+	protected int inputSlotCount;
+	protected int outputSlotCount;
 
 	public MachineTileEntityBase(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
-
-		this.inventory = new MachineItemHandler(inputSlotCount + outputSlotCount, this);
 	}
 
-	protected abstract IRecipeType<MachineRecipeBase<T>> getRecipeType();
-
-	protected abstract T getRecipeTemplate();
+	protected abstract NonNullList<IRecipeType<MachineRecipeBase>> getRecipeTypes();
 
 	public ItemStack getInputStack(int index) {
 		if (index < 0 || index >= inputSlotCount) {
@@ -67,50 +69,24 @@ public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends N
 		return inventory.getStackInSlot(inputSlotCount + index);
 	}
 
-	protected boolean processRecipe(MachineRecipeBase<T> recipe, boolean simulate) {
-		NonNullList<ItemStack> otherOutputs = recipe.getRemainingItems(new RecipeWrapper(inventory));
-		boolean ret = true;
+	protected abstract MachineInventoryRecipeWrapper getInventoryWrapperForRecipe(MachineRecipeBase recipe);
 
-		ItemStack output = recipe.getRecipeOutput();
-		ret &= (ItemStack.EMPTY == this.inventory.insertOutputItem(inputSlotCount, output.copy(), simulate));
-		for (int i = inputSlotCount + 1; i < inventory.getSlots(); ++i) {
-			ret &= (ItemStack.EMPTY == this.inventory.insertOutputItem(i, otherOutputs.get(i).copy(), simulate));
-		}
-		if (!simulate) {
-			for (int i = 0; i < inputSlotCount; ++i) {
-				Ingredient ing = recipe.getIngredients().get(i);
-				if (ing != Ingredient.EMPTY) {
-					this.inventory.decrStackSize(i, 1);
-				}
-
-				// drop any left-over buckets
-				// totally-untested-and-highly-dangerous
-				ItemStack dropBucket = otherOutputs.get(i);
-				if(dropBucket != null && dropBucket != ItemStack.EMPTY)
-				{
-					ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), dropBucket.copy());
-					world.addEntity(itemEntity);
-				}
-			}
-		}
-		
-		return ret;
-	}
+	private static final String NBT_TAG_ITEM_INVENTORY = "Items";
 
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
 
-		NonNullList<ItemStack> inv = NonNullList.<ItemStack>withSize(this.inventory.getSlots(), ItemStack.EMPTY);
-		ItemStackHelper.loadAllItems(compound, inv);
-		this.inventory.setNonNullList(inv);
+		CompoundNBT items = compound.getCompound(NBT_TAG_ITEM_INVENTORY);
+
+		inventory.deserializeNBT(items);
 	}
 
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 
-		ItemStackHelper.saveAllItems(compound, this.inventory.toNonNullList());
+		compound.put(NBT_TAG_ITEM_INVENTORY, inventory.serializeNBT());
 
 		return compound;
 	}
@@ -119,22 +95,26 @@ public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends N
 		return this.inventory;
 	}
 
-	private Set<MachineRecipeBase<T>> findRecipes() {
-		IRecipeType<MachineRecipeBase<T>> typeIn = getRecipeType();
+	// note: for single type at least, cache this?
+	private Set<MachineRecipeBase> findRecipes() {
 		if (world == null) {
 			return Collections.emptySet();
 		}
-		
-		return world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == typeIn).map(x->(MachineRecipeBase<T>)(x))
+		return world.getRecipeManager().getRecipes().stream()
+				.filter(recipe -> getRecipeTypes().contains(recipe.getType())).map(x -> (MachineRecipeBase) (x))
 				.collect(Collectors.toSet());
 	}
 
 	@Nullable
-	public MachineRecipeBase<T> findMatchingRecipe() {
-		Set<MachineRecipeBase<T>> recipes = findRecipes();
-		for (MachineRecipeBase<T> recipe : recipes) {
-			if (recipe.matches(new RecipeWrapper(this.inventory), this.world)) {
-				return recipe;
+	public RecipeAndWrapper findMatchingRecipe() {
+		Set<MachineRecipeBase> recipes = findRecipes();
+		for (MachineRecipeBase recipe : recipes) {
+			MachineInventoryRecipeWrapper wrapper = getInventoryWrapperForRecipe(recipe);
+			// note: this is going to be a bit tricky performance-wise in the generic
+			// scenario, as we'd have to get a wrapper for each recipe in turn
+			// single type version is a lot easier
+			if (recipe.matches(wrapper, this.world)) {
+				return new RecipeAndWrapper(recipe, wrapper);
 			}
 		}
 
@@ -182,22 +162,94 @@ public abstract class MachineTileEntityBase<T extends IRecipeTemplate> extends N
 		return super.getCapability(cap, side);
 	}
 
+	// this is only used for items, hence the ItemStack signature.
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
 		if (slot < 0 || slot >= inputSlotCount) {
 			// don't allow insertion into output slots.
 			return false;
 		}
-		
-		Set<MachineRecipeBase<T>> recipes = findRecipes();
+		RecipeComponent inputWrapper = RecipeComponent.wrap(stack, "");
 
-		for(MachineRecipeBase<T> recipe : recipes)
-		{
-			if(recipe.getIngredients().get(slot).test(stack))
-			{
-				return true;
+		Set<MachineRecipeBase> recipes = findRecipes();
+
+		for (MachineRecipeBase recipe : recipes) {
+			SlotWrapper[] inputsForRecipe = getInputSlots(recipe);
+			for (int i = 0; i < inputsForRecipe.length; ++i) {
+				SlotWrapper sw = inputsForRecipe[i];
+
+				if (sw == null || !(sw instanceof SlotWrapperItem)) {
+					continue;
+				}
+
+				SlotWrapperItem cast = (SlotWrapperItem) sw;
+				if (cast.inventoryIndex != slot) {
+					continue;
+				}
+				
+				// so input i in the recipe goes in machine slot. Now just see if this matches it. 
+				RecipeComponent ingredient = recipe.getInputs().get(i);
+
+				if (ingredient.isFulfilledBy(inputWrapper, false)) {
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+
+	public abstract SlotWrapper[] getInputSlots(MachineRecipeBase recipe);
+
+	public abstract SlotWrapper[] getOutputSlots(MachineRecipeBase recipe);
+
+	public abstract class SlotWrapper {
+		protected SlotWrapper(String name) {
+			this.name = name;
+		}
+
+		protected final String name;
+
+		public abstract RecipeComponent getRecipeComponent();
+
+		public abstract boolean insert(RecipeComponent output, boolean simulate);
+
+		public abstract void decrease(RecipeComponent input);
+	}
+
+	public class SlotWrapperItem extends SlotWrapper {
+		public SlotWrapperItem(int inventoryIndex, String name) {
+			super(name);
+			this.inventoryIndex = inventoryIndex;
+		}
+
+		public int inventoryIndex;
+
+		public RecipeComponent getRecipeComponent() {
+			return RecipeComponent.wrap(getInputStack(inventoryIndex), name);
+		}
+
+		@Override
+		public boolean insert(RecipeComponent output, boolean simulate) {
+			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			ItemStack outputStack = output.getAsItemStack().copy();
+			
+			return (ItemStack.EMPTY == inventory.insertOutputItem(inventoryIndex, outputStack, simulate));
+		}
+
+		@Override
+		public void decrease(RecipeComponent input) {
+			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			ItemStack inputStack = input.getAsItemStack();
+
+			inventory.extractItem(inventoryIndex, inputStack.getCount(), false);
+		}
+	}
+
+	protected class ItemDropper implements IItemDropper {
+		@Override
+		public void DropItem(ItemStack item) {
+			ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), item.copy());
+			world.addEntity(itemEntity);
+		}
 	}
 }

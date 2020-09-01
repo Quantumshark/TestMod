@@ -5,7 +5,8 @@ import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
-import com.quantumshark.testmod.recipes.RecipeTemplateGrinder;
+import com.quantumshark.testmod.recipes.RecipeAndWrapper;
+import com.quantumshark.testmod.recipes.RecipeTemplate;
 import com.quantumshark.testmod.utill.RecipeInit;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
@@ -22,7 +23,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateGrinder> {
+public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	private ShaftPowerDefImpl shaft;
 
 	public int currentSmeltTime;
@@ -45,15 +46,17 @@ public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateGrind
 
 		if (this.world != null && !this.world.isRemote) {
 			if (this.world.isBlockPowered(this.getPos())) {
-				// reset progress if you remove the input item. 
-				MachineRecipeBase<RecipeTemplateGrinder> recipe = this.findMatchingRecipe();
-				if(recipe == null)
+				// todo: save the recipe id in the state so we don't have to find every tick.
+				// also so we can lose progess if you: turn machine on; put something in; turn machine off; take input out; put in new input; turn back on again 
+				RecipeAndWrapper match = this.findMatchingRecipe();
+				if(match == null)
 				{
+					// reset progress if you remove the input item. 
 					this.currentSmeltTime = 0;
 				}
 				else
 				{
-					if(processRecipe(recipe, true))
+					if(match.process(true, null))	// pass a null dropper so it crashes if it tries to drop something :)
 					{
 						if (this.currentSmeltTime < this.maxSmeltTime) {
 							isRunning = true;
@@ -61,7 +64,7 @@ public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateGrind
 						} else {
 							this.currentSmeltTime = 0;
 							
-							processRecipe(recipe, false);
+							match.process(false, new ItemDropper());
 							
 							dirty = true;
 						}
@@ -106,14 +109,14 @@ public class GrinderTileEntity extends MachineTileEntityBase<RecipeTemplateGrind
 	}
 	
 	@Override
-	protected IRecipeType<MachineRecipeBase<RecipeTemplateGrinder>> getRecipeType() {
+	protected IRecipeType<MachineRecipeBase> getRecipeType() {
 		 return RecipeInit.GRINDER_RECIPE_TYPE;
 	}
 	
 	// the recipe template (combination of inputs and secondary outputs if any)
 	@Override
-	public RecipeTemplateGrinder getRecipeTemplate() {
-		return RecipeTemplateGrinder.INST;
+	public RecipeTemplate getRecipeTemplate() {
+		return RecipeTemplate.GRINDER;
 	}	
 
 	@Override

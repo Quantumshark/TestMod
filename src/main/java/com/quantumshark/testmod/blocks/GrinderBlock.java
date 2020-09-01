@@ -3,7 +3,6 @@ package com.quantumshark.testmod.blocks;
 import java.util.Random;
 
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
-import com.quantumshark.testmod.utill.MachineItemHandler;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.block.Block;
@@ -14,6 +13,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
 
@@ -120,10 +121,12 @@ public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
 		TileEntity tile = worldIn.getTileEntity(pos);
 		if (tile instanceof GrinderTileEntity && state.getBlock() != newState.getBlock()) {
 			GrinderTileEntity furnace = (GrinderTileEntity) tile;
-			((MachineItemHandler) furnace.getInventory()).toNonNullList().forEach(item -> {
-				ItemEntity itemEntity = new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), item);
+			IItemHandlerModifiable inv =furnace.getInventory();
+			for(int i=0;i<inv.getSlots();++i) {
+				ItemStack stack = inv.getStackInSlot((i));
+				ItemEntity itemEntity = new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack);
 				worldIn.addEntity(itemEntity);
-			});
+			}
 		}
 
 		// need to call super after custom logic as we're tearing things apart
