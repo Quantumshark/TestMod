@@ -53,6 +53,10 @@ public class RecipeComponent {
 	public ItemStack getAsItemStack() {
 		return null;
 	}
+	
+	public FluidStack getAsFluidStack() {
+		return null;
+	}
 
 	private static class RecipeComponentItem extends RecipeComponent {
 		public RecipeComponentItem(String name) {
@@ -151,6 +155,11 @@ public class RecipeComponent {
 
 			return inventoryStack.getAmount() >= fluidStack.getAmount();
 		}
+
+		@Override
+		public FluidStack getAsFluidStack() {
+			return fluidStack;
+		}		
 	}
 
 	// matchNone true means that if the recipe doesn't require this component, we return true (i.e., allow crafting).

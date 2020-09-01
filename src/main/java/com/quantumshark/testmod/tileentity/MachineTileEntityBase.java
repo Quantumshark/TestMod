@@ -12,6 +12,7 @@ import com.quantumshark.testmod.recipes.RecipeAndWrapper;
 import com.quantumshark.testmod.recipes.RecipeComponent;
 import com.quantumshark.testmod.utill.IItemDropper;
 import com.quantumshark.testmod.utill.ISlotValidator;
+import com.quantumshark.testmod.utill.MachineFluidHandler;
 import com.quantumshark.testmod.utill.MachineItemHandler;
 
 import net.minecraft.client.Minecraft;
@@ -32,6 +33,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -45,9 +49,12 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	// methods to calculate (?)
 	// note: this is just for items. Do other types too
 	protected MachineItemHandler inventory;
-	// todo: this is just for item slots, need to add fluid slots etc. too
+	protected MachineFluidHandler fluidInventory;
+	
 	protected int inputSlotCount;
 	protected int outputSlotCount;
+	protected int inputFluidSlotCount;
+	protected int outputFluidSlotCount;
 
 	public MachineTileEntityBase(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
@@ -68,10 +75,25 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		}
 		return inventory.getStackInSlot(inputSlotCount + index);
 	}
+	
+	public FluidStack getInputFluidStack(int index) {
+		if (index < 0 || index >= inputFluidSlotCount) {
+			return null;
+		}
+		return fluidInventory.getFluidInTank(index);
+	}
+
+	public FluidStack getOutputFluidStack(int index) {
+		if (index < 0 || index >= outputFluidSlotCount) {
+			return null;
+		}
+		return fluidInventory.getFluidInTank(inputFluidSlotCount + index);
+	}	
 
 	protected abstract MachineInventoryRecipeWrapper getInventoryWrapperForRecipe(MachineRecipeBase recipe);
 
 	private static final String NBT_TAG_ITEM_INVENTORY = "Items";
+	private static final String NBT_TAG_FLUID_INVENTORY = "Tanks";
 
 	@Override
 	public void read(CompoundNBT compound) {
@@ -80,6 +102,12 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		CompoundNBT items = compound.getCompound(NBT_TAG_ITEM_INVENTORY);
 
 		inventory.deserializeNBT(items);
+
+		items = compound.getCompound(NBT_TAG_FLUID_INVENTORY);
+		
+		if(items != null) {
+			fluidInventory.deserializeNBT(items);
+		}
 	}
 
 	@Override
@@ -88,6 +116,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 		compound.put(NBT_TAG_ITEM_INVENTORY, inventory.serializeNBT());
 
+		compound.put(NBT_TAG_FLUID_INVENTORY, fluidInventory.serializeNBT());
+		
 		return compound;
 	}
 
@@ -156,8 +186,11 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (inputSlotCount > 0 || outputSlotCount > 0)) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.inventory));
+		}
+		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (inputFluidSlotCount > 0 || outputFluidSlotCount > 0)) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.fluidInventory));
 		}
 		return super.getCapability(cap, side);
 	}
@@ -245,6 +278,39 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		}
 	}
 
+	public class SlotWrapperFluid extends SlotWrapper {
+		private FluidAction toAction(boolean simulate) {
+			return simulate?FluidAction.SIMULATE:FluidAction.EXECUTE;
+		}
+		
+		public SlotWrapperFluid(int inventoryIndex, String name) {
+			super(name);
+			this.inventoryIndex = inventoryIndex;
+		}
+
+		public int inventoryIndex;
+
+		public RecipeComponent getRecipeComponent() {
+			return RecipeComponent.wrap(getInputFluidStack(inventoryIndex), name);
+		}
+
+		@Override
+		public boolean insert(RecipeComponent output, boolean simulate) {
+			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			FluidStack outputStack = output.getAsFluidStack().copy();
+			
+			return (outputStack.getAmount() == fluidInventory.getTank(inventoryIndex).fill(outputStack, toAction(simulate)));
+		}
+
+		@Override
+		public void decrease(RecipeComponent input) {
+			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			FluidStack inputStack = input.getAsFluidStack();
+
+			fluidInventory.getTank(inventoryIndex).drain(inputStack.getAmount(), FluidAction.EXECUTE);
+		}
+	}
+	
 	protected class ItemDropper implements IItemDropper {
 		@Override
 		public void DropItem(ItemStack item) {

@@ -4,21 +4,64 @@ import com.quantumshark.testmod.recipes.MachineInventoryRecipeWrapper;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeTemplate;
 import com.quantumshark.testmod.recipes.RecipeTemplateComponent;
+import com.quantumshark.testmod.utill.MachineFluidHandler;
 import com.quantumshark.testmod.utill.MachineItemHandler;
 
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.items.ItemStackHandler;
 
 public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileEntityBase {
 	public MachineTileEntitySingleRecipeTypeBase(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 		
-		inputSlotCount = getRecipeTemplate().getInputs().size() + getNonRecipeInputSlotCount();
-		outputSlotCount = getRecipeTemplate().getOutputs().size() + getNonRecipeOutputSlotCount();
+		inputSlots = new SlotWrapper[getRecipeTemplate().getInputs().size()];
+		
+		for(int i=0;i<inputSlots.length;++i) {
+			RecipeTemplateComponent rtc = getRecipeTemplate().getInputs().get(i);
+			switch(rtc.getComponentType() ) {
+				case Item:
+					inputSlots[i] = new SlotWrapperItem(inputSlotCount, rtc.getName());
+					++inputSlotCount;
+					break;
+				case Fluid:
+					inputSlots[i] = new SlotWrapperFluid(inputFluidSlotCount, rtc.getName());
+					++inputFluidSlotCount;
+					break;
+				default:
+					// panic!
+					break;
+			}
+		}
+		
+		outputSlots = new SlotWrapper[getRecipeTemplate().getOutputs().size()];
+		
+		for(int i=0;i<outputSlots.length;++i) {
+			RecipeTemplateComponent rtc = getRecipeTemplate().getOutputs().get(i);
+			switch(rtc.getComponentType() ) {
+				case Item:
+					outputSlots[i] = new SlotWrapperItem(outputSlotCount, rtc.getName());
+					++outputSlotCount;
+					break;
+				case Fluid:
+					outputSlots[i] = new SlotWrapperFluid(outputFluidSlotCount, rtc.getName());
+					++outputFluidSlotCount;
+					break;
+				default:
+					// panic!
+					break;
+			}
+		}			
+		
+		inputSlotCount += getNonRecipeInputSlotCount();
+		outputSlotCount += getNonRecipeOutputSlotCount();
+		
 		inventory = new MachineItemHandler(inputSlotCount + outputSlotCount, this);
+		fluidInventory = new MachineFluidHandler(inputFluidSlotCount + outputFluidSlotCount);
 	}
+	
+	private final SlotWrapper[] inputSlots;
+	private final SlotWrapper[] outputSlots;
 	
 	private final NonNullList<IRecipeType<MachineRecipeBase>> recipeTypes = NonNullList.from(null, getRecipeType());
 
@@ -37,52 +80,14 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 		return new MachineInventoryRecipeWrapper(this, recipe);
 	}
 	
-	// todo: cache?
 	@Override
 	public SlotWrapper[] getInputSlots(MachineRecipeBase recipe) {
-		SlotWrapper[] ret = new SlotWrapper[getRecipeTemplate().getInputs().size()];
-		int itemIndex = 0;
-		// int fluidIndex = 0;
-		for(int i=0;i<ret.length;++i) {
-			RecipeTemplateComponent rtc = getRecipeTemplate().getInputs().get(i);
-			switch(rtc.getComponentType() ) {
-				case Item:
-					ret[i] = new SlotWrapperItem(itemIndex, rtc.getName());
-					++itemIndex;
-					break;
-				case Fluid:
-					// todo: handle this
-					break;
-				default:
-					// panic!
-					break;
-			}
-		}
-		return ret;
+		return inputSlots;
 	}
 	
-	// todo: cache?
 	@Override
 	public SlotWrapper[] getOutputSlots(MachineRecipeBase recipe) {
-		SlotWrapper[] ret = new SlotWrapper[getRecipeTemplate().getOutputs().size()];
-		int itemIndex = 0;
-		// int fluidIndex = 0;
-		for(int i=0;i<ret.length;++i) {
-			RecipeTemplateComponent rtc = getRecipeTemplate().getOutputs().get(i);
-			switch(rtc.getComponentType() ) {
-				case Item:
-					ret[i] = new SlotWrapperItem(itemIndex + inputSlotCount, rtc.getName());
-					++itemIndex;
-					break;
-				case Fluid:
-					// todo: handle this
-					break;
-				default:
-					// panic!
-					break;
-			}
-		}
-		return ret;
+		return outputSlots;
 	}
 	
 	// move to a single type child class
