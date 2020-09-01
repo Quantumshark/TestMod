@@ -47,7 +47,11 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 
 		// Furnace Slots
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 0, 56, 34));
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 116, 35));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 116, 35));
+
+		// bucket slots
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 136, 14));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 136, 54));
 
 		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.tileEntity.currentSmeltTime,
 				value -> this.tileEntity.currentSmeltTime = value));

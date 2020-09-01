@@ -1,6 +1,5 @@
 package com.quantumshark.testmod.utill;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
@@ -8,22 +7,20 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class MachineFluidHandler implements IFluidHandler, INBTSerializable<CompoundNBT> {
 	public MachineFluidHandler(int tankCount) {
 		tanks = NonNullList.create();
 		for (int i = 0; i < tankCount; ++i) {
 			// default size = 1 bucket
-			tanks.add(new FluidTank(FluidAttributes.BUCKET_VOLUME));
+			tanks.add(new TankFluidHandler(FluidAttributes.BUCKET_VOLUME));
 		}
 	}
 
-	private final NonNullList<FluidTank> tanks;
+	private final NonNullList<TankFluidHandler> tanks;
 	
-	public IFluidTank getTank(int i ) {
+	public TankFluidHandler getTank(int i ) {
 		return tanks.get(i);
 	}
 
@@ -47,7 +44,7 @@ public class MachineFluidHandler implements IFluidHandler, INBTSerializable<Comp
 	@Override
 	public void deserializeNBT(CompoundNBT nbt) {
 		int newSize = nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : tanks.size();
-		if (newSize != tanks.size()) {
+		if (newSize > tanks.size()) {
 			setSize(newSize);
 		}
 		ListNBT tagList = nbt.getList("Tanks", Constants.NBT.TAG_COMPOUND);
@@ -65,7 +62,7 @@ public class MachineFluidHandler implements IFluidHandler, INBTSerializable<Comp
 		tanks.clear();
 		for (int i = 0; i < tankCount; ++i) {
 			// default size = 1 bucket
-			tanks.add(new FluidTank(FluidAttributes.BUCKET_VOLUME));
+			tanks.add(new TankFluidHandler(FluidAttributes.BUCKET_VOLUME));
 		}
 	}
 

@@ -14,6 +14,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -22,6 +24,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	private ShaftPowerDefImpl shaft;
@@ -33,12 +40,12 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 		super(RegistryHandler.GRINDER_TILE_ENTITY.get());
 		shaft = new ShaftPowerDefImpl();
 	}
-	
+
 	@Override
 	public Container createMenu(final int windowID, final PlayerInventory playerInv, final PlayerEntity playerIn) {
 		return new GrinderContainer(windowID, playerInv, this);
 	}
-	
+
 	@Override
 	public void tick() {
 		boolean dirty = false;
@@ -47,25 +54,23 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 		if (this.world != null && !this.world.isRemote) {
 			if (this.world.isBlockPowered(this.getPos())) {
 				// todo: save the recipe id in the state so we don't have to find every tick.
-				// also so we can lose progess if you: turn machine on; put something in; turn machine off; take input out; put in new input; turn back on again 
+				// also so we can lose progess if you: turn machine on; put something in; turn
+				// machine off; take input out; put in new input; turn back on again
 				RecipeAndWrapper match = this.findMatchingRecipe();
-				if(match == null)
-				{
-					// reset progress if you remove the input item. 
+				if (match == null) {
+					// reset progress if you remove the input item.
 					this.currentSmeltTime = 0;
-				}
-				else
-				{
-					if(match.process(true, null))	// pass a null dropper so it crashes if it tries to drop something :)
+				} else {
+					if (match.process(true, null)) // pass a null dropper so it crashes if it tries to drop something :)
 					{
 						if (this.currentSmeltTime < this.maxSmeltTime) {
 							isRunning = true;
 							this.currentSmeltTime++;
 						} else {
 							this.currentSmeltTime = 0;
-							
+
 							match.process(false, new ItemDropper());
-							
+
 							dirty = true;
 						}
 					}
@@ -73,13 +78,13 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 			}
 			BlockState oldBlockState = getBlockState();
 			boolean wasRunning = oldBlockState.get(GrinderBlock.LIT);
-			if(isRunning != wasRunning)
-			{
-				this.world.setBlockState(this.getPos(),
-					this.getBlockState().with(GrinderBlock.LIT, isRunning));
+			if (isRunning != wasRunning) {
+				this.world.setBlockState(this.getPos(), this.getBlockState().with(GrinderBlock.LIT, isRunning));
 				dirty = true;
 			}
 		}
+
+		dirty |= AttemptFillBucket(1, 0, 3);
 
 		if (dirty) {
 			this.markDirty();
@@ -87,7 +92,7 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 					Constants.BlockFlags.BLOCK_UPDATE);
 		}
 	}
-	
+
 	@Override
 	protected ITextComponent getDefaultName() {
 		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".grinder");
@@ -107,28 +112,80 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 
 		return compound;
 	}
-	
+
 	@Override
 	protected IRecipeType<MachineRecipeBase> getRecipeType() {
-		 return RecipeInit.GRINDER_RECIPE_TYPE;
+		return RecipeInit.GRINDER_RECIPE_TYPE;
 	}
-	
+
 	// the recipe template (combination of inputs and secondary outputs if any)
 	@Override
 	public RecipeTemplate getRecipeTemplate() {
 		return RecipeTemplate.GRINDER;
-	}	
+	}
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if(cap == RegistryHandler.CAPABILITY_SHAFT_POWER)
-		{
-			if(side == Direction.UP)
-			{
+		if (cap == RegistryHandler.CAPABILITY_SHAFT_POWER) {
+			if (side == Direction.UP) {
 				return RegistryHandler.CAPABILITY_SHAFT_POWER.orEmpty(cap, LazyOptional.of(() -> this.shaft));
-			}
-			else return null;
+			} else
+				return null;
 		}
 		return super.getCapability(cap, side);
+	}
+
+	// bucket in
+	@Override
+	protected int getNonRecipeInputSlotCount() {
+		return 1;
+	}
+
+	// filled bucket out
+	@Override
+	protected int getNonRecipeOutputSlotCount() {
+		return 1;
+	}
+
+	// this stuff could be in a class.
+	@Override
+	public boolean isItemValid(int slot, ItemStack stack) {
+		if (slot == 1) {
+			if (stack.getItem() == Items.BUCKET) {
+				return true;
+			}
+			IFluidHandler h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
+			if (h != null) {
+				return true;
+			}
+			return false;
+		} else {
+			return super.isItemValid(slot, stack);
+		}
+	}
+
+	public boolean AttemptFillBucket(int emptySlot, int tankSlot, int fullSlot) {
+		if (emptySlot >= inventory.getSlots() || fullSlot >= inventory.getSlots()
+				|| tankSlot >= fluidInventory.getTanks()) {
+			return false;
+		}
+		if (inventory.getStackInSlot(fullSlot) != ItemStack.EMPTY) {
+			return false;
+		}
+		ItemStack empty = inventory.getStackInSlot(emptySlot);
+		if (empty == ItemStack.EMPTY) {
+			return false;
+		}
+		boolean wasSingleton = (empty.getCount() == 1);
+		FluidActionResult ret = FluidUtil.tryFillContainer(empty, fluidInventory.getTank(tankSlot), FluidAttributes.BUCKET_VOLUME, null, true);
+		if (ret.success) {
+			inventory.setStackInSlot(fullSlot, ret.getResult());
+			if (wasSingleton) {
+				inventory.setStackInSlot(emptySlot, ItemStack.EMPTY);
+			} else {
+				inventory.extractItem(emptySlot, 1, false);
+			}
+		}
+		return ret.success;
 	}
 }
