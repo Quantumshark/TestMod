@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
 
 public abstract class MachineContainerBase<T extends MachineTileEntityBase> extends Container {
-	protected final T tileEntity;
+	private final T tileEntity;
 	private IWorldPosCallable canInteractWithCallable;
 
 	public MachineContainerBase(@Nullable ContainerType<?> type, final int windowID, final PlayerInventory playerInv,
@@ -69,5 +69,9 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase> exte
 		slot.onTake(player, slotStack);
 
 		return returnStack;
+	}
+
+	public T getTileEntity() {
+		return tileEntity;
 	}
 }

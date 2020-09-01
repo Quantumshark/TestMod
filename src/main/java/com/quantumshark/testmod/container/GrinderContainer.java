@@ -53,8 +53,8 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 136, 14));
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 136, 54));
 
-		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.tileEntity.currentSmeltTime,
-				value -> this.tileEntity.currentSmeltTime = value));
+		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
+				value -> this.getTileEntity().currentSmeltTime = value));
 	}
 
 	// Client Constructor
@@ -75,7 +75,7 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 	@OnlyIn(Dist.CLIENT)
 	public int getSmeltProgressionScaled() {
 		return this.currentSmeltTime.get() != 0 && this.currentSmeltTime.get() != 0
-				? this.currentSmeltTime.get() * 24 / this.tileEntity.maxSmeltTime
+				? this.currentSmeltTime.get() * 24 / this.getTileEntity().maxSmeltTime
 				: 0;
 	}
 }

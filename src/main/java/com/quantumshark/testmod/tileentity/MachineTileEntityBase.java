@@ -14,6 +14,7 @@ import com.quantumshark.testmod.utill.IItemDropper;
 import com.quantumshark.testmod.utill.ISlotValidator;
 import com.quantumshark.testmod.utill.MachineFluidHandler;
 import com.quantumshark.testmod.utill.MachineItemHandler;
+import com.quantumshark.testmod.utill.TankFluidHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
@@ -88,7 +89,11 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 			return null;
 		}
 		return fluidInventory.getFluidInTank(inputFluidSlotCount + index);
-	}	
+	}
+	
+	public TankFluidHandler getFluidTank(int slot ) {
+		return fluidInventory.getTank(slot);
+	}
 
 	protected abstract MachineInventoryRecipeWrapper getInventoryWrapperForRecipe(MachineRecipeBase recipe);
 
