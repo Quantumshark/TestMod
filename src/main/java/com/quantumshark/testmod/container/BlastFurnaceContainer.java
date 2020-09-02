@@ -2,7 +2,7 @@ package com.quantumshark.testmod.container;
 
 import java.util.Objects;
 
-import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.utill.FunctionalIntReferenceHolder;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
@@ -14,14 +14,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
+public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTileEntity> {
 
 	public FunctionalIntReferenceHolder currentSmeltTime;
 
 	// Server Constructor
-	public GrinderContainer(final int windowID, final PlayerInventory playerInv,
-			final GrinderTileEntity tile) {
-		super(RegistryHandler.GRINDER_CONTAINER.get(), windowID, playerInv, tile);
+	public BlastFurnaceContainer(final int windowID, final PlayerInventory playerInv,
+			final BlastFurnaceTileEntity tile) {
+		super(RegistryHandler.BLAST_FURNACE_CONTAINER.get(), windowID, playerInv, tile);
 
 		// this class. Sets up slots. 
 		// could have a base method for player inventory though (perhaps with an offset x and y)
@@ -45,29 +45,28 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 			}
 		}
 
-		// Furnace Slots
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 0, 56, 34));
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 116, 35));
-
-		// bucket slots
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 136, 14));
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 136, 54));
+		// Input Slots
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 0, 56, 14));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 56, 34));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 56, 54));
+		// Output slot
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 116, 35));
 
 		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
 				value -> this.getTileEntity().currentSmeltTime = value));
 	}
 
 	// Client Constructor
-	public GrinderContainer(final int windowID, final PlayerInventory playerInv, final PacketBuffer data) {
+	public BlastFurnaceContainer(final int windowID, final PlayerInventory playerInv, final PacketBuffer data) {
 		this(windowID, playerInv, getTileEntity(playerInv, data));
 	}
 
-	private static GrinderTileEntity getTileEntity(final PlayerInventory playerInv, final PacketBuffer data) {
+	private static BlastFurnaceTileEntity getTileEntity(final PlayerInventory playerInv, final PacketBuffer data) {
 		Objects.requireNonNull(playerInv, "playerInv cannot be null");
 		Objects.requireNonNull(data, "data cannot be null");
 		final TileEntity tileAtPos = playerInv.player.world.getTileEntity(data.readBlockPos());
-		if (tileAtPos instanceof GrinderTileEntity) {
-			return (GrinderTileEntity) tileAtPos;
+		if (tileAtPos instanceof BlastFurnaceTileEntity) {
+			return (BlastFurnaceTileEntity) tileAtPos;
 		}
 		throw new IllegalStateException("TileEntity is not correct " + tileAtPos);
 	}

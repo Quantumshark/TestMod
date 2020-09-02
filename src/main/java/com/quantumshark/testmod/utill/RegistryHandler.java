@@ -3,19 +3,23 @@ package com.quantumshark.testmod.utill;
 import com.quantumshark.testmod.CrudeOilFluidBase;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.armor.ModArmorMaterial;
+import com.quantumshark.testmod.blocks.BlastFurnaceBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
 import com.quantumshark.testmod.blocks.CrudeOilBlock;
 import com.quantumshark.testmod.blocks.GrinderBlock;
+import com.quantumshark.testmod.blocks.OilShale;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
 import com.quantumshark.testmod.capability.IShaftPower;
 import com.quantumshark.testmod.blocks.ThermalGlass;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
+import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
 import com.quantumshark.testmod.items.BucketItemBase;
 import com.quantumshark.testmod.items.ItemBase;
+import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
@@ -34,7 +38,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ContainerType;
@@ -46,18 +49,9 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
-import net.minecraft.item.MusicDiscItem;
-import net.minecraft.item.Rarity;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class RegistryHandler {
 
@@ -97,12 +91,18 @@ public class RegistryHandler {
 	public static final RegistryObject<Block> BLUECRYSTALORE_BLOCK = BLOCKS.register("blue_crystal_ore", BlueCrystalOre::new);
 	public static final RegistryObject<Block> FLUORITEBLOCK_BLOCK = BLOCKS.register("fluorite_block", FluoriteBlock::new);
 	public static final RegistryObject<Block> FLUORITEORE_BLOCK = BLOCKS.register("fluorite_ore", FluoriteOre::new);
+	public static final RegistryObject<Block> OILSHALE_BLOCK = BLOCKS.register("oil_shale", OilShale::new);
 	public static final RegistryObject<Block> THERMALGLASS_BLOCK = BLOCKS.register("thermal_glass", ThermalGlass::new);
 	public static final RegistryObject<Block> MILLSTONEGRIT_BLOCK = BLOCKS.register("millstone_grit", ()->new Block(Block.Properties.create(Material.ROCK)
 												.hardnessAndResistance(5f, 9f)
 												.sound(SoundType.STONE)
 												.harvestLevel(2)
 												.harvestTool(ToolType.PICKAXE)));
+	public static final RegistryObject<Block> LIMESTONE_BLOCK = BLOCKS.register("limestone", ()->new Block(Block.Properties.create(Material.ROCK)
+			.hardnessAndResistance(1f, 4f)
+			.sound(SoundType.STONE)
+			.harvestLevel(1)
+			.harvestTool(ToolType.PICKAXE)));
 	
 	// Block Items
 	public static final RegistryObject<Item> BLASTBRICKS_BLOCK_ITEM = ITEMS.register("blast_bricks", () -> new BlockItemBase(BLASTBRICKS_BLOCK.get()));
@@ -110,8 +110,10 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> BLUECRYSTALORE_BLOCK_ITEM = ITEMS.register("blue_crystal_ore", () -> new BlockItemBase(BLUECRYSTALORE_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEBLOCK_BLOCK_ITEM = ITEMS.register("fluorite_block", () -> new BlockItemBase(FLUORITEBLOCK_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEORE_BLOCK_ITEM = ITEMS.register("fluorite_ore", () -> new BlockItemBase(FLUORITEORE_BLOCK.get()));
+	public static final RegistryObject<Item> OILSHALE_BLOCK_ITEM = ITEMS.register("oil_shale", () -> new BlockItemBase(OILSHALE_BLOCK.get()));
 	public static final RegistryObject<Item> THERMALGLASS_BLOCK_ITEM = ITEMS.register("thermal_glass", () -> new BlockItemBase(THERMALGLASS_BLOCK.get()));
 	public static final RegistryObject<Item> MILLSTONEGRIT_BLOCK_ITEM = ITEMS.register("millstone_grit", () -> new BlockItemBase(MILLSTONEGRIT_BLOCK.get()));
+	public static final RegistryObject<Item> LIMESTONE_BLOCK_ITEM = ITEMS.register("limestone", () -> new BlockItemBase(LIMESTONE_BLOCK.get()));
 	
 	
 	// Items
@@ -156,16 +158,21 @@ public class RegistryHandler {
 	
 	// Machine Blocks
 	public static final RegistryObject<Block> GRINDER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> BLAST_FURNACE_BLOCK = BLOCKS.register("blast_furnace", () -> new BlastFurnaceBlock(Block.Properties.from(Blocks.FURNACE)));
 	public static final RegistryObject<Block> WOODEN_SHAFT_BLOCK = BLOCKS.register("wooden_shaft", ()-> new WoodenShaftBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
 	
 	// Machine Block Items
 	public static final RegistryObject<Item> GRINDER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(GRINDER_BLOCK.get()));
+	public static final RegistryObject<Item> BLAST_FURNACE_BLOCK_ITEM = ITEMS.register("blast_furnace", () -> new BlockItemBase(BLAST_FURNACE_BLOCK.get()));
 	public static final RegistryObject<Item> WOODEN_SHAFT_BLOCK_ITEM = ITEMS.register("wooden_shaft", () -> new BlockItemBase(WOODEN_SHAFT_BLOCK.get()));
 
 	// tile entity types
 	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("grinder", () -> TileEntityType.Builder
 					.create(GrinderTileEntity::new, GRINDER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<BlastFurnaceTileEntity>> BLAST_FURNACE_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("blast_furnace", () -> TileEntityType.Builder
+					.create(BlastFurnaceTileEntity::new, BLAST_FURNACE_BLOCK.get()).build(null));
 	public static final RegistryObject<TileEntityType<WoodenShaftTileEntity>> WOODEN_SHAFT_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("wooden_shaft", () -> TileEntityType.Builder
 					.create(WoodenShaftTileEntity::new).build(null));
@@ -173,6 +180,8 @@ public class RegistryHandler {
 	// Containers
 	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
 			.register("grinder", () -> IForgeContainerType.create(GrinderContainer::new));	
+	public static final RegistryObject<ContainerType<BlastFurnaceContainer>> BLAST_FURNACE_CONTAINER = CONTAINER_TYPES
+			.register("blast_furnace", () -> IForgeContainerType.create(BlastFurnaceContainer::new));	
 	
 	// Capabilities
 	@CapabilityInject(IShaftPower.class)

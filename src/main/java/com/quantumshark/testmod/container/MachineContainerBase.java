@@ -14,8 +14,8 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
 
-public abstract class MachineContainerBase<T extends MachineTileEntityBase<?>> extends Container {
-	protected final T tileEntity;
+public abstract class MachineContainerBase<T extends MachineTileEntityBase> extends Container {
+	private final T tileEntity;
 	private IWorldPosCallable canInteractWithCallable;
 
 	public MachineContainerBase(@Nullable ContainerType<?> type, final int windowID, final PlayerInventory playerInv,
@@ -49,9 +49,8 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase<?>> e
 		
 		int playerSlotCount = player.inventory.mainInventory.size();
 
-		final int containerSlotCount = this.inventorySlots.size() - playerSlotCount;
 		if (index < playerSlotCount) {	// from player to input
-			if (!mergeItemStack(slotStack, playerSlotCount, this.inventorySlots.size()+1, false)) {	// any input or output slot
+			if (!mergeItemStack(slotStack, playerSlotCount, this.inventorySlots.size(), false)) {	// any input or output slot
 				return ItemStack.EMPTY;
 			}
 		} else if (!mergeItemStack(slotStack, 0, playerSlotCount, false)) {
@@ -70,5 +69,9 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase<?>> e
 		slot.onTake(player, slotStack);
 
 		return returnStack;
+	}
+
+	public T getTileEntity() {
+		return tileEntity;
 	}
 }

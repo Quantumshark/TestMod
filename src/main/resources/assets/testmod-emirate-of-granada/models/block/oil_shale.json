@@ -1,0 +1,9 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "testmod-emirate-of-granada:blocks/oil_shale_top",
+        "bottom": "testmod-emirate-of-granada:blocks/oil_shale_bottom",
+        "front": "testmod-emirate-of-granada:blocks/oil_shale_side",
+        "side": "testmod-emirate-of-granada:blocks/oil_shale_side"
+    }
+}

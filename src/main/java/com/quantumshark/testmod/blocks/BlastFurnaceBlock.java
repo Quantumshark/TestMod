@@ -2,7 +2,7 @@ package com.quantumshark.testmod.blocks;
 
 import java.util.Random;
 
-import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.block.Block;
@@ -36,19 +36,19 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
+public class BlastFurnaceBlock extends BlockWithTileEntityBase<BlastFurnaceTileEntity> {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
-	public GrinderBlock(Properties properties) {
+	public BlastFurnaceBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
 	}
 
 	@Override
-	protected RegistryObject<TileEntityType<GrinderTileEntity>> getRegistry() {
-		return RegistryHandler.GRINDER_TILE_ENTITY;
+	protected RegistryObject<TileEntityType<BlastFurnaceTileEntity>> getRegistry() {
+		return RegistryHandler.BLAST_FURNACE_TILE_ENTITY;
 	}
 	
 	@Override
@@ -108,7 +108,7 @@ public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
 			Hand handIn, BlockRayTraceResult hit) {
 		if (worldIn != null && !worldIn.isRemote) {
 			TileEntity tile = worldIn.getTileEntity(pos);
-			if (tile instanceof GrinderTileEntity) {
+			if (tile instanceof BlastFurnaceTileEntity) {
 				NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, pos);
 				return ActionResultType.SUCCESS;
 			}
@@ -119,8 +119,8 @@ public class GrinderBlock extends BlockWithTileEntityBase<GrinderTileEntity> {
 	@Override
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		TileEntity tile = worldIn.getTileEntity(pos);
-		if (tile instanceof GrinderTileEntity && state.getBlock() != newState.getBlock()) {
-			GrinderTileEntity furnace = (GrinderTileEntity) tile;
+		if (tile instanceof BlastFurnaceTileEntity && state.getBlock() != newState.getBlock()) {
+			BlastFurnaceTileEntity furnace = (BlastFurnaceTileEntity) tile;
 			IItemHandlerModifiable inv =furnace.getInventory();
 			for(int i=0;i<inv.getSlots();++i) {
 				ItemStack stack = inv.getStackInSlot((i));
