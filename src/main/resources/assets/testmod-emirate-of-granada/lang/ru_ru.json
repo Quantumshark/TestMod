@@ -22,8 +22,6 @@
 	"item.testmod-emirate-of-granada.blue_crystal_chestplate": "Халькантитовий нагрудник",
 	"item.testmod-emirate-of-granada.blue_crystal_leggings": "Халькантитовий поножи",
 	"item.testmod-emirate-of-granada.blue_crystal_boots": "Халькантитовий ботинки",
-	"block.testmod-emirate-of-granada.blue_crystal_block": "Халькантитовий блок",
-	"block.testmod-emirate-of-granada.blue_crystal_ore": "Халькантитовая руда",
 	"item.testmod-emirate-of-granada.fluorite_sword": "Флюоритовий меч",
 	"item.testmod-emirate-of-granada.fluorite_pickaxe": "Флюоритовая кирка",
 	"item.testmod-emirate-of-granada.fluorite_shovel": "Флюоритовая лопата",
@@ -35,6 +33,8 @@
 	"item.testmod-emirate-of-granada.fluorite_boots": "Флюоритовий ботинки",
 	"item.testmod-emirate-of-granada.crude_oil_bucket": "Ведро сырой нефти",
 	"block.testmod-emirate-of-granada.blast_bricks": "Доменные кирпичи",
+	"block.testmod-emirate-of-granada.blue_crystal_block": "Халькантитовий блок",
+	"block.testmod-emirate-of-granada.blue_crystal_ore": "Халькантитовая руда",
 	"block.testmod-emirate-of-granada.fluorite_block": "Флюоритовий блок",
 	"block.testmod-emirate-of-granada.fluorite_ore": "Флюоритовая руда",
 	"block.testmod-emirate-of-granada.oil_shale": "Горючий сланец",
@@ -42,7 +42,9 @@
 	"block.testmod-emirate-of-granada.limestone": "Известняк",
 	"block.testmod-emirate-of-granada.thermal_glass": "Термостойкое стекло",
 	"block.testmod-emirate-of-granada.grinder": "Жернов",
+	"block.testmod-emirate-of-granada.blast_furnace": "Доменная печь",
 	"block.testmod-emirate-of-granada.wooden_shaft": "Деревянный ось",
 	"container.testmod-emirate-of-granada.grinder": "Жернов",
+	"container.testmod-emirate-of-granada.blast_furnace": "Доменная печь",
 	"itemGroup.TestTab": "Испытание вещи"
 }

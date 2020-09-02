@@ -1,0 +1,10 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "testmod-emirate-of-granada:blocks/blast_furnace_top",
+        "bottom": "testmod-emirate-of-granada:blocks/blast_furnace_bottom",
+        "front": "testmod-emirate-of-granada:blocks/lit_blast_furnace_front",
+        "back": "testmod-emirate-of-granada:blocks/blast_furnace_back",
+        "side": "testmod-emirate-of-granada:blocks/blast_furnace_side"
+    }
+}
