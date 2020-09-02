@@ -67,6 +67,16 @@ public class MachineItemHandler extends ItemStackHandler {
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
     }    
     
+    @Override
+    @Nonnull
+    public ItemStack extractItem(int slot, int amount, boolean simulate)
+    {
+    	return super.extractItem(slot, amount, simulate);
+//        if (amount == 0)
+//            return ItemStack.EMPTY;
+    }
+    
+    
 	@Override
 	public String toString() {
 		return this.stacks.toString();

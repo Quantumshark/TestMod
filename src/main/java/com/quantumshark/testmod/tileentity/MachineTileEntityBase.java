@@ -13,6 +13,7 @@ import com.quantumshark.testmod.recipes.RecipeComponent;
 import com.quantumshark.testmod.utill.IItemDropper;
 import com.quantumshark.testmod.utill.ISlotValidator;
 import com.quantumshark.testmod.utill.MachineFluidHandler;
+import com.quantumshark.testmod.utill.MachineItemCapabilityHandler;
 import com.quantumshark.testmod.utill.MachineItemHandler;
 import com.quantumshark.testmod.utill.TankFluidHandler;
 
@@ -194,11 +195,14 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	@Override
 	public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (getInputSlotCount() > 0 || outputSlotCount > 0)) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.inventory));
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount)));
 		}
-		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (inputFluidSlotCount > 0 || outputFluidSlotCount > 0)) {
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.fluidInventory));
-		}
+		// note: this could be more complex. The capability seems to lack the idea of slots
+		// in fact this will crash because we don't recognize the methods it calls.
+		// looks like we'll have to return a specific tank per side.
+//		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (inputFluidSlotCount > 0 || outputFluidSlotCount > 0)) {
+//			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.fluidInventory));
+//		}
 		return super.getCapability(cap, side);
 	}
 
