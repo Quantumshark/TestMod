@@ -29,7 +29,7 @@ public class ModOreGen {
 			
 			// Oil Shale
 			// todo: this should be more common and spawn in larger amounts in deserts and oceans
-				AddOreSpawn(biome, 1,8,10,28,RegistryHandler.OILSHALE_BLOCK, 23, FillerBlockType.NATURAL_STONE);
+			AddOreSpawn(biome, 1,8,10,28,RegistryHandler.OILSHALE_BLOCK, 23, FillerBlockType.NATURAL_STONE);
 			
 			// Millstone Grit
 			// todo: replace with correct block 
@@ -37,7 +37,7 @@ public class ModOreGen {
 			
 			// Limestone
 			// todo: this should be much more common and spawn in larger amounts in oceans
-				AddOreSpawn(biome, 8,12,0,120,RegistryHandler.LIMESTONE_BLOCK, 17, FillerBlockType.NATURAL_STONE);
+			AddOreSpawn(biome, 8,12,0,120,RegistryHandler.LIMESTONE_BLOCK, 17, FillerBlockType.NATURAL_STONE);
 				
 		}
 	}
