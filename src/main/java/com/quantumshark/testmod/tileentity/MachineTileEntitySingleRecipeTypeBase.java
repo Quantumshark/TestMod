@@ -33,6 +33,7 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 					break;
 			}
 		}
+		inputSlotCount = getInputSlotCount() + getNonRecipeInputSlotCount();
 		
 		outputSlots = new SlotWrapper[getRecipeTemplate().getOutputs().size()];
 		
@@ -40,7 +41,7 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 			RecipeTemplateComponent rtc = getRecipeTemplate().getOutputs().get(i);
 			switch(rtc.getComponentType() ) {
 				case Item:
-					outputSlots[i] = new SlotWrapperItem(outputSlotCount, rtc.getName());
+					outputSlots[i] = new SlotWrapperItem(inputSlotCount + outputSlotCount, rtc.getName());
 					++outputSlotCount;
 					break;
 				case Fluid:
@@ -52,8 +53,6 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 					break;
 			}
 		}			
-		
-		inputSlotCount = getInputSlotCount() + getNonRecipeInputSlotCount();
 		outputSlotCount += getNonRecipeOutputSlotCount();
 		
 		inventory = new MachineItemHandler(getInputSlotCount() + outputSlotCount, this);

@@ -2,6 +2,8 @@ package com.quantumshark.testmod.container;
 
 import java.util.Objects;
 
+import com.quantumshark.testmod.client.gui.IScreenWidget;
+import com.quantumshark.testmod.client.gui.ProgressArrowWidget;
 import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.utill.FunctionalIntReferenceHolder;
 import com.quantumshark.testmod.utill.RegistryHandler;
@@ -10,6 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
@@ -17,7 +20,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTileEntity> {
 
 	public FunctionalIntReferenceHolder currentSmeltTime;
-
+	
 	// Server Constructor
 	public BlastFurnaceContainer(final int windowID, final PlayerInventory playerInv,
 			final BlastFurnaceTileEntity tile) {
@@ -49,9 +52,13 @@ public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTile
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 0, 56, 14));
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 56, 34));
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 56, 54));
-		// Output slot
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 116, 35));
+		// Output slots
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 116, 20));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 116, 50));
 
+		// widgets
+		screenWidgets.add(new ProgressArrowWidget(79, 33, ()->getSmeltProgression()));
+		
 		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
 				value -> this.getTileEntity().currentSmeltTime = value));
 	}
@@ -72,9 +79,9 @@ public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTile
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public int getSmeltProgressionScaled() {
+	public float getSmeltProgression() {
 		return this.currentSmeltTime.get() != 0 && this.currentSmeltTime.get() != 0
-				? this.currentSmeltTime.get() * 24 / this.getTileEntity().maxSmeltTime
+				? this.currentSmeltTime.get() * 1.f / this.getTileEntity().maxSmeltTime
 				: 0;
 	}
 }

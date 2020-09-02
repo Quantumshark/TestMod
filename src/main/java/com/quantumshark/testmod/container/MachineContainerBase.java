@@ -3,6 +3,7 @@ package com.quantumshark.testmod.container;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.quantumshark.testmod.client.gui.IScreenWidget;
 import com.quantumshark.testmod.tileentity.MachineTileEntityBase;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
@@ -13,10 +14,13 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.NonNullList;
 
 public abstract class MachineContainerBase<T extends MachineTileEntityBase> extends Container {
 	private final T tileEntity;
 	private IWorldPosCallable canInteractWithCallable;
+	
+	public final NonNullList<IScreenWidget> screenWidgets = NonNullList.create();
 
 	public MachineContainerBase(@Nullable ContainerType<?> type, final int windowID, final PlayerInventory playerInv,
 			final T tile) {
@@ -29,7 +33,8 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase> exte
 
 	@Override
 	public boolean canInteractWith(PlayerEntity playerIn) {
-		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.GRINDER_BLOCK.get());
+		return isWithinUsableDistance(canInteractWithCallable, playerIn, tileEntity.getBlockState().getBlock());
+//		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.GRINDER_BLOCK.get());
 	}
 
 	// base class?

@@ -33,8 +33,8 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 	private static final int INPUT_SLOT_SIZE = 18;
 	private static final int OUTPUT_SLOT_SIZE = 26;
 	private static final int ITEM_SIZE = 16;
-	private static final int ARROW_HEIGHT = 15;
-	private static final int ARROW_WIDTH = 24;
+	private static final int ARROW_HEIGHT = 17;
+	private static final int ARROW_WIDTH = 26;
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
@@ -66,16 +66,14 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 				this.blit(left+s.xPos-(OUTPUT_SLOT_SIZE-ITEM_SIZE)/2,  top+s.yPos-(OUTPUT_SLOT_SIZE-ITEM_SIZE)/2, 248-OUTPUT_SLOT_SIZE, INPUT_SLOT_SIZE, OUTPUT_SLOT_SIZE, OUTPUT_SLOT_SIZE);
 			}
 		}
-		// render tanks - background
-		// render tanks - content
-		// render tanks - gauge
 		
-		// todo: make tanks and widgets explicitly listed in the container
-		// so that we can just generically draw them here
-		// and so that arranging them on screen all happens in one place
+		// render widgets
+		for(IScreenWidget w : container.screenWidgets) {
+			w.render(this);
+		}
 	}
 	
-	protected void renderProgessArrow(int left, int top, float progress) {
+	public void renderProgessArrow(int left, int top, float progress) {
 		this.minecraft.getTextureManager().bindTexture(getGuiTexture());
 		// base one
 		this.blit(this.guiLeft + left, this.guiTop + top, 176, ARROW_HEIGHT, ARROW_WIDTH, ARROW_HEIGHT);
@@ -84,7 +82,7 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 		this.blit(this.guiLeft + left, this.guiTop + top, 176, 0, progressPixels, ARROW_HEIGHT);
 	}
 
-	protected void drawTank(int tankIndex, int left, int top, int width, int height) {
+	public void drawTank(int tankIndex, int left, int top, int width, int height) {
 		TankFluidHandler tank = container.getTileEntity().getFluidTank(tankIndex);
 
 		FluidStack fluid = tank.getFluid();

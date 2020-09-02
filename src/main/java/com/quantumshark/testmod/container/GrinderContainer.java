@@ -2,6 +2,8 @@ package com.quantumshark.testmod.container;
 
 import java.util.Objects;
 
+import com.quantumshark.testmod.client.gui.ProgressArrowWidget;
+import com.quantumshark.testmod.client.gui.TankWidget;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.utill.FunctionalIntReferenceHolder;
 import com.quantumshark.testmod.utill.RegistryHandler;
@@ -52,6 +54,12 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 		// bucket slots
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 136, 10));
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 136, 60));
+		
+		// tanks
+		screenWidgets.add(new TankWidget(0, 135, 29, 18, 24));
+		
+		// widgets
+		screenWidgets.add(new ProgressArrowWidget(55, 33, ()->getSmeltProgression()));
 
 		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
 				value -> this.getTileEntity().currentSmeltTime = value));
@@ -73,7 +81,7 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public float getSmeltProgressionScaled() {
+	public float getSmeltProgression() {
 		return this.currentSmeltTime.get() != 0 && this.currentSmeltTime.get() != 0
 				? this.currentSmeltTime.get() * 1.f / this.getTileEntity().maxSmeltTime
 				: 0;
