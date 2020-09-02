@@ -42,7 +42,9 @@
 	"block.testmod-emirate-of-granada.limestone": "Известняк",
 	"block.testmod-emirate-of-granada.thermal_glass": "Термостойкое стекло",
 	"block.testmod-emirate-of-granada.grinder": "Жернов",
+	"block.testmod-emirate-of-granada.blast_furnace": "Доменная печь",
 	"block.testmod-emirate-of-granada.wooden_shaft": "Деревянный ось",
 	"container.testmod-emirate-of-granada.grinder": "Жернов",
+	"container.testmod-emirate-of-granada.blast_furnace": "Доменная печь",
 	"itemGroup.TestTab": "Испытание вещи"
 }
