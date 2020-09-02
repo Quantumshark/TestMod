@@ -34,12 +34,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
 // base class for machines
 public abstract class MachineTileEntityBase extends NameableTitleEntityBase
@@ -239,6 +241,31 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	public abstract SlotWrapper[] getInputSlots(MachineRecipeBase recipe);
 
 	public abstract SlotWrapper[] getOutputSlots(MachineRecipeBase recipe);
+	
+	protected boolean AttemptFillBucket(int emptySlot, int tankSlot, int fullSlot) {
+		if (emptySlot >= inventory.getSlots() || fullSlot >= inventory.getSlots()
+				|| tankSlot >= fluidInventory.getTanks()) {
+			return false;
+		}
+		if (inventory.getStackInSlot(fullSlot) != ItemStack.EMPTY) {
+			return false;
+		}
+		ItemStack empty = inventory.getStackInSlot(emptySlot);
+		if (empty == ItemStack.EMPTY) {
+			return false;
+		}
+		boolean wasSingleton = (empty.getCount() == 1);
+		FluidActionResult ret = FluidUtil.tryFillContainer(empty, fluidInventory.getTank(tankSlot), FluidAttributes.BUCKET_VOLUME, null, true);
+		if (ret.success) {
+			inventory.setStackInSlot(fullSlot, ret.getResult());
+			if (wasSingleton) {
+				inventory.setStackInSlot(emptySlot, ItemStack.EMPTY);
+			} else {
+				inventory.extractItem(emptySlot, 1, false);
+			}
+		}
+		return ret.success;
+	}
 
 	public abstract class SlotWrapper {
 		protected SlotWrapper(String name) {

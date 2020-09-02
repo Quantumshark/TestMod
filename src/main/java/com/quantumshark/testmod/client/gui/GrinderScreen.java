@@ -6,13 +6,10 @@ import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.utill.TankFluidHandler;
 
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class GrinderScreen extends ContainerScreen<GrinderContainer> {
 

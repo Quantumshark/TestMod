@@ -1,9 +1,8 @@
 package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.blocks.GrinderBlock;
-import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
-import com.quantumshark.testmod.container.GrinderContainer;
+import com.quantumshark.testmod.blocks.BlastFurnaceBlock;
+import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeAndWrapper;
 import com.quantumshark.testmod.recipes.RecipeTemplate;
@@ -14,33 +13,23 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
-	private ShaftPowerDefImpl shaft;
-
+public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	public int currentSmeltTime;
 	public final int maxSmeltTime = 100;
 
-	public GrinderTileEntity() {
-		super(RegistryHandler.GRINDER_TILE_ENTITY.get());
-		shaft = new ShaftPowerDefImpl();
+	public BlastFurnaceTileEntity() {
+		super(RegistryHandler.BLAST_FURNACE_TILE_ENTITY.get());
 	}
 
 	@Override
 	public Container createMenu(final int windowID, final PlayerInventory playerInv, final PlayerEntity playerIn) {
-		return new GrinderContainer(windowID, playerInv, this);
+		return new BlastFurnaceContainer(windowID, playerInv, this);
 	}
 
 	@Override
@@ -74,14 +63,12 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 				}
 			}
 			BlockState oldBlockState = getBlockState();
-			boolean wasRunning = oldBlockState.get(GrinderBlock.LIT);
+			boolean wasRunning = oldBlockState.get(BlastFurnaceBlock.LIT);
 			if (isRunning != wasRunning) {
-				this.world.setBlockState(this.getPos(), this.getBlockState().with(GrinderBlock.LIT, isRunning));
+				this.world.setBlockState(this.getPos(), this.getBlockState().with(BlastFurnaceBlock.LIT, isRunning));
 				dirty = true;
 			}
 		}
-
-		dirty |= AttemptFillBucket(1, 0, 3);
 
 		if (dirty) {
 			this.markDirty();
@@ -92,7 +79,7 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 
 	@Override
 	protected ITextComponent getDefaultName() {
-		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".grinder");
+		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".blast_furnace");
 	}
 
 	@Override
@@ -112,52 +99,12 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 
 	@Override
 	protected IRecipeType<MachineRecipeBase> getRecipeType() {
-		return RecipeInit.GRINDER_RECIPE_TYPE;
+		return RecipeInit.BLAST_FURNACE_RECIPE_TYPE;
 	}
 
 	// the recipe template (combination of inputs and secondary outputs if any)
 	@Override
 	public RecipeTemplate getRecipeTemplate() {
-		return RecipeTemplate.GRINDER;
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == RegistryHandler.CAPABILITY_SHAFT_POWER) {
-			if (side == Direction.UP) {
-				return RegistryHandler.CAPABILITY_SHAFT_POWER.orEmpty(cap, LazyOptional.of(() -> this.shaft));
-			} else
-				return null;
-		}
-		return super.getCapability(cap, side);
-	}
-
-	// bucket in
-	@Override
-	protected int getNonRecipeInputSlotCount() {
-		return 1;
-	}
-
-	// filled bucket out
-	@Override
-	protected int getNonRecipeOutputSlotCount() {
-		return 1;
-	}
-
-	// this stuff could be in a class.
-	@Override
-	public boolean isItemValid(int slot, ItemStack stack) {
-		if (slot == 1) {
-			if (stack.getItem() == Items.BUCKET) {
-				return true;
-			}
-			IFluidHandler h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
-			if (h != null) {
-				return true;
-			}
-			return false;
-		} else {
-			return super.isItemValid(slot, stack);
-		}
+		return RecipeTemplate.BLAST_FURNACE;
 	}
 }
