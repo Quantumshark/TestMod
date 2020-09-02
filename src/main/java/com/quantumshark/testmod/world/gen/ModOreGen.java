@@ -25,7 +25,7 @@ public class ModOreGen {
 			AddOreSpawn(biome, 4,32,5,20,RegistryHandler.BLUECRYSTALORE_BLOCK, 4, FillerBlockType.NATURAL_STONE);
 
 			// Fluorite
-			AddOreSpawn(biome, 12,2,5,200,RegistryHandler.BLUECRYSTALORE_BLOCK, 1, FillerBlockType.NATURAL_STONE);
+			AddOreSpawn(biome, 12,2,5,200,RegistryHandler.FLUORITEORE_BLOCK, 1, FillerBlockType.NATURAL_STONE);
 			
 			// Oil Shale
 			// todo: this should be more common and spawn in larger amounts in deserts and oceans
