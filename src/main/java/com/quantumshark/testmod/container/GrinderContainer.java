@@ -46,12 +46,12 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 		}
 
 		// Furnace Slots
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 0, 56, 34));
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 116, 35));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 0, 32, 33));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 92, 33));
 
 		// bucket slots
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 136, 14));
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 136, 54));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 1, 136, 10));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 136, 60));
 
 		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
 				value -> this.getTileEntity().currentSmeltTime = value));
@@ -73,9 +73,9 @@ public class GrinderContainer extends MachineContainerBase<GrinderTileEntity> {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public int getSmeltProgressionScaled() {
+	public float getSmeltProgressionScaled() {
 		return this.currentSmeltTime.get() != 0 && this.currentSmeltTime.get() != 0
-				? this.currentSmeltTime.get() * 24 / this.getTileEntity().maxSmeltTime
+				? this.currentSmeltTime.get() * 1.f / this.getTileEntity().maxSmeltTime
 				: 0;
 	}
 }

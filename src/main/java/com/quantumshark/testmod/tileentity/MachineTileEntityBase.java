@@ -66,7 +66,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	protected abstract NonNullList<IRecipeType<MachineRecipeBase>> getRecipeTypes();
 
 	public ItemStack getInputStack(int index) {
-		if (index < 0 || index >= inputSlotCount) {
+		if (index < 0 || index >= getInputSlotCount()) {
 			return null;
 		}
 		return inventory.getStackInSlot(index);
@@ -76,7 +76,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		if (index < 0 || index >= outputSlotCount) {
 			return null;
 		}
-		return inventory.getStackInSlot(inputSlotCount + index);
+		return inventory.getStackInSlot(getInputSlotCount() + index);
 	}
 	
 	public FluidStack getInputFluidStack(int index) {
@@ -193,7 +193,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (inputSlotCount > 0 || outputSlotCount > 0)) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (getInputSlotCount() > 0 || outputSlotCount > 0)) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.inventory));
 		}
 		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (inputFluidSlotCount > 0 || outputFluidSlotCount > 0)) {
@@ -205,7 +205,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	// this is only used for items, hence the ItemStack signature.
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
-		if (slot < 0 || slot >= inputSlotCount) {
+		if (slot < 0 || slot >= getInputSlotCount()) {
 			// don't allow insertion into output slots.
 			return false;
 		}
@@ -265,6 +265,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 			}
 		}
 		return ret.success;
+	}
+
+	public int getInputSlotCount() {
+		return inputSlotCount;
 	}
 
 	public abstract class SlotWrapper {
