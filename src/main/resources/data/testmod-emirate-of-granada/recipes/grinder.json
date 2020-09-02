@@ -3,7 +3,7 @@
   "pattern":
   [
     "xxx",
-    "x x",
+    "xbx",
     "xxx"
   ],
   "key":
@@ -11,6 +11,10 @@
     "x":
     {
       "item": "testmod-emirate-of-granada:millstone_grit"
+    },
+    "b":
+    {
+      "item": "minecraft:bucket"
     }
   },
   "result":
