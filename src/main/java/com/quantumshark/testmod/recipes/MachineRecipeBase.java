@@ -4,27 +4,44 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IMachineRecipe {
+public abstract class MachineRecipeBase implements IMachineRecipe {
 	private final ResourceLocation id;
-	private ItemStack output;
-	
-	abstract T getRecipeTemplate();
-	
+	private NonNullList<RecipeComponent> inputs;
+	private NonNullList<RecipeComponent> outputs;
+
+	abstract RecipeTemplate getRecipeTemplate();
+
+	private final ItemStack firstItemOutput;
+
+	public NonNullList<RecipeComponent> getInputs() {
+		return inputs;
+	}
+
+	public NonNullList<RecipeComponent> getOutputs() {
+		return outputs;
+	}
+
 	public MachineRecipeBase(ResourceLocation id) {
 		this.id = id;
-		
-		T rt = getRecipeTemplate();
-		inputs = NonNullList.withSize(rt.getInputs().size(), Ingredient.EMPTY);
-		secondaryOutputs = NonNullList.withSize(rt.getSecondaryOutputs().size(), ItemStack.EMPTY);
-		fluidOutputs = NonNullList.withSize(rt.getFluidOutputs().size(), FluidStack.EMPTY);
+
+		RecipeTemplate rt = getRecipeTemplate();
+		inputs = rt.createInputs();
+		outputs = rt.createOutputs();
+		ItemStack firstItemOutput = null;
+		for (RecipeComponent output : outputs) {
+			firstItemOutput = output.getAsItemStack();
+			if (firstItemOutput != null) {
+				break;
+			}
+		}
+		if (firstItemOutput == null) {
+			firstItemOutput = ItemStack.EMPTY;
+		}
+		this.firstItemOutput = firstItemOutput;
 	}
 
 	@Override
@@ -32,55 +49,56 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 		return this.id;
 	}
 
+	// actual result. We can't do this as it might not return an item?
+	// RecipeWrapper is a template, so can derive our own more sophisticated
+	// IInventory and pass that in, then we can actually do this.
+	// it could just be the machine inventory, or could be an IInventory-compatable
+	// adaptor
 	@Override
-	public ItemStack getCraftingResult(RecipeWrapper inv) {
-		return this.output;
+	public ItemStack getCraftingResult(MachineInventoryRecipeWrapper inv) { // RecipeWrapper just needs to be a
+																			// IInventory, but that's still item based
+		return this.firstItemOutput;
 	}
 
+	/**
+	 * Get the result of this recipe, usually for display purposes (e.g. recipe
+	 * book). If your recipe has more than one possible result (e.g. it's dynamic
+	 * and depends on its inputs), then return an empty stack.
+	 */
 	@Override
 	public ItemStack getRecipeOutput() {
-		return this.output;
+		// todo: if first output is an item, can return that.
+		return ItemStack.EMPTY;
 	}
-	
-	@Override
-	// this is where any secondary outputs are returned.
-	// the default implementation (copied, nearly) returns an empty bucket for each input that is a bucket of something (ish)
-	// and, actually, each output ...
-	public NonNullList<ItemStack> getRemainingItems(RecipeWrapper inv) {
 
-		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-		
-		int ingredientCount = getIngredients().size();
+	@Override
+	// just return a list that matches inputs to handle any buckets passed in.
+	public NonNullList<ItemStack> getRemainingItems(MachineInventoryRecipeWrapper inv) {
+		// note: we actually check the recipe for buckety things rather than the
+		// inventory, but that should work right?
+		int ingredientCount = inputs.size();
+		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(ingredientCount, ItemStack.EMPTY);
 
 		for (int i = 0; i < ingredientCount; ++i) {
-			ItemStack item = inv.getStackInSlot(i);
-			if (item.hasContainerItem()) {
-				nonnulllist.set(i, item.getContainerItem());
+			ItemStack item = inputs.get(i).getAsItemStack();
+			if (item == null) {
+				continue;
 			}
+			if (!item.hasContainerItem()) {
+				continue;
+			}
+			nonnulllist.set(i, item.getContainerItem());
 		}
-		
-		// todo: ingredientCount+2 onwards are potential secondaries.
-		// these ought to have an ItemStack plus some kind of probability function that includes a maximum
-		// though it would default to "always exactly one"
-		
+
 		return nonnulllist;
 	}
-	
-	// *** stuff that can be shared by recipe types with the same pattern of inputs and outputs ***
-
-	// define an Ingredient for each distinct input slot (inventories in machine)
-	// note: can definitely use FluidStack here ... not sure beyond that
-	private NonNullList<Ingredient> inputs;
-	private NonNullList<ItemStack> secondaryOutputs;
-	private NonNullList<FluidStack> fluidOutputs;
 
 	@Override
-	public boolean matches(RecipeWrapper inv, World worldIn) {
+	public boolean matches(MachineInventoryRecipeWrapper inv, World worldIn) {
 		// note: do this for each named input slot. This is what maps the slots (e.g.,
 		// "input") to the inventories (sequential starting with 0)
-		for(int i=0;i<getRecipeTemplate().getInputs().size();++i)
-		{
-			if (!this.inputs.get(i).test(inv.getStackInSlot(i))) {
+		for (int i = 0; i < getRecipeTemplate().getInputs().size(); ++i) {
+			if (!this.inputs.get(i).isFulfilledBy(inv.getInputWrapper(i), true)) {
 				return false;
 			}
 		}
@@ -91,76 +109,42 @@ public abstract class MachineRecipeBase<T extends IRecipeTemplate> implements IM
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
+		throw new IllegalStateException("unexpected call of MachineRecipeBase");
 		// add each input slot to this line, with commas in between
-		return inputs;
+		// throw if called?
+//		return null;
 	}
 
 	@Override
 	public void read(JsonObject json) {
-		ItemStack temp;
-		output = RecipeSerializer.getItemStack(json, "output", true);
-	
-		T rt = getRecipeTemplate();
-		// copy this for each input slot
-		for(int i=0;i<rt.getInputs().size();++i)
-		{
-			String name = rt.getInputs().get(i);
-			inputs.set(i, Ingredient.deserialize(JSONUtils.getJsonObject(json, name)));
-		}
-		
-		for(int i=0;i<rt.getSecondaryOutputs().size();++i)
-		{
-			String name = rt.getSecondaryOutputs().get(i);
-			secondaryOutputs.set(i, RecipeSerializer.getItemStack(json, name, true));
+		for (RecipeComponent input : inputs) {
+			input.read(json);
 		}
 
-		for(int i=0;i<rt.getFluidOutputs().size();++i)
-		{
-			String name = rt.getFluidOutputs().get(i);
-			fluidOutputs.set(i, RecipeSerializer.getFluidStack(json, name, true));
+		for (RecipeComponent output : outputs) {
+			output.read(json);
 		}
 	}
 
 	@Override
 	public void read(PacketBuffer buffer) {
-		T rt = getRecipeTemplate();
-		for(int i=0;i<rt.getInputs().size();++i)
-		{
-			inputs.set(i, Ingredient.read(buffer));
+		for (RecipeComponent input : inputs) {
+			input.read(buffer);
 		}
 
-		output = buffer.readItemStack();
-
-		for(int i=0;i<rt.getSecondaryOutputs().size();++i)
-		{
-			secondaryOutputs.set(i, buffer.readItemStack());
+		for (RecipeComponent output : outputs) {
+			output.read(buffer);
 		}
-
-		for(int i=0;i<rt.getFluidOutputs().size();++i)
-		{
-			fluidOutputs.set(i, buffer.readFluidStack());
-		}		
 	}
 
-	
 	@Override
 	public void write(PacketBuffer buffer) {
-		T rt = getRecipeTemplate();
-		for(int i=0;i<rt.getInputs().size();++i)
-		{
-			inputs.get(i).write(buffer);
+		for (RecipeComponent input : inputs) {
+			input.write(buffer);
 		}
 
-		buffer.writeItemStack(output, false);
-
-		for(int i=0;i<rt.getSecondaryOutputs().size();++i)
-		{
-			buffer.writeItemStack(secondaryOutputs.get(i), false);
+		for (RecipeComponent output : outputs) {
+			output.write(buffer);
 		}
-		
-		for(int i=0;i<rt.getFluidOutputs().size();++i)
-		{
-			buffer.writeFluidStack(fluidOutputs.get(i));
-		}		
 	}
 }

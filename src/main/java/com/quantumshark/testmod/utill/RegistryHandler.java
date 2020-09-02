@@ -3,6 +3,7 @@ package com.quantumshark.testmod.utill;
 import com.quantumshark.testmod.CrudeOilFluidBase;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.armor.ModArmorMaterial;
+import com.quantumshark.testmod.blocks.BlastFurnaceBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
 import com.quantumshark.testmod.blocks.CrudeOilBlock;
@@ -13,10 +14,12 @@ import com.quantumshark.testmod.capability.IShaftPower;
 import com.quantumshark.testmod.blocks.ThermalGlass;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
+import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
 import com.quantumshark.testmod.items.BucketItemBase;
 import com.quantumshark.testmod.items.ItemBase;
+import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
@@ -155,16 +158,21 @@ public class RegistryHandler {
 	
 	// Machine Blocks
 	public static final RegistryObject<Block> GRINDER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> BLAST_FURNACE_BLOCK = BLOCKS.register("blast_furnace", () -> new BlastFurnaceBlock(Block.Properties.from(Blocks.FURNACE)));
 	public static final RegistryObject<Block> WOODEN_SHAFT_BLOCK = BLOCKS.register("wooden_shaft", ()-> new WoodenShaftBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
 	
 	// Machine Block Items
 	public static final RegistryObject<Item> GRINDER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(GRINDER_BLOCK.get()));
+	public static final RegistryObject<Item> BLAST_FURNACE_BLOCK_ITEM = ITEMS.register("blast_furnace", () -> new BlockItemBase(BLAST_FURNACE_BLOCK.get()));
 	public static final RegistryObject<Item> WOODEN_SHAFT_BLOCK_ITEM = ITEMS.register("wooden_shaft", () -> new BlockItemBase(WOODEN_SHAFT_BLOCK.get()));
 
 	// tile entity types
 	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("grinder", () -> TileEntityType.Builder
 					.create(GrinderTileEntity::new, GRINDER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<BlastFurnaceTileEntity>> BLAST_FURNACE_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("blast_furnace", () -> TileEntityType.Builder
+					.create(BlastFurnaceTileEntity::new, BLAST_FURNACE_BLOCK.get()).build(null));
 	public static final RegistryObject<TileEntityType<WoodenShaftTileEntity>> WOODEN_SHAFT_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("wooden_shaft", () -> TileEntityType.Builder
 					.create(WoodenShaftTileEntity::new).build(null));
@@ -172,6 +180,8 @@ public class RegistryHandler {
 	// Containers
 	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
 			.register("grinder", () -> IForgeContainerType.create(GrinderContainer::new));	
+	public static final RegistryObject<ContainerType<BlastFurnaceContainer>> BLAST_FURNACE_CONTAINER = CONTAINER_TYPES
+			.register("blast_furnace", () -> IForgeContainerType.create(BlastFurnaceContainer::new));	
 	
 	// Capabilities
 	@CapabilityInject(IShaftPower.class)

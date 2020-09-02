@@ -1,9 +1,9 @@
 package com.quantumshark.testmod.utill;
 
 import com.quantumshark.testmod.TestMod;
+import com.quantumshark.testmod.recipes.BlastFurnaceRecipe;
 import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.recipes.RecipeSerializer;
-import com.quantumshark.testmod.recipes.RecipeTemplateGrinder;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 
 import net.minecraft.item.crafting.IRecipe;
@@ -21,10 +21,16 @@ public class RecipeInit {
 
 	// grinder recipes
 	public static final IRecipeSerializer<GrinderRecipe> GRINDER_RECIPE_SERIALIZER_INST = new RecipeSerializer<GrinderRecipe>(new GrinderRecipe.RecipeFactory());
-	public static final IRecipeType<MachineRecipeBase<RecipeTemplateGrinder>> GRINDER_RECIPE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
+	public static final IRecipeType<MachineRecipeBase> GRINDER_RECIPE_TYPE = registerType(GrinderRecipe.RECIPE_TYPE_ID);
 	public static final RegistryObject<IRecipeSerializer<?>> GRINDER_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("grinder",
 			() -> GRINDER_RECIPE_SERIALIZER_INST);
 
+	// blast furnace recipes
+	public static final IRecipeSerializer<BlastFurnaceRecipe> BLAST_FURNACE_RECIPE_SERIALIZER_INST = new RecipeSerializer<BlastFurnaceRecipe>(new BlastFurnaceRecipe.RecipeFactory());
+	public static final IRecipeType<MachineRecipeBase> BLAST_FURNACE_RECIPE_TYPE = registerType(BlastFurnaceRecipe.RECIPE_TYPE_ID);
+	public static final RegistryObject<IRecipeSerializer<?>> BLAST_FURNACE_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("blast_furnace",
+			() -> BLAST_FURNACE_RECIPE_SERIALIZER_INST);
+	
 	private static class RecipeType<T extends IRecipe<?>> implements IRecipeType<T> {
 		@Override
 		public String toString() {

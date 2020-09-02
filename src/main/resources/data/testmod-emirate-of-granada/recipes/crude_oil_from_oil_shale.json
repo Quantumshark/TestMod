@@ -1,6 +1,6 @@
 {
 	"type": "testmod-emirate-of-granada:grinder",
-	"output": {
+	"juice": {
 		"fluid": "testmod-emirate-of-granada:crude_oil",
     	"amount": 200
 	},
