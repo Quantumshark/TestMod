@@ -180,10 +180,10 @@ public class RegistryHandler {
 					.create(BlastFurnaceTileEntity::new, BLAST_FURNACE_BLOCK.get()).build(null));
 	public static final RegistryObject<TileEntityType<WoodenShaftTileEntity>> WOODEN_SHAFT_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("wooden_shaft", () -> TileEntityType.Builder
-					.create(WoodenShaftTileEntity::new).build(null));
+					.create(WoodenShaftTileEntity::new, WOODEN_SHAFT_BLOCK.get()).build(null));
 	public static final RegistryObject<TileEntityType<CopperHeatPipeTileEntity>> COPPER_HEAT_PIPE_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("copper_heat_pipe", () -> TileEntityType.Builder
-					.create(CopperHeatPipeTileEntity::new).build(null));
+					.create(CopperHeatPipeTileEntity::new, COPPER_HEAT_PIPE_BLOCK.get()).build(null));
 		
 	
 	// Containers
