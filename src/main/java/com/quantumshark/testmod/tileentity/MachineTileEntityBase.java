@@ -20,6 +20,7 @@ import com.quantumshark.testmod.utill.MachineItemHandler;
 import com.quantumshark.testmod.utill.RegistryHandler;
 import com.quantumshark.testmod.utill.TankFluidHandler;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.item.ItemEntity;
@@ -103,15 +104,17 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	protected abstract MachineInventoryRecipeWrapper getInventoryWrapperForRecipe(MachineRecipeBase recipe);
 
-	private static final String NBT_TAG_ITEM_INVENTORY = "Items";
-	private static final String NBT_TAG_FLUID_INVENTORY = "Tanks";
-	private static final String NBT_TAG_HEAT = "Heat";
+	public static final String NBT_TAG_ITEM_INVENTORY = "Items";
+	public static final String NBT_TAG_FLUID_INVENTORY = "Tanks";
+	public static final String NBT_TAG_HEAT = "Heat";
 
 	@Override
 	public void tick() {
 		if(heat != null) {
 			heat.tick(world, pos);
 		}
+		BlockState bs = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, bs, bs, 2);		
 	}
 	
 	@Override

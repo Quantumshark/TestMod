@@ -1,5 +1,6 @@
 package com.quantumshark.testmod.capability;
 
+import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.nbt.CompoundNBT;
@@ -59,6 +60,11 @@ public class HeatCapabilityProvider implements IHeatCapability, INBTSerializable
 	}
 
 	public void tick(World world, BlockPos pos) {
+		// don't run this on the client, just run it on the server.
+		if(world.isRemote)
+		{
+			return;
+		}
 		// todo: ideally, replace this with a global flag somehow
 		if (oddEven) {
 			if (world != null) {
@@ -72,6 +78,7 @@ public class HeatCapabilityProvider implements IHeatCapability, INBTSerializable
 				double deltaJ = dissipation * deltaT;
 				heatAbsorbed += deltaJ;
 			}
+//			TestMod.LOGGER.debug(String.format("A: @%d %d %d absorb %f", pos.getX(), pos.getY(), pos.getZ(), heatAbsorbed));
 		}
 		else
 		{
@@ -80,6 +87,7 @@ public class HeatCapabilityProvider implements IHeatCapability, INBTSerializable
 			// exactly?
 			temperatureK += heatAbsorbed / heatCapacity;
 			heatAbsorbed = 0;
+//			TestMod.LOGGER.debug(String.format("B: @%d %d %d temp %f", pos.getX(), pos.getY(), pos.getZ(), temperatureK));
 		}
 		oddEven = !oddEven;
 	}

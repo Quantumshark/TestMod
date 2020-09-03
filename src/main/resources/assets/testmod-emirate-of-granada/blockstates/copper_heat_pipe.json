@@ -1,0 +1,11 @@
+{
+    "multipart": [
+    	{ "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_hub" }},
+    	{ "when": { "up": "true" }, "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_part", "x": 270 }}, 
+    	{ "when": { "down": "true" }, "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_part", "x": 90 }}, 
+    	{ "when": { "north": "true" }, "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_part" }},
+    	{ "when": { "south": "true" }, "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_part", "y": 180 }}, 
+    	{ "when": { "west": "true" }, "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_part", "y": 270 }},
+    	{ "when": { "east": "true" }, "apply": { "model": "testmod-emirate-of-granada:block/wooden_shaft_part", "y": 90 }} 
+    ]
+}

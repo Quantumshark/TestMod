@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 public class TestMod
 {
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "testmod-emirate-of-granada";
 
     public TestMod() {
