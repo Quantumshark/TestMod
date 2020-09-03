@@ -14,6 +14,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.quantumshark.testmod.capability.HeatCapabilityProvider;
+import com.quantumshark.testmod.capability.HeatCapabilityStorage;
+import com.quantumshark.testmod.capability.IHeatCapability;
 import com.quantumshark.testmod.capability.IShaftPower;
 import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.capability.ShaftPowerStorage;
@@ -50,6 +53,7 @@ public class TestMod
     {
     	// try running this at different points to see when I can do it without crashing. I can't find any documentation to explain :(
 		CapabilityManager.INSTANCE.register(IShaftPower.class, new ShaftPowerStorage(), ()->new ShaftPowerDefImpl());
+		CapabilityManager.INSTANCE.register(IHeatCapability.class, new HeatCapabilityStorage(), ()->new HeatCapabilityProvider(1000,1,1));
     }
 
     private void setup(final FMLCommonSetupEvent event)

@@ -118,16 +118,25 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 		// height, float textureX, float textureY, int textureWidth, int textureHeight);
 	}
 
+	private static final int COLOR_FG = 0xf0f0f0;
+	private static final int COLOR_SH = 0x101010;
+	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-		int COLOR_FG = 0xf0f0f0;
-		int COLOR_SH = 0x101010;
-		drawShadowedString(this.title.getFormattedText(), 8.0f, 8.0f, COLOR_FG, COLOR_SH);
-		drawShadowedString(this.playerInventory.getDisplayName().getFormattedText(), 8.0f, 69.0f, COLOR_FG, COLOR_SH);
+		drawShadowedString(this.title.getFormattedText(), 8.0f, 8.0f);
+		drawShadowedString(this.playerInventory.getDisplayName().getFormattedText(), 8.0f, 69.0f);
+	}
+
+	private void drawShadowedString(String text, float x, float y) {
+		drawShadowedString(text, x, y, COLOR_FG, COLOR_SH);
+	}
+
+	public void drawWidgetShadowedString(String text, float x, float y) {
+		drawShadowedString(text, guiLeft+x, guiTop+y, COLOR_FG, COLOR_SH);
 	}
 	
-	protected void drawShadowedString(String text, float x, float y, int col_fg, int col_sh) {
+	private void drawShadowedString(String text, float x, float y, int col_fg, int col_sh) {
 		this.font.drawString(text, x+1, y+1, col_sh);
 		this.font.drawString(text, x, y, col_fg);
 	}

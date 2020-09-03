@@ -2,6 +2,7 @@ package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.blocks.BlastFurnaceBlock;
+import com.quantumshark.testmod.capability.HeatCapabilityProvider;
 import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeAndWrapper;
@@ -25,6 +26,7 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 
 	public BlastFurnaceTileEntity() {
 		super(RegistryHandler.BLAST_FURNACE_TILE_ENTITY.get());
+		heat = new HeatCapabilityProvider(1000000, 5000, 1000);
 	}
 
 	@Override
@@ -34,6 +36,7 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 
 	@Override
 	public void tick() {
+		super.tick();
 		boolean dirty = false;
 		boolean isRunning = false;
 

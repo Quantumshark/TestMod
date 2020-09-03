@@ -10,6 +10,7 @@ import com.quantumshark.testmod.blocks.CrudeOilBlock;
 import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.OilShale;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
+import com.quantumshark.testmod.capability.IHeatCapability;
 import com.quantumshark.testmod.capability.IShaftPower;
 import com.quantumshark.testmod.blocks.ThermalGlass;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
@@ -186,4 +187,6 @@ public class RegistryHandler {
 	// Capabilities
 	@CapabilityInject(IShaftPower.class)
 	public static final Capability<IShaftPower> CAPABILITY_SHAFT_POWER = null;
+	@CapabilityInject(IHeatCapability.class)
+	public static final Capability<IHeatCapability> CAPABILITY_HEAT = null;
 }

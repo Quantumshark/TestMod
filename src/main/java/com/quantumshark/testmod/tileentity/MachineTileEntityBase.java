@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.quantumshark.testmod.capability.HeatCapabilityProvider;
+import com.quantumshark.testmod.capability.IHeatCapability;
 import com.quantumshark.testmod.recipes.MachineInventoryRecipeWrapper;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeAndWrapper;
@@ -15,6 +17,7 @@ import com.quantumshark.testmod.utill.ISlotValidator;
 import com.quantumshark.testmod.utill.MachineFluidHandler;
 import com.quantumshark.testmod.utill.MachineItemCapabilityHandler;
 import com.quantumshark.testmod.utill.MachineItemHandler;
+import com.quantumshark.testmod.utill.RegistryHandler;
 import com.quantumshark.testmod.utill.TankFluidHandler;
 
 import net.minecraft.client.Minecraft;
@@ -39,7 +42,6 @@ import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -54,7 +56,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	// note: this is just for items. Do other types too
 	protected MachineItemHandler inventory;
 	protected MachineFluidHandler fluidInventory;
-	
+	protected HeatCapabilityProvider heat = null; // null by default. Create in constructor if this item handles heat.
+
 	protected int inputSlotCount;
 	protected int outputSlotCount;
 	protected int inputFluidSlotCount;
@@ -79,7 +82,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		}
 		return inventory.getStackInSlot(getInputSlotCount() + index);
 	}
-	
+
 	public FluidStack getInputFluidStack(int index) {
 		if (index < 0 || index >= inputFluidSlotCount) {
 			return null;
@@ -93,8 +96,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		}
 		return fluidInventory.getFluidInTank(inputFluidSlotCount + index);
 	}
-	
-	public TankFluidHandler getFluidTank(int slot ) {
+
+	public TankFluidHandler getFluidTank(int slot) {
 		return fluidInventory.getTank(slot);
 	}
 
@@ -102,7 +105,15 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	private static final String NBT_TAG_ITEM_INVENTORY = "Items";
 	private static final String NBT_TAG_FLUID_INVENTORY = "Tanks";
+	private static final String NBT_TAG_HEAT = "Heat";
 
+	@Override
+	public void tick() {
+		if(heat != null) {
+			heat.tick(world, pos);
+		}
+	}
+	
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
@@ -112,9 +123,16 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		inventory.deserializeNBT(items);
 
 		items = compound.getCompound(NBT_TAG_FLUID_INVENTORY);
-		
-		if(items != null) {
+
+		if (items != null) {
 			fluidInventory.deserializeNBT(items);
+		}
+
+		if (heat != null) {
+			items = compound.getCompound(NBT_TAG_HEAT);
+			if (items != null) {
+				heat.deserializeNBT(items);
+			}
 		}
 	}
 
@@ -126,6 +144,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 		compound.put(NBT_TAG_FLUID_INVENTORY, fluidInventory.serializeNBT());
 		
+		if(heat != null) {
+			compound.put(NBT_TAG_HEAT, heat.serializeNBT());
+		}
+
 		return compound;
 	}
 
@@ -195,14 +217,19 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	@Override
 	public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (getInputSlotCount() > 0 || outputSlotCount > 0)) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount)));
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap,
+					LazyOptional.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount)));
 		}
-		// note: this could be more complex. The capability seems to lack the idea of slots
+		// note: this could be more complex. The capability seems to lack the idea of
+		// slots
 		// in fact this will crash because we don't recognize the methods it calls.
 		// looks like we'll have to return a specific tank per side.
 //		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (inputFluidSlotCount > 0 || outputFluidSlotCount > 0)) {
 //			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this.fluidInventory));
 //		}
+		if (cap == RegistryHandler.CAPABILITY_HEAT && heat != null) {
+			return RegistryHandler.CAPABILITY_HEAT.orEmpty(cap, LazyOptional.of(() -> heat));
+		}
 		return super.getCapability(cap, side);
 	}
 
@@ -230,8 +257,9 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 				if (cast.inventoryIndex != slot) {
 					continue;
 				}
-				
-				// so input i in the recipe goes in machine slot. Now just see if this matches it. 
+
+				// so input i in the recipe goes in machine slot. Now just see if this matches
+				// it.
 				RecipeComponent ingredient = recipe.getInputs().get(i);
 
 				if (ingredient.isFulfilledBy(inputWrapper, false)) {
@@ -245,7 +273,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	public abstract SlotWrapper[] getInputSlots(MachineRecipeBase recipe);
 
 	public abstract SlotWrapper[] getOutputSlots(MachineRecipeBase recipe);
-	
+
 	protected boolean AttemptFillBucket(int emptySlot, int tankSlot, int fullSlot) {
 		if (emptySlot >= inventory.getSlots() || fullSlot >= inventory.getSlots()
 				|| tankSlot >= fluidInventory.getTanks()) {
@@ -259,7 +287,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 			return false;
 		}
 		boolean wasSingleton = (empty.getCount() == 1);
-		FluidActionResult ret = FluidUtil.tryFillContainer(empty, fluidInventory.getTank(tankSlot), FluidAttributes.BUCKET_VOLUME, null, true);
+		FluidActionResult ret = FluidUtil.tryFillContainer(empty, fluidInventory.getTank(tankSlot),
+				FluidAttributes.BUCKET_VOLUME, null, true);
 		if (ret.success) {
 			inventory.setStackInSlot(fullSlot, ret.getResult());
 			if (wasSingleton) {
@@ -273,6 +302,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	public int getInputSlotCount() {
 		return inputSlotCount;
+	}
+	
+	public IHeatCapability getHeat() {
+		return heat;
 	}
 
 	public abstract class SlotWrapper {
@@ -303,15 +336,17 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 		@Override
 		public boolean insert(RecipeComponent output, boolean simulate) {
-			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			// this is null if wrong type, hopefully we'll throw if that happens (it should
+			// be impossible)
 			ItemStack outputStack = output.getAsItemStack().copy();
-			
+
 			return (ItemStack.EMPTY == inventory.insertOutputItem(inventoryIndex, outputStack, simulate));
 		}
 
 		@Override
 		public void decrease(RecipeComponent input) {
-			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			// this is null if wrong type, hopefully we'll throw if that happens (it should
+			// be impossible)
 			ItemStack inputStack = input.getAsItemStack();
 
 			inventory.extractItem(inventoryIndex, inputStack.getCount(), false);
@@ -320,9 +355,9 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	public class SlotWrapperFluid extends SlotWrapper {
 		private FluidAction toAction(boolean simulate) {
-			return simulate?FluidAction.SIMULATE:FluidAction.EXECUTE;
+			return simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
 		}
-		
+
 		public SlotWrapperFluid(int inventoryIndex, String name) {
 			super(name);
 			this.inventoryIndex = inventoryIndex;
@@ -336,21 +371,24 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 		@Override
 		public boolean insert(RecipeComponent output, boolean simulate) {
-			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			// this is null if wrong type, hopefully we'll throw if that happens (it should
+			// be impossible)
 			FluidStack outputStack = output.getAsFluidStack().copy();
-			
-			return (outputStack.getAmount() == fluidInventory.getTank(inventoryIndex).fill(outputStack, toAction(simulate)));
+
+			return (outputStack.getAmount() == fluidInventory.getTank(inventoryIndex).fill(outputStack,
+					toAction(simulate)));
 		}
 
 		@Override
 		public void decrease(RecipeComponent input) {
-			// this is null if wrong type, hopefully we'll throw if that happens (it should be impossible)
+			// this is null if wrong type, hopefully we'll throw if that happens (it should
+			// be impossible)
 			FluidStack inputStack = input.getAsFluidStack();
 
 			fluidInventory.getTank(inventoryIndex).drain(inputStack.getAmount(), FluidAction.EXECUTE);
 		}
 	}
-	
+
 	protected class ItemDropper implements IItemDropper {
 		@Override
 		public void DropItem(ItemStack item) {

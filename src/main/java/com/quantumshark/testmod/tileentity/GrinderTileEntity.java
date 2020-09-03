@@ -45,6 +45,7 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 
 	@Override
 	public void tick() {
+		super.tick();
 		boolean dirty = false;
 		boolean isRunning = false;
 

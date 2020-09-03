@@ -5,8 +5,6 @@ import javax.annotation.Nullable;
 
 import com.quantumshark.testmod.client.gui.IScreenWidget;
 import com.quantumshark.testmod.tileentity.MachineTileEntityBase;
-import com.quantumshark.testmod.utill.RegistryHandler;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

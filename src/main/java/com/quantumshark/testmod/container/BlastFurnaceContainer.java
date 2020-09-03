@@ -2,8 +2,8 @@ package com.quantumshark.testmod.container;
 
 import java.util.Objects;
 
-import com.quantumshark.testmod.client.gui.IScreenWidget;
 import com.quantumshark.testmod.client.gui.ProgressArrowWidget;
+import com.quantumshark.testmod.client.gui.TemperatureWidget;
 import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.utill.FunctionalIntReferenceHolder;
 import com.quantumshark.testmod.utill.RegistryHandler;
@@ -12,7 +12,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
@@ -58,6 +57,7 @@ public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTile
 
 		// widgets
 		screenWidgets.add(new ProgressArrowWidget(79, 33, ()->getSmeltProgression()));
+		screenWidgets.add(new TemperatureWidget(140,8,getTileEntity().getHeat()));
 		
 		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
 				value -> this.getTileEntity().currentSmeltTime = value));
