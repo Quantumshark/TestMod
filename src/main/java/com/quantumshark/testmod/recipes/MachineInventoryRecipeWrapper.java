@@ -1,13 +1,14 @@
 package com.quantumshark.testmod.recipes;
 
 import com.quantumshark.testmod.tileentity.MachineTileEntityBase;
+import com.quantumshark.testmod.tileentity.MachineTileEntityWithRecipes;
 import com.quantumshark.testmod.tileentity.MachineTileEntityBase.SlotWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class MachineInventoryRecipeWrapper implements IInventory {
-	public MachineInventoryRecipeWrapper(MachineTileEntityBase machine, MachineRecipeBase recipe) {
+	public MachineInventoryRecipeWrapper(MachineTileEntityWithRecipes machine, MachineRecipeBase recipe) {
 		inputSlots = machine.getInputSlots(recipe);
 		outputSlots = machine.getOutputSlots(recipe);
 	}

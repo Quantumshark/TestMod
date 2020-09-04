@@ -3,6 +3,7 @@ package com.quantumshark.testmod.utill;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.client.gui.BlastFurnaceScreen;
 import com.quantumshark.testmod.client.gui.GrinderScreen;
+import com.quantumshark.testmod.client.gui.SolidFuelHeaterScreen;
 
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
@@ -20,6 +21,7 @@ public class ClientEventBusSubscriber {
 	public static void clientSetup(FMLClientSetupEvent event) {
 		ScreenManager.registerFactory(RegistryHandler.GRINDER_CONTAINER.get(), GrinderScreen::new);
 		ScreenManager.registerFactory(RegistryHandler.BLAST_FURNACE_CONTAINER.get(), BlastFurnaceScreen::new);
+		ScreenManager.registerFactory(RegistryHandler.SOLID_FUEL_HEATER_CONTAINER.get(), SolidFuelHeaterScreen::new);
 		RenderTypeLookup.setRenderLayer(RegistryHandler.THERMALGLASS_BLOCK.get(), RenderType.getCutout());
 	}
 }

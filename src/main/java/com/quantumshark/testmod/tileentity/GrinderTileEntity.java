@@ -1,7 +1,7 @@
 package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.blocks.GrinderBlock;
+import com.quantumshark.testmod.blocks.state.LitStateHandler;
 import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
@@ -75,9 +75,9 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 				}
 			}
 			BlockState oldBlockState = getBlockState();
-			boolean wasRunning = oldBlockState.get(GrinderBlock.LIT);
+			boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
 			if (isRunning != wasRunning) {
-				this.world.setBlockState(this.getPos(), this.getBlockState().with(GrinderBlock.LIT, isRunning));
+				this.world.setBlockState(this.getPos(), this.getBlockState().with(LitStateHandler.LIT, isRunning));
 				dirty = true;
 			}
 		}

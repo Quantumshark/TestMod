@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.quantumshark.testmod.blocks.state.IBlockBehaviour;
 import com.quantumshark.testmod.blocks.state.LitStateHandler;
-import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
+import com.quantumshark.testmod.tileentity.SolidFuelHeaterTileEntity;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.block.BlockState;
@@ -19,15 +19,17 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.RegistryObject;
 
-public class BlastFurnaceBlock extends BlockWithGui<BlastFurnaceTileEntity> {
+// todo: push a lot of this to a base class for a block with a GUI.
+// todo: push the stuff for dealing with LIT and FACING (and perhaps others) into mix-in classes with an interface we interact with.
+public class SolidFuelHeaterBlock extends BlockWithGui<SolidFuelHeaterTileEntity> {
 
-	public BlastFurnaceBlock(Properties properties) {
+	public SolidFuelHeaterBlock(Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	protected RegistryObject<TileEntityType<BlastFurnaceTileEntity>> getRegistry() {
-		return RegistryHandler.BLAST_FURNACE_TILE_ENTITY;
+	protected RegistryObject<TileEntityType<SolidFuelHeaterTileEntity>> getRegistry() {
+		return RegistryHandler.SOLID_FUEL_HEATER_TILE_ENTITY;
 	}
 	
 	@Override
@@ -37,8 +39,9 @@ public class BlastFurnaceBlock extends BlockWithGui<BlastFurnaceTileEntity> {
 	
 	@Override
 	public int getLightValue(BlockState state) {
-		return 0;	// note: this overrides the base value which we probably get from furnace. 
-//		return state.get(LitStateHandler.LIT) ? super.getLightValue(state) : 0;
+		// light up the world when burning.
+		
+		return state.get(LitStateHandler.LIT) ? 10 : 0;
 	}
 
 	@Override

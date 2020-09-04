@@ -2,7 +2,6 @@ package com.quantumshark.testmod.blocks;
 
 import com.quantumshark.testmod.tileentity.ITileEntityLifetime;
 import com.quantumshark.testmod.tileentity.NameableTitleEntityBase;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 // base class for blocks that have an associated tile entity
 // do I want to template this based on TE type?
-public abstract class BlockWithTileEntityBase<T extends TileEntity> extends Block {
+public abstract class BlockWithTileEntityBase<T extends TileEntity> extends BlockWithBehaviours {
 
 	public BlockWithTileEntityBase(Properties properties) {
 		super(properties);

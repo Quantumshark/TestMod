@@ -1,7 +1,7 @@
 package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.blocks.BlastFurnaceBlock;
+import com.quantumshark.testmod.blocks.state.LitStateHandler;
 import com.quantumshark.testmod.capability.HeatCapabilityProvider;
 import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
@@ -66,9 +66,9 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 				}
 			}
 			BlockState oldBlockState = getBlockState();
-			boolean wasRunning = oldBlockState.get(BlastFurnaceBlock.LIT);
+			boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
 			if (isRunning != wasRunning) {
-				this.world.setBlockState(this.getPos(), this.getBlockState().with(BlastFurnaceBlock.LIT, isRunning));
+				this.world.setBlockState(this.getPos(), this.getBlockState().with(LitStateHandler.LIT, isRunning));
 				dirty = true;
 			}
 		}

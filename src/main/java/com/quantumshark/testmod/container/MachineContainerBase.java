@@ -15,7 +15,7 @@ import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.NonNullList;
 
 public abstract class MachineContainerBase<T extends MachineTileEntityBase> extends Container {
-	private final T tileEntity;
+	protected final T tileEntity;
 	private IWorldPosCallable canInteractWithCallable;
 	
 	public final NonNullList<IScreenWidget> screenWidgets = NonNullList.create();

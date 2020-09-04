@@ -1,16 +1,9 @@
 package com.quantumshark.testmod.tileentity;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.annotation.Nullable;
 
 import com.quantumshark.testmod.capability.HeatCapabilityProvider;
 import com.quantumshark.testmod.capability.IHeatCapability;
-import com.quantumshark.testmod.recipes.MachineInventoryRecipeWrapper;
-import com.quantumshark.testmod.recipes.MachineRecipeBase;
-import com.quantumshark.testmod.recipes.RecipeAndWrapper;
 import com.quantumshark.testmod.recipes.RecipeComponent;
 import com.quantumshark.testmod.utill.IItemDropper;
 import com.quantumshark.testmod.utill.ISlotValidator;
@@ -21,21 +14,14 @@ import com.quantumshark.testmod.utill.RegistryHandler;
 import com.quantumshark.testmod.utill.TankFluidHandler;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -68,8 +54,6 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		super(tileEntityTypeIn);
 	}
 
-	protected abstract NonNullList<IRecipeType<MachineRecipeBase>> getRecipeTypes();
-
 	public ItemStack getInputStack(int index) {
 		if (index < 0 || index >= getInputSlotCount()) {
 			return null;
@@ -84,6 +68,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return inventory.getStackInSlot(getInputSlotCount() + index);
 	}
 
+	// if you call this on a tile with no (i.e., null) fluidInventory, or with slot
+	// out of range, expect to die.
 	public FluidStack getInputFluidStack(int index) {
 		if (index < 0 || index >= inputFluidSlotCount) {
 			return null;
@@ -91,6 +77,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return fluidInventory.getFluidInTank(index);
 	}
 
+	// if you call this on a tile with no (i.e., null) fluidInventory, or with slot
+	// out of range, expect to die.
 	public FluidStack getOutputFluidStack(int index) {
 		if (index < 0 || index >= outputFluidSlotCount) {
 			return null;
@@ -98,11 +86,11 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return fluidInventory.getFluidInTank(inputFluidSlotCount + index);
 	}
 
+	// if you call this on a tile with no (i.e., null) fluidInventory, or with slot
+	// out of range, expect to die.
 	public TankFluidHandler getFluidTank(int slot) {
 		return fluidInventory.getTank(slot);
 	}
-
-	protected abstract MachineInventoryRecipeWrapper getInventoryWrapperForRecipe(MachineRecipeBase recipe);
 
 	public static final String NBT_TAG_ITEM_INVENTORY = "Items";
 	public static final String NBT_TAG_FLUID_INVENTORY = "Tanks";
@@ -110,31 +98,36 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public void tick() {
-		if(heat != null) {
+		if (heat != null) {
 			heat.tick(world, pos);
 		}
 		BlockState bs = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, bs, bs, 2);		
+		world.notifyBlockUpdate(pos, bs, bs, 2);
 	}
-	
+
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
 
-		CompoundNBT items = compound.getCompound(NBT_TAG_ITEM_INVENTORY);
+		CompoundNBT compound2;
+		if (inventory != null) {
+			compound2 = compound.getCompound(NBT_TAG_ITEM_INVENTORY);
 
-		inventory.deserializeNBT(items);
+			inventory.deserializeNBT(compound2);
+		}
 
-		items = compound.getCompound(NBT_TAG_FLUID_INVENTORY);
+		if (fluidInventory != null) {
+			compound2 = compound.getCompound(NBT_TAG_FLUID_INVENTORY);
 
-		if (items != null) {
-			fluidInventory.deserializeNBT(items);
+			if (compound2 != null) {
+				fluidInventory.deserializeNBT(compound2);
+			}
 		}
 
 		if (heat != null) {
-			items = compound.getCompound(NBT_TAG_HEAT);
-			if (items != null) {
-				heat.deserializeNBT(items);
+			compound2 = compound.getCompound(NBT_TAG_HEAT);
+			if (compound2 != null) {
+				heat.deserializeNBT(compound2);
 			}
 		}
 	}
@@ -143,11 +136,15 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 
-		compound.put(NBT_TAG_ITEM_INVENTORY, inventory.serializeNBT());
+		if (inventory != null) {
+			compound.put(NBT_TAG_ITEM_INVENTORY, inventory.serializeNBT());
+		}
 
-		compound.put(NBT_TAG_FLUID_INVENTORY, fluidInventory.serializeNBT());
-		
-		if(heat != null) {
+		if (fluidInventory != null) {
+			compound.put(NBT_TAG_FLUID_INVENTORY, fluidInventory.serializeNBT());
+		}
+
+		if (heat != null) {
 			compound.put(NBT_TAG_HEAT, heat.serializeNBT());
 		}
 
@@ -156,40 +153,6 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	public final IItemHandlerModifiable getInventory() {
 		return this.inventory;
-	}
-
-	// note: for single type at least, cache this?
-	private Set<MachineRecipeBase> findRecipes() {
-		if (world == null) {
-			return Collections.emptySet();
-		}
-		return world.getRecipeManager().getRecipes().stream()
-				.filter(recipe -> getRecipeTypes().contains(recipe.getType())).map(x -> (MachineRecipeBase) (x))
-				.collect(Collectors.toSet());
-	}
-
-	@Nullable
-	public RecipeAndWrapper findMatchingRecipe() {
-		Set<MachineRecipeBase> recipes = findRecipes();
-		for (MachineRecipeBase recipe : recipes) {
-			MachineInventoryRecipeWrapper wrapper = getInventoryWrapperForRecipe(recipe);
-			// note: this is going to be a bit tricky performance-wise in the generic
-			// scenario, as we'd have to get a wrapper for each recipe in turn
-			// single type version is a lot easier
-			if (recipe.matches(wrapper, this.world)) {
-				return new RecipeAndWrapper(recipe, wrapper);
-			}
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("resource")
-	@OnlyIn(Dist.CLIENT)
-	public static Set<IRecipe<?>> findRecipesByType(IRecipeType<?> typeIn) {
-		ClientWorld world = Minecraft.getInstance().world;
-		return world != null ? world.getRecipeManager().getRecipes().stream()
-				.filter(recipe -> recipe.getType() == typeIn).collect(Collectors.toSet()) : Collections.emptySet();
 	}
 
 	@Nullable
@@ -236,47 +199,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return super.getCapability(cap, side);
 	}
 
-	// this is only used for items, hence the ItemStack signature.
-	@Override
-	public boolean isItemValid(int slot, ItemStack stack) {
-		if (slot < 0 || slot >= getInputSlotCount()) {
-			// don't allow insertion into output slots.
-			return false;
-		}
-		RecipeComponent inputWrapper = RecipeComponent.wrap(stack, "");
-
-		Set<MachineRecipeBase> recipes = findRecipes();
-
-		for (MachineRecipeBase recipe : recipes) {
-			SlotWrapper[] inputsForRecipe = getInputSlots(recipe);
-			for (int i = 0; i < inputsForRecipe.length; ++i) {
-				SlotWrapper sw = inputsForRecipe[i];
-
-				if (sw == null || !(sw instanceof SlotWrapperItem)) {
-					continue;
-				}
-
-				SlotWrapperItem cast = (SlotWrapperItem) sw;
-				if (cast.inventoryIndex != slot) {
-					continue;
-				}
-
-				// so input i in the recipe goes in machine slot. Now just see if this matches
-				// it.
-				RecipeComponent ingredient = recipe.getInputs().get(i);
-
-				if (ingredient.isFulfilledBy(inputWrapper, false)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	public abstract SlotWrapper[] getInputSlots(MachineRecipeBase recipe);
-
-	public abstract SlotWrapper[] getOutputSlots(MachineRecipeBase recipe);
-
+	// if you call this on a tile with no (i.e., null) inventory or fluidInventory,
+	// expect to die.
 	protected boolean AttemptFillBucket(int emptySlot, int tankSlot, int fullSlot) {
 		if (emptySlot >= inventory.getSlots() || fullSlot >= inventory.getSlots()
 				|| tankSlot >= fluidInventory.getTanks()) {
@@ -306,7 +230,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	public int getInputSlotCount() {
 		return inputSlotCount;
 	}
-	
+
 	public IHeatCapability getHeat() {
 		return heat;
 	}

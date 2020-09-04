@@ -10,6 +10,7 @@ import com.quantumshark.testmod.blocks.CopperHeatPipeBlock;
 import com.quantumshark.testmod.blocks.CrudeOilBlock;
 import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.OilShale;
+import com.quantumshark.testmod.blocks.SolidFuelHeaterBlock;
 import com.quantumshark.testmod.blocks.WoodenShaftBlock;
 import com.quantumshark.testmod.capability.IHeatCapability;
 import com.quantumshark.testmod.capability.IShaftPower;
@@ -18,11 +19,13 @@ import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
 import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.container.GrinderContainer;
+import com.quantumshark.testmod.container.SolidFuelHeaterContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
 import com.quantumshark.testmod.items.BucketItemBase;
 import com.quantumshark.testmod.items.ItemBase;
 import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.tileentity.SolidFuelHeaterTileEntity;
 import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
 import com.quantumshark.testmod.tileentity.CopperHeatPipeTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
@@ -164,12 +167,14 @@ public class RegistryHandler {
 	public static final RegistryObject<Block> BLAST_FURNACE_BLOCK = BLOCKS.register("blast_furnace", () -> new BlastFurnaceBlock(Block.Properties.from(Blocks.FURNACE)));
 	public static final RegistryObject<Block> WOODEN_SHAFT_BLOCK = BLOCKS.register("wooden_shaft", ()-> new WoodenShaftBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
 	public static final RegistryObject<Block> COPPER_HEAT_PIPE_BLOCK = BLOCKS.register("copper_heat_pipe", ()-> new CopperHeatPipeBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
+	public static final RegistryObject<Block> SOLID_FUEL_HEATER_BLOCK = BLOCKS.register("solid_fuel_heater", () -> new SolidFuelHeaterBlock(Block.Properties.from(Blocks.FURNACE)));
 	
 	// Machine Block Items
 	public static final RegistryObject<Item> GRINDER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(GRINDER_BLOCK.get()));
 	public static final RegistryObject<Item> BLAST_FURNACE_BLOCK_ITEM = ITEMS.register("blast_furnace", () -> new BlockItemBase(BLAST_FURNACE_BLOCK.get()));
 	public static final RegistryObject<Item> WOODEN_SHAFT_BLOCK_ITEM = ITEMS.register("wooden_shaft", () -> new BlockItemBase(WOODEN_SHAFT_BLOCK.get()));
 	public static final RegistryObject<Item> COPPER_HEAT_PIPE_BLOCK_ITEM = ITEMS.register("copper_heat_pipe", () -> new BlockItemBase(COPPER_HEAT_PIPE_BLOCK.get()));
+	public static final RegistryObject<Item> SOLID_FUEL_HEATER_BLOCK_ITEM = ITEMS.register("solid_fuel_heater", () -> new BlockItemBase(SOLID_FUEL_HEATER_BLOCK.get()));
 
 	// tile entity types
 	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
@@ -184,13 +189,17 @@ public class RegistryHandler {
 	public static final RegistryObject<TileEntityType<CopperHeatPipeTileEntity>> COPPER_HEAT_PIPE_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("copper_heat_pipe", () -> TileEntityType.Builder
 					.create(CopperHeatPipeTileEntity::new, COPPER_HEAT_PIPE_BLOCK.get()).build(null));
-		
+	public static final RegistryObject<TileEntityType<SolidFuelHeaterTileEntity>> SOLID_FUEL_HEATER_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("solid_fuel_heater", () -> TileEntityType.Builder
+					.create(SolidFuelHeaterTileEntity::new, SOLID_FUEL_HEATER_BLOCK.get()).build(null));
 	
 	// Containers
 	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
 			.register("grinder", () -> IForgeContainerType.create(GrinderContainer::new));	
 	public static final RegistryObject<ContainerType<BlastFurnaceContainer>> BLAST_FURNACE_CONTAINER = CONTAINER_TYPES
 			.register("blast_furnace", () -> IForgeContainerType.create(BlastFurnaceContainer::new));	
+	public static final RegistryObject<ContainerType<SolidFuelHeaterContainer>> SOLID_FUEL_HEATER_CONTAINER = CONTAINER_TYPES
+			.register("solid_fuel_heater", () -> IForgeContainerType.create(SolidFuelHeaterContainer::new));	
 	
 	// Capabilities
 	@CapabilityInject(IShaftPower.class)

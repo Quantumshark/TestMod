@@ -1,6 +1,5 @@
 package com.quantumshark.testmod.capability;
 
-import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.utill.RegistryHandler;
 
 import net.minecraft.nbt.CompoundNBT;

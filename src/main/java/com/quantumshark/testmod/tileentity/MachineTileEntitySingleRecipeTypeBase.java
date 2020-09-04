@@ -11,7 +11,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 
-public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileEntityBase {
+public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileEntityWithRecipes {
 	public MachineTileEntitySingleRecipeTypeBase(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 		
@@ -21,8 +21,8 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 			RecipeTemplateComponent rtc = getRecipeTemplate().getInputs().get(i);
 			switch(rtc.getComponentType() ) {
 				case Item:
-					inputSlots[i] = new SlotWrapperItem(getInputSlotCount(), rtc.getName());
-					inputSlotCount = getInputSlotCount() + 1;
+					inputSlots[i] = new SlotWrapperItem(inputSlotCount, rtc.getName());
+					++inputSlotCount;
 					break;
 				case Fluid:
 					inputSlots[i] = new SlotWrapperFluid(inputFluidSlotCount, rtc.getName());
@@ -33,7 +33,7 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 					break;
 			}
 		}
-		inputSlotCount = getInputSlotCount() + getNonRecipeInputSlotCount();
+		inputSlotCount += getNonRecipeInputSlotCount();
 		
 		outputSlots = new SlotWrapper[getRecipeTemplate().getOutputs().size()];
 		
@@ -55,7 +55,7 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 		}			
 		outputSlotCount += getNonRecipeOutputSlotCount();
 		
-		inventory = new MachineItemHandler(getInputSlotCount() + outputSlotCount, this);
+		inventory = new MachineItemHandler(inputSlotCount + outputSlotCount, this);
 		fluidInventory = new MachineFluidHandler(inputFluidSlotCount + outputFluidSlotCount);
 	}
 	
