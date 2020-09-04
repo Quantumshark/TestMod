@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "bcb",
+    "cgc",
+    "bcb"
+  ],
+  "key":
+  {
+    "b":
+    {
+      "item": "testmod-emirate-of-granada:blast_bricks"
+    },
+    "c":
+    {
+      "item": "testmod-emirate-of-granada:copper_ingot"
+    },
+    "g":
+    {
+      "item": "testmod-emirate-of-granada:thermal_glass"
+    }
+  },
+  "result":
+  {
+    "item": "testmod-emirate-of-granada:solid_fuel_heater",
+    "count": 1
+  }
+}
