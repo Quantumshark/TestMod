@@ -19,7 +19,7 @@ public class CopperHeatPipeTileEntity extends TileEntity implements ICapabilityP
 		super(RegistryHandler.COPPER_HEAT_PIPE_TILE_ENTITY.get());
 	}
 	
-	protected HeatCapabilityProvider heat = new HeatCapabilityProvider(35000, 5000, 100);
+	protected HeatCapabilityProvider heat = new HeatCapabilityProvider(35000, 5500, 500);
 
 	@Override
 	public void tick() {
