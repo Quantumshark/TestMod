@@ -1,0 +1,9 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "testmod-emirate-of-granada:blocks/solid_fuel_heater_top",
+        "bottom": "testmod-emirate-of-granada:blocks/solid_fuel_heater_bottom",
+        "front": "testmod-emirate-of-granada:blocks/solid_fuel_heater_side",
+        "side": "testmod-emirate-of-granada:blocks/solid_fuel_heater_side"
+    }
+}

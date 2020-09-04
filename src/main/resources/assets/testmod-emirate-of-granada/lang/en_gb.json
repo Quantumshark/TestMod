@@ -43,9 +43,11 @@
 	"block.testmod-emirate-of-granada.thermal_glass": "Thermal Glass",
 	"block.testmod-emirate-of-granada.grinder": "Grinder",
 	"block.testmod-emirate-of-granada.blast_furnace": "Blast Furnace",
+	"block.testmod-emirate-of-granada.solid_fuel_heater": "Solid Fuel Heater",
 	"block.testmod-emirate-of-granada.wooden_shaft": "Wooden Shaft",
 	"block.testmod-emirate-of-granada.copper_heat_pipe": "Copper Heat Pipe",
 	"container.testmod-emirate-of-granada.grinder": "Grinder",
 	"container.testmod-emirate-of-granada.blast_furnace": "Blast Furnace",
+	"container.testmod-emirate-of-granada.solid_fuel_heater": "Solid Fuel Heater",
 	"itemGroup.TestTab": "Test Items"
 }

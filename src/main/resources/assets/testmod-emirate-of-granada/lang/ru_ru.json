@@ -43,9 +43,11 @@
 	"block.testmod-emirate-of-granada.thermal_glass": "Термостойкое стекло",
 	"block.testmod-emirate-of-granada.grinder": "Жернов",
 	"block.testmod-emirate-of-granada.blast_furnace": "Доменная печь",
+	"block.testmod-emirate-of-granada.solid_fuel_heater": "Нагреватель твердого топлива",
 	"block.testmod-emirate-of-granada.wooden_shaft": "Деревянный ось",
 	"block.testmod-emirate-of-granada.copper_heat_pipe": "Медная тепловая трубопровод",
 	"container.testmod-emirate-of-granada.grinder": "Жернов",
 	"container.testmod-emirate-of-granada.blast_furnace": "Доменная печь",
+	"container.testmod-emirate-of-granada.solid_fuel_heater": "Нагреватель твердого топлива",
 	"itemGroup.TestTab": "Испытание вещи"
 }
