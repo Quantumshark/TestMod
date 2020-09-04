@@ -30,7 +30,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 		super(RegistryHandler.SOLID_FUEL_HEATER_TILE_ENTITY.get());
 		inputSlotCount = 1;
 		inventory = new MachineItemHandler(inputSlotCount + outputSlotCount, this);
-		heat = new HeatCapabilityProvider(200000, 5000, 1000);
+		heat = new HeatCapabilityProvider(200000, 5000, 600);
 	}
 
 	@Override
