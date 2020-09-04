@@ -43,6 +43,7 @@
 	"block.testmod-emirate-of-granada.grinder": "Grinder",
 	"block.testmod-emirate-of-granada.blast_furnace": "Blast Furnace",
 	"block.testmod-emirate-of-granada.wooden_shaft": "Wooden Shaft",
+	"block.testmod-emirate-of-granada.copper_heat_pipe": "Copper Heat Pipe",
 	"container.testmod-emirate-of-granada.grinder": "Grinder",
 	"container.testmod-emirate-of-granada.blast_furnace": "Blast Furnace",
 	"itemGroup.TestTab": "Test Items"
