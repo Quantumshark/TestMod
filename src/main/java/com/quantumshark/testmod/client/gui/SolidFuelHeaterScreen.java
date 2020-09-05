@@ -1,7 +1,6 @@
 package com.quantumshark.testmod.client.gui;
 
 import com.quantumshark.testmod.TestMod;
-import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.container.SolidFuelHeaterContainer;
 
 import net.minecraft.entity.player.PlayerInventory;

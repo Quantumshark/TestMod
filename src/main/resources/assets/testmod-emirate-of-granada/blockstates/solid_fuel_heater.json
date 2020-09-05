@@ -5,7 +5,7 @@
         "facing=south,lit=false":   { "model": "testmod-emirate-of-granada:block/solid_fuel_heater", "y": 180 },
         "facing=west,lit=false":   { "model": "testmod-emirate-of-granada:block/solid_fuel_heater", "y": 270 },
         
-        "facing=north,lit=true":  { "model": "testmod-emirate-of-granada:block/lit_solid_fuel_heater"" },
+        "facing=north,lit=true":  { "model": "testmod-emirate-of-granada:block/lit_solid_fuel_heater" },
         "facing=east,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_solid_fuel_heater", "y": 90 },
         "facing=south,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_solid_fuel_heater", "y": 180 },
         "facing=west,lit=true":   { "model": "testmod-emirate-of-granada:block/lit_solid_fuel_heater", "y": 270 }

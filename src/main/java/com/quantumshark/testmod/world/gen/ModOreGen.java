@@ -1,5 +1,7 @@
 package com.quantumshark.testmod.world.gen;
 
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -37,8 +39,10 @@ public class ModOreGen {
 			
 			// Limestone
 			// todo: this should be much more common and spawn in larger amounts in oceans
+			// note: there are many ocean biomes. This works out if this ocean has the "type" ocean, which hopefully they all do.
+			if(BiomeDictionary.hasType(biome, Type.OCEAN)) {
+			}
 			AddOreSpawn(biome, 8,12,0,120,RegistryHandler.LIMESTONE_BLOCK, 17, FillerBlockType.NATURAL_STONE);
-				
 		}
 	}
 	
