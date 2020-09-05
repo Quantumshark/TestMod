@@ -25,7 +25,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	private ShaftPowerDefImpl shaft;
@@ -152,7 +152,7 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 			if (stack.getItem() == Items.BUCKET) {
 				return true;
 			}
-			IFluidHandler h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
+			IFluidHandlerItem h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
 			if (h != null) {
 				return true;
 			}

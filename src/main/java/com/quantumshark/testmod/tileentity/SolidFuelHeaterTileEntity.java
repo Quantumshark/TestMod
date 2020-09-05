@@ -102,8 +102,6 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 			}
 		}
 
-		dirty |= AttemptFillBucket(1, 0, 3);
-
 		if (dirty) {
 			markDirty();
 			world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE);

@@ -23,6 +23,7 @@ import com.quantumshark.testmod.container.SolidFuelHeaterContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
 import com.quantumshark.testmod.items.BucketItemBase;
 import com.quantumshark.testmod.items.ItemBase;
+import com.quantumshark.testmod.items.TankItem;
 import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.tileentity.SolidFuelHeaterTileEntity;
@@ -136,6 +137,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> GRANITESANDBLEND = ITEMS.register("granite_sand_blend", ItemBase::new);
 	public static final RegistryObject<Item> COPPERINGOT = ITEMS.register("copper_ingot", ItemBase::new);
 	public static final RegistryObject<Item> BLASTBRICK = ITEMS.register("blast_brick", ItemBase::new);
+	public static final RegistryObject<Item> TINYTANK = ITEMS.register("tiny_tank", ()->new TankItem(2000));
 	
 	
 	// Tools

@@ -42,6 +42,8 @@ public class ModOreGen {
 			// note: there are many ocean biomes. This works out if this ocean has the "type" ocean, which hopefully they all do.
 			if(BiomeDictionary.hasType(biome, Type.OCEAN)) {
 			}
+			if(biome == Biomes.DEEP_LUKEWARM_OCEAN) {
+			}
 			AddOreSpawn(biome, 8,12,0,120,RegistryHandler.LIMESTONE_BLOCK, 17, FillerBlockType.NATURAL_STONE);
 		}
 	}

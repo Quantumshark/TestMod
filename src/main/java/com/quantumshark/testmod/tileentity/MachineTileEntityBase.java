@@ -16,6 +16,7 @@ import com.quantumshark.testmod.utill.TankFluidHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -29,6 +30,8 @@ import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -214,17 +217,34 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 			return false;
 		}
 		boolean wasSingleton = (empty.getCount() == 1);
-		FluidActionResult ret = FluidUtil.tryFillContainer(empty, fluidInventory.getTank(tankSlot),
-				FluidAttributes.BUCKET_VOLUME, null, true);
-		if (ret.success) {
-			inventory.setStackInSlot(fullSlot, ret.getResult());
+		boolean success = false;
+		TankFluidHandler tank = fluidInventory.getTank(tankSlot);
+		ItemStack out = null;
+		if(empty.getItem() == Items.BUCKET)
+		{
+			FluidActionResult ret = FluidUtil.tryFillContainer(empty, tank,
+					FluidAttributes.BUCKET_VOLUME, null, true);
+			success = ret.success;
+			out = ret.getResult();
+		}
+		else
+		{
+			// todo: train only a certain amount per tick. Only push the container down if it's full or the tank is empty.
+			IFluidHandlerItem item = empty.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
+					
+			FluidStack fs = FluidUtil.tryFluidTransfer(item, tank, tank.getFluidAmount(), true);
+			success = (fs != null && fs != FluidStack.EMPTY);
+			out = empty;
+		}
+		if (out != null && success) {
+			inventory.setStackInSlot(fullSlot, out);
 			if (wasSingleton) {
 				inventory.setStackInSlot(emptySlot, ItemStack.EMPTY);
 			} else {
 				inventory.extractItem(emptySlot, 1, false);
 			}
 		}
-		return ret.success;
+		return success;
 	}
 
 	public int getInputSlotCount() {
