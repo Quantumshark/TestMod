@@ -10,14 +10,20 @@ import net.minecraft.item.ItemStack;
 public class MachineInventoryRecipeWrapper implements IInventory {
 	public MachineInventoryRecipeWrapper(MachineTileEntityWithRecipes machine, MachineRecipeBase recipe) {
 		inputSlots = machine.getInputSlots(recipe);
+		catalystSlots = machine.getCatalystSlots(recipe);
 		outputSlots = machine.getOutputSlots(recipe);
 	}
 
 	private final MachineTileEntityBase.SlotWrapper[] inputSlots;
+	private final MachineTileEntityBase.SlotWrapper[] catalystSlots;
 	private final MachineTileEntityBase.SlotWrapper[] outputSlots;
 
 	public SlotWrapper getInputSlot(int i) {
 		return inputSlots[i];
+	}
+	
+	public SlotWrapper getCatalystSlot(int i) {
+		return catalystSlots[i];
 	}
 	
 	public SlotWrapper getOutputSlot(int i) {
@@ -29,6 +35,11 @@ public class MachineInventoryRecipeWrapper implements IInventory {
 		return inputSlots[i].getRecipeComponent();
 	}
 
+	// this is good enough for match, but can't be updated.
+	public RecipeComponent getCatalystWrapper(int i) {
+		return catalystSlots[i].getRecipeComponent();
+	}
+	
 	// IInventory implementation. Not sure we need any of this.
 	@Override
 	public void clear() {

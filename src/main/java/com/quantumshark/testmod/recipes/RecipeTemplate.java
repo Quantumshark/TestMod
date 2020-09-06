@@ -21,10 +21,14 @@ public class RecipeTemplate {
 	// make it have heterogeneous lists and have a mapping that returns a RecipeComponent wrapper of the right type based on recipe slot number
 	
 	private NonNullList<RecipeTemplateComponent> inputs;
+	private NonNullList<RecipeTemplateComponent> catalysts;
 	private NonNullList<RecipeTemplateComponent> outputs;
 	
 	public NonNullList<RecipeTemplateComponent> getInputs() {
 		return inputs;
+	}
+	public NonNullList<RecipeTemplateComponent> getCatalysts() {
+		return catalysts;
 	}
 	public NonNullList<RecipeTemplateComponent> getOutputs() {
 		return outputs;
@@ -34,7 +38,7 @@ public class RecipeTemplate {
 		Item, Fluid, None;
 	}
 
-	private RecipeTemplate(String strInputs, String strOutputs) {
+	private RecipeTemplate(String strInputs, String strCatalysts, String strOutputs) {
 		String[] bits = strInputs.split(",");
 		inputs = NonNullList.create();
 		for(String s: bits)
@@ -42,6 +46,16 @@ public class RecipeTemplate {
 			if(s.length() > 0)
 			{
 				inputs.add(new RecipeTemplateComponent(s));
+			}
+		}
+		
+		bits = strCatalysts.split(",");
+		catalysts = NonNullList.create();
+		for(String s: bits)
+		{
+			if(s.length() > 0)
+			{
+				catalysts.add(new RecipeTemplateComponent(s));
 			}
 		}
 
@@ -64,6 +78,14 @@ public class RecipeTemplate {
 		return ret;
 	}
 
+	public NonNullList<RecipeComponent> createCatalysts() {
+		NonNullList<RecipeComponent> ret = NonNullList.create();
+		for(RecipeTemplateComponent c: catalysts) {
+			ret.add(c.instantiate());
+		}
+		return ret;
+	}
+
 	public NonNullList<RecipeComponent> createOutputs() {
 		NonNullList<RecipeComponent> ret = NonNullList.create();
 		for(RecipeTemplateComponent c: outputs) {
@@ -72,7 +94,7 @@ public class RecipeTemplate {
 		return ret;
 	}
 	
-	public static final RecipeTemplate ITEM_IN_ITEM_OUT = new RecipeTemplate("input", "output");
-	public static final RecipeTemplate GRINDER = new RecipeTemplate("input", "output:Item,juice:Fluid");
-	public static final RecipeTemplate BLAST_FURNACE = new RecipeTemplate("input,extra,reducer", "output,slag");
+	public static final RecipeTemplate ITEM_IN_ITEM_OUT = new RecipeTemplate("input", "", "output");
+	public static final RecipeTemplate GRINDER = new RecipeTemplate("input", "", "output:Item,juice:Fluid");
+	public static final RecipeTemplate BLAST_FURNACE = new RecipeTemplate("input,extra,reducer", "", "output,slag");
 }

@@ -34,6 +34,26 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 			}
 		}
 		inputSlotCount += getNonRecipeInputSlotCount();
+
+		catalystSlots = new SlotWrapper[getRecipeTemplate().getCatalysts().size()];
+		
+		for(int i=0;i<catalystSlots.length;++i) {
+			RecipeTemplateComponent rtc = getRecipeTemplate().getCatalysts().get(i);
+			switch(rtc.getComponentType() ) {
+				case Item:
+					catalystSlots[i] = new SlotWrapperItem(catalystSlotCount, rtc.getName());
+					++catalystSlotCount;
+					break;
+				case Fluid:
+					catalystSlots[i] = new SlotWrapperFluid(catalystFluidSlotCount, rtc.getName());
+					++catalystFluidSlotCount;
+					break;
+				default:
+					// panic!
+					break;
+			}
+		}
+		// note: can't have non-recipe catalyst slots
 		
 		outputSlots = new SlotWrapper[getRecipeTemplate().getOutputs().size()];
 		
@@ -60,6 +80,7 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 	}
 	
 	private final SlotWrapper[] inputSlots;
+	private final SlotWrapper[] catalystSlots;
 	private final SlotWrapper[] outputSlots;
 	
 	private final NonNullList<IRecipeType<MachineRecipeBase>> recipeTypes = NonNullList.from(null, getRecipeType());
@@ -82,6 +103,11 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 	@Override
 	public SlotWrapper[] getInputSlots(MachineRecipeBase recipe) {
 		return inputSlots;
+	}
+	
+	@Override
+	public SlotWrapper[] getCatalystSlots(MachineRecipeBase recipe) {
+		return catalystSlots;
 	}
 	
 	@Override

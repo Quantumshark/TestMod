@@ -49,8 +49,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	protected HeatCapabilityProvider heat = null; // null by default. Create in constructor if this item handles heat.
 
 	protected int inputSlotCount;
+	protected int catalystSlotCount;
 	protected int outputSlotCount;
 	protected int inputFluidSlotCount;
+	protected int catalystFluidSlotCount;
 	protected int outputFluidSlotCount;
 
 	public MachineTileEntityBase(TileEntityType<?> tileEntityTypeIn) {
@@ -187,7 +189,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (getInputSlotCount() > 0 || outputSlotCount > 0)) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap,
-					LazyOptional.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount)));
+					LazyOptional.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount + catalystSlotCount)));
 		}
 		// note: this could be more complex. The capability seems to lack the idea of
 		// slots
@@ -251,6 +253,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return inputSlotCount;
 	}
 
+	public int getCatalystSlotCount() {
+		return catalystSlotCount;
+	}
+	
 	public IHeatCapability getHeat() {
 		return heat;
 	}

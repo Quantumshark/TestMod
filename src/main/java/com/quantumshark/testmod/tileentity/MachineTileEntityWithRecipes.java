@@ -30,6 +30,7 @@ public abstract class MachineTileEntityWithRecipes extends MachineTileEntityBase
 	protected abstract NonNullList<IRecipeType<MachineRecipeBase>> getRecipeTypes();
 	protected abstract MachineInventoryRecipeWrapper getInventoryWrapperForRecipe(MachineRecipeBase recipe);
 	public abstract SlotWrapper[] getInputSlots(MachineRecipeBase recipe);
+	public abstract SlotWrapper[] getCatalystSlots(MachineRecipeBase recipe);
 	public abstract SlotWrapper[] getOutputSlots(MachineRecipeBase recipe);
 
 	// note: for single type at least, cache this?
@@ -67,9 +68,10 @@ public abstract class MachineTileEntityWithRecipes extends MachineTileEntityBase
 	}
 	
 	// this is only used for items, hence the ItemStack signature.
+	// can shift-click to insert into either an input or a catalyst slot
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
-		if (slot < 0 || slot >= getInputSlotCount()) {
+		if (slot < 0 || slot >= getInputSlotCount() + getCatalystSlotCount()) {
 			// don't allow insertion into output slots.
 			return false;
 		}
@@ -78,26 +80,38 @@ public abstract class MachineTileEntityWithRecipes extends MachineTileEntityBase
 		Set<MachineRecipeBase> recipes = findRecipes();
 
 		for (MachineRecipeBase recipe : recipes) {
-			SlotWrapper[] inputsForRecipe = getInputSlots(recipe);
-			for (int i = 0; i < inputsForRecipe.length; ++i) {
-				SlotWrapper sw = inputsForRecipe[i];
+			if(CheckAgainstRecipe(slot, inputWrapper, recipe, getInputSlots(recipe)))
+			{
+				return true;
+			}
+			if(CheckAgainstRecipe(slot, inputWrapper, recipe, getCatalystSlots(recipe)))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
-				if (sw == null || !(sw instanceof SlotWrapperItem)) {
-					continue;
-				}
+	private boolean CheckAgainstRecipe(int slot, RecipeComponent inputWrapper, MachineRecipeBase recipe,
+			SlotWrapper[] slotsForRecipe) {
+		for (int i = 0; i < slotsForRecipe.length; ++i) {
+			SlotWrapper sw = slotsForRecipe[i];
 
-				SlotWrapperItem cast = (SlotWrapperItem) sw;
-				if (cast.inventoryIndex != slot) {
-					continue;
-				}
+			if (sw == null || !(sw instanceof SlotWrapperItem)) {
+				continue;
+			}
 
-				// so input i in the recipe goes in machine slot. Now just see if this matches
-				// it.
-				RecipeComponent ingredient = recipe.getInputs().get(i);
+			SlotWrapperItem cast = (SlotWrapperItem) sw;
+			if (cast.inventoryIndex != slot) {
+				continue;
+			}
 
-				if (ingredient.isFulfilledBy(inputWrapper, false)) {
-					return true;
-				}
+			// so input i in the recipe goes in machine slot. Now just see if this matches
+			// it.
+			RecipeComponent ingredient = recipe.getInputs().get(i);
+
+			if (ingredient.isFulfilledBy(inputWrapper, false)) {
+				return true;
 			}
 		}
 		return false;

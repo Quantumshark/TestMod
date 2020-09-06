@@ -6,13 +6,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 public class MachineItemCapabilityHandler implements IItemHandler {
-	public MachineItemCapabilityHandler(IItemHandler inventory, int inputSlotCount) {
+	public MachineItemCapabilityHandler(IItemHandler inventory, int noExtractSlotCount) {
 		this.inventory = inventory;
-		this.inputSlotCount = inputSlotCount;
+		this.noExtractSlotCount = noExtractSlotCount;
 	}
 
 	private final IItemHandler inventory;
-	private final int inputSlotCount;
+	private final int noExtractSlotCount;
 
 	@Override
 	public int getSlots() {
@@ -34,7 +34,7 @@ public class MachineItemCapabilityHandler implements IItemHandler {
 	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (slot < inputSlotCount) {
+		if (slot < noExtractSlotCount) {
 			return ItemStack.EMPTY;
 		}
 		return inventory.extractItem(slot, amount, simulate);

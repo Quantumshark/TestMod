@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 public abstract class MachineRecipeBase implements IMachineRecipe {
 	private final ResourceLocation id;
 	private NonNullList<RecipeComponent> inputs;
+	private NonNullList<RecipeComponent> catalysts;
 	private NonNullList<RecipeComponent> outputs;
 
 	abstract RecipeTemplate getRecipeTemplate();
@@ -19,6 +20,10 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 
 	public NonNullList<RecipeComponent> getInputs() {
 		return inputs;
+	}
+
+	public NonNullList<RecipeComponent> getCatalysts() {
+		return catalysts;
 	}
 
 	public NonNullList<RecipeComponent> getOutputs() {
@@ -30,6 +35,7 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 
 		RecipeTemplate rt = getRecipeTemplate();
 		inputs = rt.createInputs();
+		catalysts = rt.createCatalysts();
 		outputs = rt.createOutputs();
 		ItemStack firstItemOutput = null;
 		for (RecipeComponent output : outputs) {
@@ -102,6 +108,11 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 				return false;
 			}
 		}
+		for (int i = 0; i < getRecipeTemplate().getCatalysts().size(); ++i) {
+			if (!this.catalysts.get(i).isFulfilledBy(inv.getCatalystWrapper(i), true)) {
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -121,6 +132,10 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 			input.read(json);
 		}
 
+		for (RecipeComponent catalyst : catalysts) {
+			catalyst.read(json);
+		}
+
 		for (RecipeComponent output : outputs) {
 			output.read(json);
 		}
@@ -132,6 +147,10 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 			input.read(buffer);
 		}
 
+		for (RecipeComponent catalyst : catalysts) {
+			catalyst.read(buffer);
+		}
+		
 		for (RecipeComponent output : outputs) {
 			output.read(buffer);
 		}
@@ -141,6 +160,10 @@ public abstract class MachineRecipeBase implements IMachineRecipe {
 	public void write(PacketBuffer buffer) {
 		for (RecipeComponent input : inputs) {
 			input.write(buffer);
+		}
+
+		for (RecipeComponent catalyst : catalysts) {
+			catalyst.write(buffer);
 		}
 
 		for (RecipeComponent output : outputs) {
