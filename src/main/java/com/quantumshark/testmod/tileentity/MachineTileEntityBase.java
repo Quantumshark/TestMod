@@ -168,10 +168,6 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	@Nullable
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		if(getClass() == FlotationSeparatorTileEntity.class)
-		{
-			int p=12;
-		}
 		CompoundNBT nbt = new CompoundNBT();
 		this.write(nbt);
 		return new SUpdateTileEntityPacket(this.pos, 0, nbt);
@@ -179,10 +175,6 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		if(getClass() == FlotationSeparatorTileEntity.class)
-		{
-			int p=12;
-		}
 		this.read(pkt.getNbtCompound());
 	}
 

@@ -50,7 +50,6 @@ public abstract class BlockWithTileEntityBase<T extends TileEntity> extends Bloc
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		TileEntity tile = worldIn.getTileEntity(pos);
