@@ -8,6 +8,7 @@ import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
 import com.quantumshark.testmod.blocks.CopperHeatPipeBlock;
 import com.quantumshark.testmod.blocks.CrudeOilBlock;
+import com.quantumshark.testmod.blocks.FlotationSeparatorBlock;
 import com.quantumshark.testmod.blocks.GrinderBlock;
 import com.quantumshark.testmod.blocks.OilShale;
 import com.quantumshark.testmod.blocks.SolidFuelHeaterBlock;
@@ -20,8 +21,8 @@ import com.quantumshark.testmod.blocks.FluoriteOre;
 import com.quantumshark.testmod.container.BlastFurnaceContainer;
 import com.quantumshark.testmod.container.GrinderContainer;
 import com.quantumshark.testmod.container.SolidFuelHeaterContainer;
+import com.quantumshark.testmod.container.FlotationSeparatorContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
-import com.quantumshark.testmod.items.BucketItemBase;
 import com.quantumshark.testmod.items.ItemBase;
 import com.quantumshark.testmod.items.TankItem;
 import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
@@ -29,6 +30,7 @@ import com.quantumshark.testmod.tileentity.GrinderTileEntity;
 import com.quantumshark.testmod.tileentity.SolidFuelHeaterTileEntity;
 import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
 import com.quantumshark.testmod.tileentity.CopperHeatPipeTileEntity;
+import com.quantumshark.testmod.tileentity.FlotationSeparatorTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
 
 import net.minecraft.item.ArmorItem;
@@ -36,6 +38,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
@@ -87,7 +90,7 @@ public class RegistryHandler {
 	public static final RegistryObject<CrudeOilFluidBase.Source> CRUDE_OIL_FLUID = FLUIDS.register("crude_oil", () -> new CrudeOilFluidBase.Source());
 
 	// Fluid buckets
-	public static final RegistryObject<BucketItem> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket", () -> new BucketItemBase(() -> CRUDE_OIL_FLUID.get(), new Properties().maxStackSize(1)));
+	public static final RegistryObject<BucketItem> CRUDE_OIL_BUCKET = ITEMS.register("crude_oil_bucket", () -> new BucketItem(() -> CRUDE_OIL_FLUID.get(), new Properties().group(TestMod.TAB).maxStackSize(1).containerItem(Items.BUCKET)));
 	
 	// Fluid blocks
 	public static final RegistryObject<CrudeOilBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil", CrudeOilBlock::new);
@@ -170,6 +173,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Block> WOODEN_SHAFT_BLOCK = BLOCKS.register("wooden_shaft", ()-> new WoodenShaftBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
 	public static final RegistryObject<Block> COPPER_HEAT_PIPE_BLOCK = BLOCKS.register("copper_heat_pipe", ()-> new CopperHeatPipeBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
 	public static final RegistryObject<Block> SOLID_FUEL_HEATER_BLOCK = BLOCKS.register("solid_fuel_heater", () -> new SolidFuelHeaterBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> FLOTATION_SEPARATOR_BLOCK = BLOCKS.register("flotation_separator", () -> new FlotationSeparatorBlock(Block.Properties.from(Blocks.FURNACE)));
 	
 	// Machine Block Items
 	public static final RegistryObject<Item> GRINDER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(GRINDER_BLOCK.get()));
@@ -177,6 +181,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> WOODEN_SHAFT_BLOCK_ITEM = ITEMS.register("wooden_shaft", () -> new BlockItemBase(WOODEN_SHAFT_BLOCK.get()));
 	public static final RegistryObject<Item> COPPER_HEAT_PIPE_BLOCK_ITEM = ITEMS.register("copper_heat_pipe", () -> new BlockItemBase(COPPER_HEAT_PIPE_BLOCK.get()));
 	public static final RegistryObject<Item> SOLID_FUEL_HEATER_BLOCK_ITEM = ITEMS.register("solid_fuel_heater", () -> new BlockItemBase(SOLID_FUEL_HEATER_BLOCK.get()));
+	public static final RegistryObject<Item> FLOTATION_SEPARATOR_BLOCK_ITEM = ITEMS.register("flotation_separator", () -> new BlockItemBase(FLOTATION_SEPARATOR_BLOCK.get()));
 
 	// tile entity types
 	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
@@ -194,6 +199,9 @@ public class RegistryHandler {
 	public static final RegistryObject<TileEntityType<SolidFuelHeaterTileEntity>> SOLID_FUEL_HEATER_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("solid_fuel_heater", () -> TileEntityType.Builder
 					.create(SolidFuelHeaterTileEntity::new, SOLID_FUEL_HEATER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<FlotationSeparatorTileEntity>> FLOTATION_SEPARATOR_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("flotation_separator", () -> TileEntityType.Builder
+					.create(FlotationSeparatorTileEntity::new, FLOTATION_SEPARATOR_BLOCK.get()).build(null));
 	
 	// Containers
 	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
@@ -202,6 +210,8 @@ public class RegistryHandler {
 			.register("blast_furnace", () -> IForgeContainerType.create(BlastFurnaceContainer::new));	
 	public static final RegistryObject<ContainerType<SolidFuelHeaterContainer>> SOLID_FUEL_HEATER_CONTAINER = CONTAINER_TYPES
 			.register("solid_fuel_heater", () -> IForgeContainerType.create(SolidFuelHeaterContainer::new));	
+	public static final RegistryObject<ContainerType<FlotationSeparatorContainer>> FLOTATION_SEPARATOR_CONTAINER = CONTAINER_TYPES
+			.register("flotation_separator", () -> IForgeContainerType.create(FlotationSeparatorContainer::new));	
 	
 	// Capabilities
 	@CapabilityInject(IShaftPower.class)

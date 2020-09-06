@@ -97,4 +97,5 @@ public class RecipeTemplate {
 	public static final RecipeTemplate ITEM_IN_ITEM_OUT = new RecipeTemplate("input", "", "output");
 	public static final RecipeTemplate GRINDER = new RecipeTemplate("input", "", "output:Item,juice:Fluid");
 	public static final RecipeTemplate BLAST_FURNACE = new RecipeTemplate("input,extra,reducer", "", "output,slag");
+	public static final RecipeTemplate FLOTATION_SEPARATOR = new RecipeTemplate("input", "oil:Fluid", "output,remnant");
 }

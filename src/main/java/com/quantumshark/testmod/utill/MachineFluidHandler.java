@@ -19,8 +19,8 @@ public class MachineFluidHandler implements IFluidHandler, INBTSerializable<Comp
 	}
 
 	private final NonNullList<TankFluidHandler> tanks;
-	
-	public TankFluidHandler getTank(int i ) {
+
+	public TankFluidHandler getTank(int i) {
 		return tanks.get(i);
 	}
 
@@ -28,12 +28,13 @@ public class MachineFluidHandler implements IFluidHandler, INBTSerializable<Comp
 	public CompoundNBT serializeNBT() {
 		ListNBT nbtTagList = new ListNBT();
 		for (int i = 0; i < tanks.size(); i++) {
-			if (!tanks.get(i).isEmpty()) {
-				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.putInt("Slot", i);
-				tanks.get(i).writeToNBT(itemTag);
-				nbtTagList.add(itemTag);
-			}
+//f			if (!tanks.get(i).isEmpty()) {
+			// We need to push empty tanks, otherwise the client doesn't get the update
+			CompoundNBT itemTag = new CompoundNBT();
+			itemTag.putInt("Slot", i);
+			tanks.get(i).writeToNBT(itemTag);
+			nbtTagList.add(itemTag);
+//			}
 		}
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.put("Tanks", nbtTagList);

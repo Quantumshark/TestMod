@@ -23,9 +23,14 @@ public class CopperHeatPipeTileEntity extends TileEntity implements ICapabilityP
 
 	@Override
 	public void tick() {
+		if (this.world == null || this.world.isRemote) {
+			return;
+		}
+
 		if(heat != null) {
 			heat.tick(world, pos);
 		}
+		// rather than spam the UI, don't send all pipe temperature updates to the client?
 		BlockState bs = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, bs, bs, 2);		
 	}

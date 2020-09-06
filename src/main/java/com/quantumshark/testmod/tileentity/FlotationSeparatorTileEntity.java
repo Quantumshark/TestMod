@@ -2,8 +2,8 @@ package com.quantumshark.testmod.tileentity;
 
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.blocks.state.LitStateHandler;
-import com.quantumshark.testmod.capability.HeatCapabilityProvider;
-import com.quantumshark.testmod.container.BlastFurnaceContainer;
+import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
+import com.quantumshark.testmod.container.FlotationSeparatorContainer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeAndWrapper;
 import com.quantumshark.testmod.recipes.RecipeTemplate;
@@ -14,24 +14,32 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBase {
+public class FlotationSeparatorTileEntity extends MachineTileEntitySingleRecipeTypeBase {
+	private ShaftPowerDefImpl shaft;
+
 	public int currentSmeltTime;
 	public final int maxSmeltTime = 100;
 
-	public BlastFurnaceTileEntity() {
-		super(RegistryHandler.BLAST_FURNACE_TILE_ENTITY.get());
-		heat = new HeatCapabilityProvider(1000000, 5000, 850);
+	public FlotationSeparatorTileEntity() {
+		super(RegistryHandler.FLOTATION_SEPARATOR_TILE_ENTITY.get());
 	}
 
 	@Override
 	public Container createMenu(final int windowID, final PlayerInventory playerInv, final PlayerEntity playerIn) {
-		return new BlastFurnaceContainer(windowID, playerInv, this);
+		return new FlotationSeparatorContainer(windowID, playerInv, this);
 	}
 
 	@Override
@@ -76,6 +84,16 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 			dirty = true;
 		}
 
+		boolean br = AttemptFillBucket(1, 0, 4);
+		dirty |= br;
+		if (br) {
+			TestMod.LOGGER.debug("after attempt fill: tank contains " + fluidInventory.getFluidInTank(0).getAmount() +" of "+ fluidInventory.getFluidInTank(0).getTranslationKey());
+		}
+		br = AttemptEmptyBucket(1, 0, 4);
+		dirty |= br;
+		if (br) {
+			TestMod.LOGGER.debug("after attempt empty: tank contains " + fluidInventory.getFluidInTank(0).getAmount() +" of "+ fluidInventory.getFluidInTank(0).getTranslationKey());
+		}
 		if (dirty) {
 			this.markDirty();
 			this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(),
@@ -85,7 +103,7 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 
 	@Override
 	protected ITextComponent getDefaultName() {
-		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".blast_furnace");
+		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".flotation_separator");
 	}
 
 	@Override
@@ -105,12 +123,54 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 
 	@Override
 	protected IRecipeType<MachineRecipeBase> getRecipeType() {
-		return RecipeInit.BLAST_FURNACE_RECIPE_TYPE;
+		return RecipeInit.FLOTATION_SEPARATOR_RECIPE_TYPE;
 	}
 
 	// the recipe template (combination of inputs and secondary outputs if any)
 	@Override
 	public RecipeTemplate getRecipeTemplate() {
-		return RecipeTemplate.BLAST_FURNACE;
+		return RecipeTemplate.FLOTATION_SEPARATOR;
+	}
+
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == RegistryHandler.CAPABILITY_SHAFT_POWER) {
+			if (side == Direction.UP) {
+				return RegistryHandler.CAPABILITY_SHAFT_POWER.orEmpty(cap, LazyOptional.of(() -> this.shaft));
+			} else
+				return null;
+		}
+		return super.getCapability(cap, side);
+	}
+
+	// bucket in
+	@Override
+	protected int getNonRecipeInputSlotCount() {
+		return 1;
+	}
+
+	// filled bucket out
+	@Override
+	protected int getNonRecipeOutputSlotCount() {
+		return 1;
+	}
+
+	// this stuff could be in a class.
+	@Override
+	public boolean isItemValid(int slot, ItemStack stack) {
+		if (slot == 1) {
+			if (stack.getItem() == Items.BUCKET
+					|| (stack.getContainerItem() != null && stack.getContainerItem().getItem() == Items.BUCKET)) {
+				return true;
+			}
+			IFluidHandlerItem h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+					.orElse(null);
+			if (h != null) {
+				return true;
+			}
+			return false;
+		} else {
+			return super.isItemValid(slot, stack);
+		}
 	}
 }

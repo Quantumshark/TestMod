@@ -2,6 +2,7 @@ package com.quantumshark.testmod.utill;
 
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.recipes.BlastFurnaceRecipe;
+import com.quantumshark.testmod.recipes.FlotationSeparatorRecipe;
 import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.recipes.RecipeSerializer;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
@@ -31,6 +32,12 @@ public class RecipeInit {
 	public static final RegistryObject<IRecipeSerializer<?>> BLAST_FURNACE_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("blast_furnace",
 			() -> BLAST_FURNACE_RECIPE_SERIALIZER_INST);
 	
+	// flotation separator recipes
+	public static final IRecipeSerializer<FlotationSeparatorRecipe> FLOTATION_SEPARATOR_RECIPE_SERIALIZER_INST = new RecipeSerializer<FlotationSeparatorRecipe>(new FlotationSeparatorRecipe.RecipeFactory());
+	public static final IRecipeType<MachineRecipeBase> FLOTATION_SEPARATOR_RECIPE_TYPE = registerType(FlotationSeparatorRecipe.RECIPE_TYPE_ID);
+	public static final RegistryObject<IRecipeSerializer<?>> FLOTATION_SEPARATOR_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("flotation_separator",
+			() -> FLOTATION_SEPARATOR_RECIPE_SERIALIZER_INST);
+
 	private static class RecipeType<T extends IRecipe<?>> implements IRecipeType<T> {
 		@Override
 		public String toString() {

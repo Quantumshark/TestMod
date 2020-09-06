@@ -103,6 +103,11 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public void tick() {
+		
+		if (this.world == null || this.world.isRemote) {
+			return;
+		}
+
 		if (heat != null) {
 			heat.tick(world, pos);
 		}
@@ -163,6 +168,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	@Nullable
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
+		if(getClass() == FlotationSeparatorTileEntity.class)
+		{
+			int p=12;
+		}
 		CompoundNBT nbt = new CompoundNBT();
 		this.write(nbt);
 		return new SUpdateTileEntityPacket(this.pos, 0, nbt);
@@ -170,6 +179,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+		if(getClass() == FlotationSeparatorTileEntity.class)
+		{
+			int p=12;
+		}
 		this.read(pkt.getNbtCompound());
 	}
 
@@ -188,8 +201,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	@Override
 	public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (getInputSlotCount() > 0 || outputSlotCount > 0)) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap,
-					LazyOptional.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount + catalystSlotCount)));
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional
+					.of(() -> new MachineItemCapabilityHandler(this.inventory, inputSlotCount + catalystSlotCount)));
 		}
 		// note: this could be more complex. The capability seems to lack the idea of
 		// slots
@@ -222,18 +235,16 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		boolean success = false;
 		TankFluidHandler tank = fluidInventory.getTank(tankSlot);
 		ItemStack out = null;
-		if(empty.getItem() == Items.BUCKET)
-		{
-			FluidActionResult ret = FluidUtil.tryFillContainer(empty, tank,
-					FluidAttributes.BUCKET_VOLUME, null, true);
+		if (empty.getItem() == Items.BUCKET) {
+			FluidActionResult ret = FluidUtil.tryFillContainer(empty, tank, FluidAttributes.BUCKET_VOLUME, null, true);
 			success = ret.success;
 			out = ret.getResult();
-		}
-		else
-		{
-			// todo: train only a certain amount per tick. Only push the container down if it's full or the tank is empty.
-			IFluidHandlerItem item = empty.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
-					
+		} else {
+			// todo: train only a certain amount per tick. Only push the container down if
+			// it's full or the tank is empty.
+			IFluidHandlerItem item = empty.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+					.orElse(null);
+
 			FluidStack fs = FluidUtil.tryFluidTransfer(item, tank, tank.getFluidAmount(), true);
 			success = (fs != null && fs != FluidStack.EMPTY);
 			out = empty;
@@ -249,6 +260,56 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return success;
 	}
 
+	// if you call this on a tile with no (i.e., null) inventory or fluidInventory,
+	// expect to die.
+	protected boolean AttemptEmptyBucket(int inputFullSlot, int tankSlot, int outputEmptySlot) {
+		if (inputFullSlot >= inventory.getSlots() || outputEmptySlot >= inventory.getSlots()
+				|| tankSlot >= fluidInventory.getTanks()) {
+			return false;
+		}
+		// todo: empties might conceivably stack
+		if (inventory.getStackInSlot(outputEmptySlot) != ItemStack.EMPTY) {
+			return false;
+		}
+		ItemStack inputStack = inventory.getStackInSlot(inputFullSlot);
+		if (inputStack == ItemStack.EMPTY) {
+			return false;
+		}
+		// fulls can't generally stack, but leave this in just in case.
+		boolean wasSingleton = (inputStack.getCount() == 1);
+		boolean success = false;
+		TankFluidHandler tank = fluidInventory.getTank(tankSlot);
+		ItemStack out = null;
+		// try the proper container version first.
+		// todo: drain only a certain amount per tick. Only push the container down if
+		// it's full or the tank is empty.
+		IFluidHandlerItem item = inputStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				.orElse(null);
+		if (item != null) {
+			FluidStack fs = FluidUtil.tryFluidTransfer(tank, item, tank.getCapacity() - tank.getFluidAmount(), true);
+			success = (fs != null && fs != FluidStack.EMPTY);
+			if(inputStack.getContainerItem() == null)
+			{
+				// tank - output the (now less full) tank
+				out = inputStack;
+			}
+			else
+			{
+				// bucket - output the empty bucket
+				out = item.getContainer();
+			}
+		}
+		if (out != null && success) {
+			inventory.setStackInSlot(outputEmptySlot, out);
+			if (wasSingleton) {
+				inventory.setStackInSlot(inputFullSlot, ItemStack.EMPTY);
+			} else {
+				inventory.extractItem(inputFullSlot, 1, false);
+			}
+		}
+		return success;
+	}
+
 	public int getInputSlotCount() {
 		return inputSlotCount;
 	}
@@ -256,7 +317,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	public int getCatalystSlotCount() {
 		return catalystSlotCount;
 	}
-	
+
 	public IHeatCapability getHeat() {
 		return heat;
 	}

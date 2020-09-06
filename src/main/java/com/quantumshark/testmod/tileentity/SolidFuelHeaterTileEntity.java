@@ -42,6 +42,10 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 	public void tick() {
 		super.tick();
 
+		if (this.world == null || this.world.isRemote) {
+			return;
+		}
+
 		// note: super.tick() will have updated temperature already.
 		// heat transfer runs every other tick due to odd/even, but this runs every tick
 		// so we could do a temperature check here - either explode or shutdown if too
@@ -56,50 +60,51 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 		boolean dirty = false;
 		boolean isRunning = false;
 
-		if (world != null && !world.isRemote) {
-			if (true || world.isBlockPowered(getPos())) { // todo: configurable redstone control mode
-				if (currentBurnItem == null) {
-					ItemStack fuel = inventory.getStackInSlot(0);
-					if (!fuel.isEmpty()) // double-check it can burn
-					{
-						int furnaceBurnTime = getFuelBurnTime(fuel);
-						if (furnaceBurnTime > 0) {
-							// if there's an input stack, pick one item off it
-							// copy that instance into currentBurnItem
-							currentBurnItem = inventory.extractItem(0, 1, false);
+		if (true || world.isBlockPowered(getPos())) { // todo: configurable redstone control mode
+			if (currentBurnItem == null) {
+				ItemStack fuel = inventory.getStackInSlot(0);
+				if (!fuel.isEmpty()) // double-check it can burn
+				{
+					int furnaceBurnTime = getFuelBurnTime(fuel);
+					if (furnaceBurnTime > 0) {
+						// if there's an input stack, pick one item off it
+						// copy that instance into currentBurnItem
+						currentBurnItem = inventory.extractItem(0, 1, false);
 
-							// deduce it's properties
-							currentBurnTime=0;
-							// 3 and 0.7 gives a spread from 46 ticks @ 10.8k (bamboo) to 2630 ticks @ 60.8k (coal block)
-							// these numbers control the split between longer burn and more power (heat per tick)
-							currentBurnItemDuration = (int) (3*Math.pow(furnaceBurnTime, 0.7));
-							// the 10000f constant here determines how much heat you get per tick of burning fuel
-							// so varying from 25x for bamboo to 16k x for coal block 
-							currentBurnItemPower = furnaceBurnTime * 10000f / currentBurnItemDuration;
-							// todo: if input was a bucket of lava (e.g.), then we need to spit out a bucket
-							// here.
-						}
-					}
-				}
-				if (currentBurnItem != null) {
-					isRunning = true;
-					heat.addTickHeat(currentBurnItemPower);
-					++currentBurnTime;
-					if (currentBurnTime >= currentBurnItemDuration) {
-						// finished burning this thing.
-						currentBurnItem = null;
+						// deduce it's properties
 						currentBurnTime = 0;
-						currentBurnItemPower = 0;
-						currentBurnItemDuration = 0;
+						// 3 and 0.7 gives a spread from 46 ticks @ 10.8k (bamboo) to 2630 ticks @ 60.8k
+						// (coal block)
+						// these numbers control the split between longer burn and more power (heat per
+						// tick)
+						currentBurnItemDuration = (int) (3 * Math.pow(furnaceBurnTime, 0.7));
+						// the 10000f constant here determines how much heat you get per tick of burning
+						// fuel
+						// so varying from 25x for bamboo to 16k x for coal block
+						currentBurnItemPower = furnaceBurnTime * 10000f / currentBurnItemDuration;
+						// todo: if input was a bucket of lava (e.g.), then we need to spit out a bucket
+						// here.
 					}
 				}
 			}
-			BlockState oldBlockState = getBlockState();
-			boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
-			if (isRunning != wasRunning) {
-				world.setBlockState(getPos(), getBlockState().with(LitStateHandler.LIT, isRunning));
-				dirty = true;
+			if (currentBurnItem != null) {
+				isRunning = true;
+				heat.addTickHeat(currentBurnItemPower);
+				++currentBurnTime;
+				if (currentBurnTime >= currentBurnItemDuration) {
+					// finished burning this thing.
+					currentBurnItem = null;
+					currentBurnTime = 0;
+					currentBurnItemPower = 0;
+					currentBurnItemDuration = 0;
+				}
 			}
+		}
+		BlockState oldBlockState = getBlockState();
+		boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
+		if (isRunning != wasRunning) {
+			world.setBlockState(getPos(), getBlockState().with(LitStateHandler.LIT, isRunning));
+			dirty = true;
 		}
 
 		if (dirty) {
@@ -110,7 +115,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 
 	@Override
 	protected ITextComponent getDefaultName() {
-		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".grinder");
+		return new TranslationTextComponent("container." + TestMod.MOD_ID + ".solid_fuel_heater");
 	}
 
 	@Override
@@ -147,18 +152,16 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 	}
 
 	public float getBurnProgression() {
-		if(currentBurnItem == null || currentBurnItemDuration == 0) 
-		{
+		if (currentBurnItem == null || currentBurnItemDuration == 0) {
 			return 0;
 		}
 		return (float) currentBurnTime / currentBurnItemDuration;
 	}
-	
+
 	public static int getFuelBurnTime(ItemStack stack) {
 		int ret = stack.getBurnTime();
-		if(ret == -1)
-		{
-	         return net.minecraftforge.common.ForgeHooks.getBurnTime(stack);
+		if (ret == -1) {
+			return net.minecraftforge.common.ForgeHooks.getBurnTime(stack);
 		}
 		return ret;
 	}

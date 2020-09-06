@@ -32,7 +32,6 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase> exte
 	@Override
 	public boolean canInteractWith(PlayerEntity playerIn) {
 		return isWithinUsableDistance(canInteractWithCallable, playerIn, tileEntity.getBlockState().getBlock());
-//		return isWithinUsableDistance(canInteractWithCallable, playerIn, RegistryHandler.GRINDER_BLOCK.get());
 	}
 
 	// base class?

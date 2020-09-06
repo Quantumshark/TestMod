@@ -46,40 +46,43 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	@Override
 	public void tick() {
 		super.tick();
+
+		if (this.world == null || this.world.isRemote) {
+			return;
+		}
+
 		boolean dirty = false;
 		boolean isRunning = false;
 
-		if (this.world != null && !this.world.isRemote) {
-			if (this.world.isBlockPowered(this.getPos())) {
-				// todo: save the recipe id in the state so we don't have to find every tick.
-				// also so we can lose progess if you: turn machine on; put something in; turn
-				// machine off; take input out; put in new input; turn back on again
-				RecipeAndWrapper match = this.findMatchingRecipe();
-				if (match == null) {
-					// reset progress if you remove the input item.
-					this.currentSmeltTime = 0;
-				} else {
-					if (match.process(true, null)) // pass a null dropper so it crashes if it tries to drop something :)
-					{
-						if (this.currentSmeltTime < this.maxSmeltTime) {
-							isRunning = true;
-							this.currentSmeltTime++;
-						} else {
-							this.currentSmeltTime = 0;
+		if (this.world.isBlockPowered(this.getPos())) {
+			// todo: save the recipe id in the state so we don't have to find every tick.
+			// also so we can lose progess if you: turn machine on; put something in; turn
+			// machine off; take input out; put in new input; turn back on again
+			RecipeAndWrapper match = this.findMatchingRecipe();
+			if (match == null) {
+				// reset progress if you remove the input item.
+				this.currentSmeltTime = 0;
+			} else {
+				if (match.process(true, null)) // pass a null dropper so it crashes if it tries to drop something :)
+				{
+					if (this.currentSmeltTime < this.maxSmeltTime) {
+						isRunning = true;
+						this.currentSmeltTime++;
+					} else {
+						this.currentSmeltTime = 0;
 
-							match.process(false, new ItemDropper());
+						match.process(false, new ItemDropper());
 
-							dirty = true;
-						}
+						dirty = true;
 					}
 				}
 			}
-			BlockState oldBlockState = getBlockState();
-			boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
-			if (isRunning != wasRunning) {
-				this.world.setBlockState(this.getPos(), this.getBlockState().with(LitStateHandler.LIT, isRunning));
-				dirty = true;
-			}
+		}
+		BlockState oldBlockState = getBlockState();
+		boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
+		if (isRunning != wasRunning) {
+			this.world.setBlockState(this.getPos(), this.getBlockState().with(LitStateHandler.LIT, isRunning));
+			dirty = true;
 		}
 
 		dirty |= AttemptFillBucket(1, 0, 3);
@@ -152,7 +155,8 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 			if (stack.getItem() == Items.BUCKET) {
 				return true;
 			}
-			IFluidHandlerItem h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
+			IFluidHandlerItem h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+					.orElse(null);
 			if (h != null) {
 				return true;
 			}
