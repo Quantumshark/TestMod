@@ -74,7 +74,7 @@ public class HeatCapabilityProvider implements IHeatCapability, INBTSerializable
 		// extrapolate the minecraft temp calc for below sea level, as minecraft doesn't. 
 		if(pos.getY() < 64)
 		{
-			minecraftTemp += ((float)pos.getY() - 64.0F) * 0.05F / 30.0F;
+			minecraftTemp += (64.0F - (float)pos.getY()) * 0.05F / 30.0F;
 		}
 		ret += minecraftTemp * MINECRAFT_TEMP_CONVERSION_SCALE;	
 		double dailyRange = 10;	// this will be plus or minus
