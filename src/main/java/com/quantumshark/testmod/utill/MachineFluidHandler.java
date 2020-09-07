@@ -28,7 +28,7 @@ public class MachineFluidHandler implements IFluidHandler, INBTSerializable<Comp
 	public CompoundNBT serializeNBT() {
 		ListNBT nbtTagList = new ListNBT();
 		for (int i = 0; i < tanks.size(); i++) {
-//f			if (!tanks.get(i).isEmpty()) {
+//			if (!tanks.get(i).isEmpty()) {
 			// We need to push empty tanks, otherwise the client doesn't get the update
 			CompoundNBT itemTag = new CompoundNBT();
 			itemTag.putInt("Slot", i);

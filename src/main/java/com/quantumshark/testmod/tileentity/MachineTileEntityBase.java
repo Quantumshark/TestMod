@@ -103,7 +103,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	@Override
 	public void tick() {
-		
+
 		if (this.world == null || this.world.isRemote) {
 			return;
 		}
@@ -280,13 +280,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		if (item != null) {
 			FluidStack fs = FluidUtil.tryFluidTransfer(tank, item, tank.getCapacity() - tank.getFluidAmount(), true);
 			success = (fs != null && fs != FluidStack.EMPTY);
-			if(inputStack.getContainerItem() == null)
-			{
+			if (inputStack.getContainerItem() == null) {
 				// tank - output the (now less full) tank
 				out = inputStack;
-			}
-			else
-			{
+			} else {
 				// bucket - output the empty bucket
 				out = item.getContainer();
 			}
@@ -323,9 +320,11 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 		public abstract RecipeComponent getRecipeComponent();
 
-		public abstract boolean insert(RecipeComponent output, boolean simulate);
+		public abstract boolean insert(RecipeComponent output, boolean simulate, SlotWrapper tagMergeSource);
 
 		public abstract void decrease(RecipeComponent input);
+
+		public abstract CompoundNBT getCurrentTag();
 	}
 
 	public class SlotWrapperItem extends SlotWrapper {
@@ -337,14 +336,28 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		public int inventoryIndex;
 
 		public RecipeComponent getRecipeComponent() {
-			return RecipeComponent.wrap(getInputStack(inventoryIndex), name);
+			return RecipeComponent.wrap(inventory.getStackInSlot(inventoryIndex), name);
 		}
 
 		@Override
-		public boolean insert(RecipeComponent output, boolean simulate) {
+		public CompoundNBT getCurrentTag() {
+			return inventory.getStackInSlot(inventoryIndex).getTag();
+		}
+
+		@Override
+		public boolean insert(RecipeComponent output, boolean simulate, SlotWrapper tagMergeSource) {
 			// this is null if wrong type, hopefully we'll throw if that happens (it should
 			// be impossible)
 			ItemStack outputStack = output.getAsItemStack().copy();
+
+			if (tagMergeSource != null) {
+				CompoundNBT tag = outputStack.getTag();
+				if (tag == null) {
+					tag = new CompoundNBT();
+				}
+				tag.merge(tagMergeSource.getCurrentTag());
+				outputStack.setTag(tag);
+			}
 
 			return (ItemStack.EMPTY == inventory.insertOutputItem(inventoryIndex, outputStack, simulate));
 		}
@@ -372,15 +385,29 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		public int inventoryIndex;
 
 		public RecipeComponent getRecipeComponent() {
-			return RecipeComponent.wrap(getInputFluidStack(inventoryIndex), name);
+			return RecipeComponent.wrap(fluidInventory.getFluidInTank(inventoryIndex), name);
 		}
 
 		@Override
-		public boolean insert(RecipeComponent output, boolean simulate) {
+		public CompoundNBT getCurrentTag() {
+			return fluidInventory.getFluidInTank(inventoryIndex).getTag();
+		}
+
+		@Override
+		public boolean insert(RecipeComponent output, boolean simulate, SlotWrapper tagMergeSource) {
 			// this is null if wrong type, hopefully we'll throw if that happens (it should
 			// be impossible)
 			FluidStack outputStack = output.getAsFluidStack().copy();
 
+			if (tagMergeSource != null) {
+				CompoundNBT tag = outputStack.getTag();
+				if (tag == null) {
+					tag = new CompoundNBT();
+				}
+				tag.merge(tagMergeSource.getCurrentTag());
+				outputStack.setTag(tag);
+			}
+			
 			return (outputStack.getAmount() == fluidInventory.getTank(inventoryIndex).fill(outputStack,
 					toAction(simulate)));
 		}

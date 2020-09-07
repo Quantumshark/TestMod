@@ -12,7 +12,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
-public class FlotationSeparatorRecipe extends MachineRecipeBase {
+public class FlotationSeparatorRecipe extends MachineRecipeBase implements IRecipeTagMerge {
 	
 	// return a new recipe of this type - used for reading recipes.
 	public static class RecipeFactory implements RecipeSerializer.IRecipeFactory<FlotationSeparatorRecipe> {
@@ -56,5 +56,15 @@ public class FlotationSeparatorRecipe extends MachineRecipeBase {
 		// this is the icon that appears next to the recipe type - use the machine this
 		// recipe type is for (the simplest one if many ...)
 		return new ItemStack(RegistryHandler.FLOTATION_SEPARATOR_BLOCK.get());
+	}
+
+	@Override
+	public int getTagSource(int outputSlotIndex) {
+		// merge tags from input into remnant
+		if(outputSlotIndex == 1)
+		{
+			return 0;
+		}
+		return -1;
 	}	
 }

@@ -134,6 +134,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> PULVERISEDGOLDORE = ITEMS.register("pulverised_gold_ore", ItemBase::new);
 	public static final RegistryObject<Item> PULVERISEDGRANITE = ITEMS.register("pulverised_granite", ItemBase::new);
 	public static final RegistryObject<Item> PULVERISEDIRONORE = ITEMS.register("pulverised_iron_ore", ItemBase::new);
+	public static final RegistryObject<Item> PULVERISEDNICKELORESMALL = ITEMS.register("small_pulverised_nickel_ore", ItemBase::new);
 	public static final RegistryObject<Item> PULVERISEDCHALCANTHITE = ITEMS.register("pulverised_chalcanthite", ItemBase::new);
 	public static final RegistryObject<Item> IRONCHALCANTHITEBLEND = ITEMS.register("iron_chalcanthite_blend", ItemBase::new);
 	public static final RegistryObject<Item> ANDESITEDIORITEBLEND = ITEMS.register("andesite_diorite_blend", ItemBase::new);

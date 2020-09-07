@@ -1,0 +1,26 @@
+{
+	"type": "testmod-emirate-of-granada:flotation_separator",
+	"output": {
+		"item": "testmod-emirate-of-granada:small_pulverised_nickel_ore"
+	},
+	"oil": {
+		"fluid": "testmod-emirate-of-granada:crude_oil",
+		"amount": 1000
+	},
+	"input": {
+		"item": "testmod-emirate-of-granada:pulverised_iron_ore",
+		"nbt": {
+			"tag": {
+				"nickel": 0
+			}
+		}
+	},
+	"remnant": {
+		"item": "testmod-emirate-of-granada:pulverised_iron_ore",
+		"nbt": {
+			"tag": {
+				"nickel": 1
+			}
+		}
+	}
+}

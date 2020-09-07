@@ -15,17 +15,32 @@ public class RecipeAndWrapper {
 	}
 
 	public boolean process(boolean simulate, IItemDropper itemDropper) {
+		return process(simulate, itemDropper, null);
+	}
+	
+	public boolean process(boolean simulate, IItemDropper itemDropper, IRecipeTagMerge rtm) {
 		boolean ret = true;
 		
+		// note: this isn't transactional. We assume the recipe will work - if the first output succeeds and the second fails,
+		// we get the first output for free.
 		for(int i=0;i<recipe.getOutputs().size();++i)
 		{
+			SlotWrapper inputTagSource = null;
+			if(rtm != null)
+			{
+				int inputTagSourceId = rtm.getTagSource(i);
+				if(inputTagSourceId >= 0)
+				{
+					inputTagSource = wrapper.getInputSlot(inputTagSourceId);
+				}
+			}
 			RecipeComponent output = recipe.getOutputs().get(i);
 			SlotWrapper sw = wrapper.getOutputSlot(i);
 			if(sw == null) {
 				// not currently mapped
 				continue;
 			}
-			ret &= sw.insert(output, simulate);
+			ret &= sw.insert(output, simulate, inputTagSource);
 		}
 		
 		if (!simulate) {
