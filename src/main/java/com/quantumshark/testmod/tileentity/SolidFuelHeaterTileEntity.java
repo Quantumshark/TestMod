@@ -30,7 +30,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 		super(RegistryHandler.SOLID_FUEL_HEATER_TILE_ENTITY.get());
 		inputSlotCount = 1;
 		inventory = new MachineItemHandler(inputSlotCount + outputSlotCount, this);
-		heat = new HeatCapabilityProvider(200000, 5000, 600);
+		heat = new HeatCapabilityProvider(200000, 5000, 550);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 						// the 10000f constant here determines how much heat you get per tick of burning
 						// fuel
 						// so varying from 25x for bamboo to 16k x for coal block
-						currentBurnItemPower = furnaceBurnTime * 10000f / currentBurnItemDuration;
+						currentBurnItemPower = furnaceBurnTime * 37500f / currentBurnItemDuration;
 						// todo: if input was a bucket of lava (e.g.), then we need to spit out a bucket
 						// here.
 					}
