@@ -81,7 +81,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 						// the 10000f constant here determines how much heat you get per tick of burning
 						// fuel
 						// so varying from 25x for bamboo to 16k x for coal block
-						currentBurnItemPower = furnaceBurnTime * 37500f / currentBurnItemDuration;
+						currentBurnItemPower = furnaceBurnTime * 65000f / currentBurnItemDuration;
 						// todo: if input was a bucket of lava (e.g.), then we need to spit out a bucket
 						// here.
 					}
