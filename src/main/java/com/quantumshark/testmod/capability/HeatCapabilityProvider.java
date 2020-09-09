@@ -83,9 +83,215 @@ public class HeatCapabilityProvider implements IHeatCapability, INBTSerializable
 		
 		// put code like this in to pick out specific biomes or biomes with a particular "type" (they can have many):
 		// pick out a very specific biome type?
-		if(biome == Biomes.ICE_SPIKES)
+		if(biome == Biomes.SNOWY_TUNDRA)
 		{
-			
+			minecraftTemp = -13F;
+			dailyRange = 10;
+		}
+		else if(biome == Biomes.ICE_SPIKES)
+		{
+			minecraftTemp = -7F;
+			dailyRange = 8;
+		}
+		else if(biome == Biomes.SNOWY_TAIGA || biome == Biomes.SNOWY_TAIGA_HILLS)
+		{
+			minecraftTemp = 0F;
+			dailyRange = 5;
+		}
+		else if(biome == Biomes.SNOWY_TAIGA_MOUNTAINS)
+		{
+			minecraftTemp = -3F;
+			dailyRange = 5;
+		}
+		else if(biome == Biomes.FROZEN_RIVER)
+		{
+			minecraftTemp = -5F;
+			dailyRange = 4;
+		}
+		else if(biome == Biomes.SNOWY_BEACH)
+		{
+			minecraftTemp = -1F;
+			dailyRange = 3;
+		}
+		else if(biome == Biomes.MOUNTAINS || biome == Biomes.GRAVELLY_MOUNTAINS || biome == Biomes.MODIFIED_GRAVELLY_MOUNTAINS)
+		{
+			minecraftTemp = 2F;
+			dailyRange = 9;
+		}
+		else if(biome == Biomes.WOODED_MOUNTAINS)
+		{
+			minecraftTemp = -5F;
+			dailyRange = 4;
+		}
+		else if(biome == Biomes.TAIGA || biome == Biomes.TAIGA_HILLS)
+		{
+			minecraftTemp = 3F;
+			dailyRange = 6;
+		}
+		else if(biome == Biomes.TAIGA_MOUNTAINS)
+		{
+			minecraftTemp = 1F;
+			dailyRange = 6;
+		}
+		else if(biome == Biomes.GIANT_TREE_TAIGA || biome == Biomes.GIANT_TREE_TAIGA_HILLS)
+		{
+			minecraftTemp = 4F;
+			dailyRange = 6;
+		}
+		else if(biome == Biomes.GIANT_SPRUCE_TAIGA || biome == Biomes.GIANT_SPRUCE_TAIGA_HILLS)
+		{
+			minecraftTemp = 5F;
+			dailyRange = 6;
+		}
+		else if(biome == Biomes.STONE_SHORE)
+		{
+			minecraftTemp = 7F;
+			dailyRange = 4;
+		}
+		else if(biome == Biomes.PLAINS || biome == Biomes.SUNFLOWER_PLAINS)
+		{
+			minecraftTemp = 12F;
+			dailyRange = 7;
+		}
+		else if(biome == Biomes.FOREST)
+		{
+			minecraftTemp = 12F;
+			dailyRange = 2;
+		}
+		else if(biome == Biomes.FLOWER_FOREST)
+		{
+			minecraftTemp = 12F;
+			dailyRange = 3;
+		}
+		else if(biome == Biomes.BIRCH_FOREST || biome == Biomes.BIRCH_FOREST_HILLS)
+		{
+			minecraftTemp = 11F;
+			dailyRange = 2;
+		}
+		else if(biome == Biomes.TALL_BIRCH_FOREST)
+		{
+			minecraftTemp = 10F;
+			dailyRange = 3;
+		}
+		else if(biome == Biomes.DARK_FOREST || biome == Biomes.DARK_FOREST_HILLS)
+		{
+			minecraftTemp = 12F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.SWAMP || biome == Biomes.SWAMP_HILLS)
+		{
+			minecraftTemp = 17F;
+			dailyRange = 2;
+		}
+		else if(biome == Biomes.JUNGLE || biome == Biomes.JUNGLE_HILLS)
+		{
+			minecraftTemp = 29F;
+			dailyRange = 2;
+		}
+		else if(biome == Biomes.MODIFIED_JUNGLE)
+		{
+			minecraftTemp = 27F;
+			dailyRange = 3;
+		}
+		else if(biome == Biomes.JUNGLE_EDGE)
+		{
+			minecraftTemp = 25F;
+			dailyRange = 3;
+		}
+		else if(biome == Biomes.MODIFIED_JUNGLE_EDGE)
+		{
+			minecraftTemp = 24F;
+			dailyRange = 3;
+		}
+		else if(biome == Biomes.BAMBOO_JUNGLE || biome == Biomes.BAMBOO_JUNGLE_HILLS)
+		{
+			minecraftTemp = 27F;
+			dailyRange = 2;
+		}
+		else if(biome == Biomes.BEACH)
+		{
+			minecraftTemp = 15F;
+			dailyRange = 5;
+		}
+		else if(biome == Biomes.MUSHROOM_FIELDS)
+		{
+			minecraftTemp = 25F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.MUSHROOM_FIELD_SHORE)
+		{
+			minecraftTemp = 23F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.DESERT)
+		{
+			minecraftTemp = 22F;
+			dailyRange = 15;
+		}
+		else if(biome == Biomes.DESERT_LAKES)
+		{
+			minecraftTemp = 20F;
+			dailyRange = 13;
+		}
+		else if(biome == Biomes.SAVANNA || biome == Biomes.SAVANNA_PLATEAU)
+		{
+			minecraftTemp = 20F;
+			dailyRange = 10;
+		}
+		else if(biome == Biomes.SHATTERED_SAVANNA || biome == Biomes.SHATTERED_SAVANNA_PLATEAU)
+		{
+			minecraftTemp = 18F;
+			dailyRange = 10;
+		}
+		else if(biome == Biomes.BADLANDS || biome == Biomes.BADLANDS_PLATEAU || biome == Biomes.MODIFIED_BADLANDS_PLATEAU)
+		{
+			minecraftTemp = 20F;
+			dailyRange = 13;
+		}
+		else if(biome == Biomes.ERODED_BADLANDS)
+		{
+			minecraftTemp = 19F;
+			dailyRange = 13;
+		}
+		else if(biome == Biomes.WOODED_BADLANDS_PLATEAU || biome == Biomes.MODIFIED_WOODED_BADLANDS_PLATEAU)
+		{
+			minecraftTemp = 19F;
+			dailyRange = 9;
+		}
+		else if(biome == Biomes.WARM_OCEAN || biome == Biomes.DEEP_WARM_OCEAN)
+		{
+			minecraftTemp = 21F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.LUKEWARM_OCEAN || biome == Biomes.DEEP_LUKEWARM_OCEAN)
+		{
+			minecraftTemp = 18F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.OCEAN || biome == Biomes.DEEP_OCEAN)
+		{
+			minecraftTemp = 13F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.COLD_OCEAN || biome == Biomes.DEEP_COLD_OCEAN)
+		{
+			minecraftTemp = 7F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.FROZEN_OCEAN || biome == Biomes.DEEP_FROZEN_OCEAN)
+		{
+			minecraftTemp = 0F;
+			dailyRange = 1;
+		}
+		else if(biome == Biomes.NETHER)
+		{
+			minecraftTemp = 40F;
+			dailyRange = 0;
+		}
+		else if(biome == Biomes.END_BARRENS || biome == Biomes.END_HIGHLANDS || biome == Biomes.END_MIDLANDS || biome == Biomes.SMALL_END_ISLANDS || biome == Biomes.THE_END)
+		{
+			minecraftTemp = 10F;
+			dailyRange = 0;
 		}
 		// pick out biomes matching a characteristic
 		if(BiomeDictionary.hasType(biome, Type.WET))
