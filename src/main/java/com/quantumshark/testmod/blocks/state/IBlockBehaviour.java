@@ -4,9 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 // the idea of this interface is to provide a generic way that blocks can interact with blockstate properties
@@ -25,4 +28,9 @@ public interface IBlockBehaviour {
 	default BlockState rotate(BlockState state, Rotation rot) {return state;}
 	default BlockState getStateForPlacement(BlockItemUseContext context, BlockState state) {return state;}
 	default void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {}
+	default int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side, int def) {return def;}
+	default int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side, int def) {return def;}
+	default boolean canProvidePower(BlockState state) {return false;}
+	default boolean canConnectRedstone(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {return false;}
+	default boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side) {return false;}
 }

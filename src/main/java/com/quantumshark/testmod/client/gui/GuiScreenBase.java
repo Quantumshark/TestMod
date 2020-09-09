@@ -5,6 +5,8 @@ import com.quantumshark.testmod.container.MachineContainerBase;
 import com.quantumshark.testmod.utill.TankFluidHandler;
 
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.Button.IPressable;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +17,7 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 	public GuiScreenBase(T screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
 
-		this.guiLeft = 0;	// these two get moved anyway
+		this.guiLeft = 0; // these two get moved anyway
 		this.guiTop = 0;
 		this.xSize = WIDTH;
 		this.ySize = HEIGHT;
@@ -35,7 +37,18 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 	private static final int ITEM_SIZE = 16;
 	private static final int ARROW_HEIGHT = 17;
 	private static final int ARROW_WIDTH = 26;
-	
+
+	@Override
+	public void init() {
+		super.init();
+		this.buttons.clear();
+
+		// render widgets
+		for (IScreenWidget w : container.screenWidgets) {
+			w.onInit(this);
+		}		
+	}
+
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		int left = this.guiLeft;
@@ -53,26 +66,34 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 		// render inventory slots
 		// render input and output slots
 		int inputSlotCount = container.getTileEntity().getInputSlotCount();
-		for(Slot s : container.inventorySlots) {
-			int s1 = s.slotNumber;	// index in slots
-			int s2 = s.getSlotIndex();	// only meaningful for inventory slots
-			if(s1 < PLAYER_INVENTORY_SLOTS || s2 < inputSlotCount) {
+		for (Slot s : container.inventorySlots) {
+			int s1 = s.slotNumber; // index in slots
+			int s2 = s.getSlotIndex(); // only meaningful for inventory slots
+			if (s1 < PLAYER_INVENTORY_SLOTS || s2 < inputSlotCount) {
 				// render input slots
-				this.blit(left+s.xPos-(INPUT_SLOT_SIZE-ITEM_SIZE)/2,  top+s.yPos-(INPUT_SLOT_SIZE-ITEM_SIZE)/2, 248-INPUT_SLOT_SIZE, 0, INPUT_SLOT_SIZE, INPUT_SLOT_SIZE);
-			}
-			else
-			{
+				this.blit(left + s.xPos - (INPUT_SLOT_SIZE - ITEM_SIZE) / 2,
+						top + s.yPos - (INPUT_SLOT_SIZE - ITEM_SIZE) / 2, 248 - INPUT_SLOT_SIZE, 0, INPUT_SLOT_SIZE,
+						INPUT_SLOT_SIZE);
+			} else {
 				// render output slots
-				this.blit(left+s.xPos-(OUTPUT_SLOT_SIZE-ITEM_SIZE)/2,  top+s.yPos-(OUTPUT_SLOT_SIZE-ITEM_SIZE)/2, 248-OUTPUT_SLOT_SIZE, INPUT_SLOT_SIZE, OUTPUT_SLOT_SIZE, OUTPUT_SLOT_SIZE);
+				this.blit(left + s.xPos - (OUTPUT_SLOT_SIZE - ITEM_SIZE) / 2,
+						top + s.yPos - (OUTPUT_SLOT_SIZE - ITEM_SIZE) / 2, 248 - OUTPUT_SLOT_SIZE, INPUT_SLOT_SIZE,
+						OUTPUT_SLOT_SIZE, OUTPUT_SLOT_SIZE);
 			}
 		}
-		
+
 		// render widgets
-		for(IScreenWidget w : container.screenWidgets) {
-			w.render(this);
+		for (IScreenWidget w : container.screenWidgets) {
+			w.renderBackgroundLayer(this);
 		}
 	}
-	
+
+	public void drawIcon(ResourceLocation texture, int x, int y, int textureX, int textureY, int renderWidth,
+			int renderHeight, int textureWidth, int textureHeight) {
+		this.minecraft.getTextureManager().bindTexture(texture);
+		blit(x, y, textureX, textureY, renderWidth, renderHeight, textureWidth, textureHeight);
+	}
+
 	public void renderProgessArrow(int left, int top, float progress) {
 		this.minecraft.getTextureManager().bindTexture(getGuiTexture());
 		// base one
@@ -120,12 +141,17 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 
 	private static final int COLOR_FG = 0xf0f0f0;
 	private static final int COLOR_SH = 0x101010;
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 		drawShadowedString(this.title.getFormattedText(), 8.0f, 8.0f);
 		drawShadowedString(this.playerInventory.getDisplayName().getFormattedText(), 8.0f, 69.0f);
+		
+		// render widgets
+		for (IScreenWidget w : container.screenWidgets) {
+			w.renderForegroundLayer(this);
+		}
 	}
 
 	private void drawShadowedString(String text, float x, float y) {
@@ -133,12 +159,18 @@ public abstract class GuiScreenBase<T extends MachineContainerBase<?>> extends C
 	}
 
 	public void drawWidgetShadowedString(String text, float x, float y) {
-		drawShadowedString(text, guiLeft+x, guiTop+y, COLOR_FG, COLOR_SH);
+		drawShadowedString(text, guiLeft + x, guiTop + y, COLOR_FG, COLOR_SH);
+	}
+
+	private void drawShadowedString(String text, float x, float y, int col_fg, int col_sh) {
+		this.font.drawString(text, x + 1, y + 1, col_sh);
+		this.font.drawString(text, x, y, col_fg);
 	}
 	
-	private void drawShadowedString(String text, float x, float y, int col_fg, int col_sh) {
-		this.font.drawString(text, x+1, y+1, col_sh);
-		this.font.drawString(text, x, y, col_fg);
+	// ask nicely because the underlying method is protected.
+	public void addButtonPlease(int x, int y, int w, int h, String caption, IPressable handler) {
+		Button button = new Button(guiLeft+x,guiTop+y,w,h,caption, handler);
+		addButton(button);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class TankWidget implements IScreenWidget {
 	private final int height;
 
 	@Override
-	public void render(GuiScreenBase<?> screen) {
+	public void renderBackgroundLayer(GuiScreenBase<?> screen) {
 		screen.drawTank(tankIndex, left, top, width, height);
 	}
 }

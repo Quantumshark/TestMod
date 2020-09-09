@@ -20,6 +20,7 @@ import com.quantumshark.testmod.capability.IHeatCapability;
 import com.quantumshark.testmod.capability.IShaftPower;
 import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.capability.ShaftPowerStorage;
+import com.quantumshark.testmod.packet.PacketHandler;
 import com.quantumshark.testmod.utill.RegistryHandler;
 import com.quantumshark.testmod.world.gen.ModOreGen;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -44,6 +45,7 @@ public class TestMod
         modEventBus.addListener(this::commonSetup);
 
         RegistryHandler.init();
+        PacketHandler.init();
         
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

@@ -21,11 +21,6 @@ public class FlotationSeparatorScreen extends GuiScreenBase<FlotationSeparatorCo
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-	}
-
-	@Override
 	public ResourceLocation getGuiTexture() {
 		// TODO Auto-generated method stub
 		return TEXTURE_GUI;

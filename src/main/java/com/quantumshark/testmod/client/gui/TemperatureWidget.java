@@ -8,12 +8,14 @@ public class TemperatureWidget implements IScreenWidget {
 		this.top = top;
 		this.obj = obj;
 	}
+
 	private final int left;
-	private final int top;	private final IHeatCapability obj;
-	
+	private final int top;
+	private final IHeatCapability obj;
+
 	@Override
-	public void render(GuiScreenBase<?> screen) {
-		String text = String.format("%.2f", obj.getTemperatureK())+"K";
+	public void renderBackgroundLayer(GuiScreenBase<?> screen) {
+		String text = String.format("%.2f", obj.getTemperatureK()) + "K";
 		screen.drawWidgetShadowedString(text, left, top);
 	}
 }

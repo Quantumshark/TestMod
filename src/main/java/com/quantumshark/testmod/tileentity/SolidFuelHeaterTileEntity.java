@@ -60,7 +60,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 		boolean dirty = false;
 		boolean isRunning = false;
 
-		if (true || world.isBlockPowered(getPos())) { // todo: configurable redstone control mode
+		if (getRedstoneRunnable()) { // todo: configurable redstone control mode
 			if (currentBurnItem == null) {
 				ItemStack fuel = inventory.getStackInSlot(0);
 				if (!fuel.isEmpty()) // double-check it can burn
@@ -104,6 +104,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 		boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
 		if (isRunning != wasRunning) {
 			world.setBlockState(getPos(), getBlockState().with(LitStateHandler.LIT, isRunning));
+			world.notifyNeighborsOfStateChange(this.getPos(), this.getBlockState().getBlock());
 			dirty = true;
 		}
 

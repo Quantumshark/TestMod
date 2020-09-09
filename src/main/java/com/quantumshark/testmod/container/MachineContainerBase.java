@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.quantumshark.testmod.client.gui.IScreenWidget;
+import com.quantumshark.testmod.client.gui.RedstoneModeWidget;
 import com.quantumshark.testmod.tileentity.MachineTileEntityBase;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,6 +28,7 @@ public abstract class MachineContainerBase<T extends MachineTileEntityBase> exte
 		// base
 		this.tileEntity = tile;
 		this.canInteractWithCallable = IWorldPosCallable.of(tile.getWorld(), tile.getPos());
+		screenWidgets.add(new RedstoneModeWidget(153,19, tile));
 	}
 
 	@Override

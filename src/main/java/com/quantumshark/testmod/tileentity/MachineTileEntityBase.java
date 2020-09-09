@@ -2,8 +2,11 @@ package com.quantumshark.testmod.tileentity;
 
 import javax.annotation.Nullable;
 
+import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.capability.HeatCapabilityProvider;
 import com.quantumshark.testmod.capability.IHeatCapability;
+import com.quantumshark.testmod.packet.BlockUpdateMessage;
+import com.quantumshark.testmod.packet.PacketHandler;
 import com.quantumshark.testmod.recipes.RecipeComponent;
 import com.quantumshark.testmod.utill.IItemDropper;
 import com.quantumshark.testmod.utill.ISlotValidator;
@@ -48,6 +51,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	protected MachineFluidHandler fluidInventory;
 	protected HeatCapabilityProvider heat = null; // null by default. Create in constructor if this item handles heat.
 
+	protected RedstoneControlMode redstoneMode = RedstoneControlMode.NONE;
+
 	protected int inputSlotCount;
 	protected int catalystSlotCount;
 	protected int outputSlotCount;
@@ -57,6 +62,38 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	public MachineTileEntityBase(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
+	}
+
+	public RedstoneControlMode getRedstoneMode() {
+		return redstoneMode;
+	}
+
+	public boolean getRedstoneRunnable() {
+		switch (redstoneMode) {
+		case HIGH:
+			return this.world.isBlockPowered(this.getPos());
+		case LOW:
+			return !this.world.isBlockPowered(this.getPos());
+		case EMIT:
+		case NONE:
+		default:
+			return true;
+		}
+	}
+
+	public void nextRedstoneMode() {
+		int i = redstoneMode.ordinal(); // assume this is also index within values()
+		++i;
+		i %= RedstoneControlMode.values().length;
+		redstoneMode = RedstoneControlMode.values()[i];
+
+		// if we're running in a client, push the new value down to the server.
+		if (this.world != null && this.world.isRemote) {
+			CompoundNBT msg = new CompoundNBT();
+			msg.putString(MSG_REDSTONE_MODE, redstoneMode.toString());
+
+			PacketHandler.INSTANCE.sendToServer(new BlockUpdateMessage(world, pos, msg));
+		}
 	}
 
 	public ItemStack getInputStack(int index) {
@@ -140,6 +177,10 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 				heat.deserializeNBT(compound2);
 			}
 		}
+
+		if (compound.contains(MSG_REDSTONE_MODE)) {
+			redstoneMode = RedstoneControlMode.valueOf(compound.getString(MSG_REDSTONE_MODE));
+		}
 	}
 
 	@Override
@@ -158,6 +199,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 			compound.put(NBT_TAG_HEAT, heat.serializeNBT());
 		}
 
+		compound.putString(MSG_REDSTONE_MODE, redstoneMode.toString());
+
 		return compound;
 	}
 
@@ -173,9 +216,23 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		return new SUpdateTileEntityPacket(this.pos, 0, nbt);
 	}
 
+	public void onCustomDataPacket(CompoundNBT msg) {
+		if (msg.contains(MSG_REDSTONE_MODE, 8)) // string
+		{
+			RedstoneControlMode oldMode = redstoneMode;
+			redstoneMode = RedstoneControlMode.valueOf(msg.getString(MSG_REDSTONE_MODE));
+			if (redstoneMode == RedstoneControlMode.EMIT || oldMode == RedstoneControlMode.EMIT) {
+				world.notifyNeighborsOfStateChange(this.getPos(), this.getBlockState().getBlock());
+			}
+		}
+	}
+
+	public static final String MSG_REDSTONE_MODE = "redstonemode";
+
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		this.read(pkt.getNbtCompound());
+		CompoundNBT msg = pkt.getNbtCompound();
+		this.read(msg);
 	}
 
 	@Override
@@ -407,7 +464,7 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 				tag.merge(tagMergeSource.getCurrentTag());
 				outputStack.setTag(tag);
 			}
-			
+
 			return (outputStack.getAmount() == fluidInventory.getTank(inventoryIndex).fill(outputStack,
 					toAction(simulate)));
 		}

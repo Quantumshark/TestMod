@@ -14,7 +14,7 @@ public class ProgressArrowWidget implements IScreenWidget {
 	private final Supplier<Float> progress;
 
 	@Override
-	public void render(GuiScreenBase<?> screen) {
+	public void renderBackgroundLayer(GuiScreenBase<?> screen) {
 		screen.renderProgessArrow(left, top, progress.get());
 	}
 }

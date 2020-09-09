@@ -45,7 +45,7 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 		boolean dirty = false;
 		boolean isRunning = false;
 
-		if (this.world.isBlockPowered(this.getPos())) {
+		if (getRedstoneRunnable()) {
 			// todo: save the recipe id in the state so we don't have to find every tick.
 			// also so we can lose progess if you: turn machine on; put something in; turn
 			// machine off; take input out; put in new input; turn back on again
@@ -73,6 +73,7 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 		boolean wasRunning = oldBlockState.get(LitStateHandler.LIT);
 		if (isRunning != wasRunning) {
 			this.world.setBlockState(this.getPos(), this.getBlockState().with(LitStateHandler.LIT, isRunning));
+			world.notifyNeighborsOfStateChange(this.getPos(), this.getBlockState().getBlock());
 			dirty = true;
 		}
 
