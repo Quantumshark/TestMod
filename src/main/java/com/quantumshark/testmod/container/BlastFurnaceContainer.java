@@ -53,7 +53,7 @@ public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTile
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 2, 56, 54));
 		// Output slots
 		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 116, 20));
-		this.addSlot(new SlotItemHandler(tile.getInventory(), 3, 116, 50));
+		this.addSlot(new SlotItemHandler(tile.getInventory(), 4, 116, 50));
 
 		// widgets
 		screenWidgets.add(new ProgressArrowWidget(79, 33, ()->getSmeltProgression()));
