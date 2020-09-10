@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 // in <> put the template class name
-public class BlastFurnaceRecipe extends MachineRecipeBase {
+public class BlastFurnaceRecipe extends MachineRecipeWithHeat {
 	
 	// return a new recipe of this type - used for reading recipes.
 	public static class RecipeFactory implements RecipeSerializer.IRecipeFactory<BlastFurnaceRecipe> {

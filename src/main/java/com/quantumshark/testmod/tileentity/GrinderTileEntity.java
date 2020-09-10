@@ -4,6 +4,7 @@ import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.blocks.state.LitStateHandler;
 import com.quantumshark.testmod.capability.ShaftPowerDefImpl;
 import com.quantumshark.testmod.container.GrinderContainer;
+import com.quantumshark.testmod.recipes.GrinderRecipe;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeAndWrapper;
 import com.quantumshark.testmod.recipes.RecipeTemplate;
@@ -55,7 +56,7 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 			// todo: save the recipe id in the state so we don't have to find every tick.
 			// also so we can lose progess if you: turn machine on; put something in; turn
 			// machine off; take input out; put in new input; turn back on again
-			RecipeAndWrapper match = this.findMatchingRecipe();
+			RecipeAndWrapper<GrinderRecipe> match = this.findMatchingRecipe();
 			if (match == null) {
 				// reset progress if you remove the input item.
 				this.currentSmeltTime = 0;

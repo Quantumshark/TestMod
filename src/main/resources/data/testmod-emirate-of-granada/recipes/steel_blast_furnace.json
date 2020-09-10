@@ -1,0 +1,21 @@
+{
+	"type": "testmod-emirate-of-granada:blast_furnace",
+	"output": {
+		"item": "testmod-emirate-of-granada:steel_ingot"
+	},
+	"input": {
+		"item": "testmod-emirate-of-granada:pulverised_iron_ore"
+	},
+	"extra": {
+		"item": "testmod-emirate-of-granada:limestone"
+	},
+	"reducer": {
+		"item": "minecraft:coal"
+	},
+	"basetime": 100,
+	"heat": {
+		"min": 573,
+		"heatprod": 100000,
+		"deltatheta": 200
+	}
+}

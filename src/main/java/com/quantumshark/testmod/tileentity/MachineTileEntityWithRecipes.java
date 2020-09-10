@@ -37,25 +37,26 @@ public abstract class MachineTileEntityWithRecipes extends MachineTileEntityBase
 	public abstract SlotWrapper[] getOutputSlots(MachineRecipeBase recipe);
 
 	// note: for single type at least, cache this?
-	private Set<MachineRecipeBase> findRecipes() {
+	@SuppressWarnings("unchecked")
+	private <T extends MachineRecipeBase> Set<T> findRecipes() {
 		if (world == null) {
 			return Collections.emptySet();
 		}
 		return world.getRecipeManager().getRecipes().stream()
-				.filter(recipe -> getRecipeTypes().contains(recipe.getType())).map(x -> (MachineRecipeBase) (x))
+				.filter(recipe -> getRecipeTypes().contains(recipe.getType())).map(x -> (T) (x))
 				.collect(Collectors.toSet());
 	}
 
 	@Nullable
-	public RecipeAndWrapper findMatchingRecipe() {
-		Set<MachineRecipeBase> recipes = findRecipes();
-		for (MachineRecipeBase recipe : recipes) {
+	public <T extends MachineRecipeBase> RecipeAndWrapper<T> findMatchingRecipe() {
+		Set<T> recipes = findRecipes();
+		for (T recipe : recipes) {
 			MachineInventoryRecipeWrapper wrapper = getInventoryWrapperForRecipe(recipe);
 			// note: this is going to be a bit tricky performance-wise in the generic
 			// scenario, as we'd have to get a wrapper for each recipe in turn
 			// single type version is a lot easier
 			if (recipe.matches(wrapper, this.world)) {
-				return new RecipeAndWrapper(recipe, wrapper);
+				return new RecipeAndWrapper<T>(recipe, wrapper);
 			}
 		}
 

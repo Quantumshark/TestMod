@@ -5,11 +5,11 @@ import com.quantumshark.testmod.utill.IItemDropper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class RecipeAndWrapper {
-	public MachineRecipeBase recipe;
+public class RecipeAndWrapper<T extends MachineRecipeBase> {
+	public T recipe;
 	public MachineInventoryRecipeWrapper wrapper;
 
-	public RecipeAndWrapper(MachineRecipeBase recipe, MachineInventoryRecipeWrapper wrapper) {
+	public RecipeAndWrapper(T recipe, MachineInventoryRecipeWrapper wrapper) {
 		this.recipe = recipe;
 		this.wrapper = wrapper;
 	}

@@ -4,6 +4,7 @@ import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.blocks.state.LitStateHandler;
 import com.quantumshark.testmod.capability.HeatCapabilityProvider;
 import com.quantumshark.testmod.container.BlastFurnaceContainer;
+import com.quantumshark.testmod.recipes.BlastFurnaceRecipe;
 import com.quantumshark.testmod.recipes.MachineRecipeBase;
 import com.quantumshark.testmod.recipes.RecipeAndWrapper;
 import com.quantumshark.testmod.recipes.RecipeTemplate;
@@ -21,8 +22,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
 public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBase {
-	public int currentSmeltTime;
-	public final int maxSmeltTime = 100;
+	public double currentSmeltTime;
+	public int maxSmeltTime = 100;
 
 	public BlastFurnaceTileEntity() {
 		super(RegistryHandler.BLAST_FURNACE_TILE_ENTITY.get());
@@ -49,22 +50,35 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 			// todo: save the recipe id in the state so we don't have to find every tick.
 			// also so we can lose progess if you: turn machine on; put something in; turn
 			// machine off; take input out; put in new input; turn back on again
-			RecipeAndWrapper match = this.findMatchingRecipe();
+			RecipeAndWrapper<BlastFurnaceRecipe> match = this.findMatchingRecipe();
 			if (match == null) {
 				// reset progress if you remove the input item.
 				this.currentSmeltTime = 0;
 			} else {
+				BlastFurnaceRecipe recipe = match.recipe;
+				maxSmeltTime = recipe.getBaseTime();
 				if (match.process(true, null)) // pass a null dropper so it crashes if it tries to drop something :)
 				{
-					if (this.currentSmeltTime < this.maxSmeltTime) {
-						isRunning = true;
-						this.currentSmeltTime++;
-					} else {
-						this.currentSmeltTime = 0;
 
-						match.process(false, new ItemDropper());
+					if (heat.getTemperatureK() >= recipe.getMinTemp()
+							&& heat.getTemperatureK() <= recipe.getMaxTemp()) {
+						if (this.currentSmeltTime < maxSmeltTime) {
+							isRunning = true;
+							double tickTime = 1;
+							int deltaTheta = recipe.getDeltaTheta();
+							if(deltaTheta > 0)
+							{
+								tickTime = 1 + (heat.getTemperatureK() - recipe.getMinTemp()) / deltaTheta;
+							}
+							currentSmeltTime += tickTime;
+						} else {
+							this.currentSmeltTime = 0;
 
-						dirty = true;
+							match.process(false, new ItemDropper());
+							heat.addTickHeat(recipe.getHeatProd());
+
+							dirty = true;
+						}
 					}
 				}
 			}
@@ -93,13 +107,15 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 	public void read(CompoundNBT compound) {
 		super.read(compound);
 
-		this.currentSmeltTime = compound.getInt("CurrentSmeltTime");
+		this.currentSmeltTime = compound.getDouble("CurrentSmeltTime");
+		this.maxSmeltTime = compound.getInt("MaxSmeltTime");
 	}
 
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("CurrentSmeltTime", this.currentSmeltTime);
+		compound.putDouble("CurrentSmeltTime", this.currentSmeltTime);
+		compound.putInt("MaxSmeltTime", maxSmeltTime);
 
 		return compound;
 	}

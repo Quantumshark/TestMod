@@ -59,7 +59,7 @@ public class BlastFurnaceContainer extends MachineContainerBase<BlastFurnaceTile
 		screenWidgets.add(new ProgressArrowWidget(79, 33, ()->getSmeltProgression()));
 		screenWidgets.add(new TemperatureWidget(140,8,getTileEntity().getHeat()));
 		
-		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> this.getTileEntity().currentSmeltTime,
+		this.trackInt(currentSmeltTime = new FunctionalIntReferenceHolder(() -> (int) (this.getTileEntity().currentSmeltTime),
 				value -> this.getTileEntity().currentSmeltTime = value));
 	}
 
