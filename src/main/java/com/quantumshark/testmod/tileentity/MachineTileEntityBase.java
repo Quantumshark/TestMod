@@ -2,7 +2,6 @@ package com.quantumshark.testmod.tileentity;
 
 import javax.annotation.Nullable;
 
-import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.capability.HeatCapabilityProvider;
 import com.quantumshark.testmod.capability.IHeatCapability;
 import com.quantumshark.testmod.packet.BlockUpdateMessage;
@@ -369,10 +368,12 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 	}
 
 	public abstract class SlotWrapper {
-		protected SlotWrapper(String name) {
+		protected SlotWrapper(int inventoryIndex, String name) {
+			this.inventoryIndex = inventoryIndex;
 			this.name = name;
 		}
 
+		public final int inventoryIndex;
 		protected final String name;
 
 		public abstract RecipeComponent getRecipeComponent();
@@ -386,11 +387,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 
 	public class SlotWrapperItem extends SlotWrapper {
 		public SlotWrapperItem(int inventoryIndex, String name) {
-			super(name);
-			this.inventoryIndex = inventoryIndex;
+			super(inventoryIndex, name);
 		}
-
-		public int inventoryIndex;
 
 		public RecipeComponent getRecipeComponent() {
 			return RecipeComponent.wrap(inventory.getStackInSlot(inventoryIndex), name);
@@ -435,11 +433,8 @@ public abstract class MachineTileEntityBase extends NameableTitleEntityBase
 		}
 
 		public SlotWrapperFluid(int inventoryIndex, String name) {
-			super(name);
-			this.inventoryIndex = inventoryIndex;
+			super(inventoryIndex, name);
 		}
-
-		public int inventoryIndex;
 
 		public RecipeComponent getRecipeComponent() {
 			return RecipeComponent.wrap(fluidInventory.getFluidInTank(inventoryIndex), name);

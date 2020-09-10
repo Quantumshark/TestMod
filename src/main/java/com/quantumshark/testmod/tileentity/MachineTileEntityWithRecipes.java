@@ -19,6 +19,9 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public abstract class MachineTileEntityWithRecipes extends MachineTileEntityBase {
 
@@ -80,36 +83,94 @@ public abstract class MachineTileEntityWithRecipes extends MachineTileEntityBase
 		Set<MachineRecipeBase> recipes = findRecipes();
 
 		for (MachineRecipeBase recipe : recipes) {
-			if(CheckAgainstRecipe(slot, inputWrapper, recipe, getInputSlots(recipe)))
+			if(CheckAgainstRecipe(slot, inputWrapper, recipe.getInputs(), getInputSlots(recipe)))
 			{
 				return true;
 			}
-			if(CheckAgainstRecipe(slot, inputWrapper, recipe, getCatalystSlots(recipe)))
+			if(CheckAgainstRecipe(slot, inputWrapper, recipe.getCatalysts(), getCatalystSlots(recipe)))
 			{
 				return true;
 			}
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean isFluidValid(int slot, FluidStack stack) {
+		if (slot < 0 || slot >= getInputSlotCount() + getCatalystSlotCount()) {
+			// don't allow insertion into output slots.
+			return false;
+		}
+		RecipeComponent inputWrapper = RecipeComponent.wrap(stack, "");
 
-	private boolean CheckAgainstRecipe(int slot, RecipeComponent inputWrapper, MachineRecipeBase recipe,
+		Set<MachineRecipeBase> recipes = findRecipes();
+
+		for (MachineRecipeBase recipe : recipes) {
+			if(CheckAgainstRecipe(slot, inputWrapper, recipe.getInputs(), getInputSlots(recipe)))
+			{
+				return true;
+			}
+			if(CheckAgainstRecipe(slot, inputWrapper, recipe.getCatalysts(), getCatalystSlots(recipe)))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean isItemValidForFluidSlot(int slot, int tankSlot, ItemStack stack, boolean allowFill, boolean allowEmpty) {
+		IFluidHandlerItem h = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				.orElse(null);
+		if (h != null) {
+			FluidStack fluid = h.getFluidInTank(0);
+			if(fluid != null)
+			{
+				if(allowFill)
+				{
+					if(isFluidValid(tankSlot, fluid))
+					{
+						return true;
+					}
+				}
+				if(allowEmpty) {
+					FluidStack fluidInTank = fluidInventory.getFluidInTank(tankSlot);
+					if((h.getTankCapacity(0) > fluid.getAmount()) && (fluid.isEmpty() || fluidInTank.isEmpty()
+							|| fluid.isFluidEqual(fluidInTank))) {
+						return true;
+					}
+				}
+			}
+		}
+//		if (stack.getItem() == Items.BUCKET
+//				|| (stack.getContainerItem() != null && stack.getContainerItem().getItem() == Items.BUCKET)) {
+//			return true;
+//		}
+		return false;		
+	}
+
+	// offset is set for catalyst slots to be the number of input slots in the recipe
+	// so we start comparing catalyst v catalyst
+	private boolean CheckAgainstRecipe(int slot, RecipeComponent inputWrapper, NonNullList<RecipeComponent> recipeComponents,
 			SlotWrapper[] slotsForRecipe) {
 		for (int i = 0; i < slotsForRecipe.length; ++i) {
 			SlotWrapper sw = slotsForRecipe[i];
 
-			if (sw == null || !(sw instanceof SlotWrapperItem)) {
+			if (sw == null) {
 				continue;
 			}
 
-			SlotWrapperItem cast = (SlotWrapperItem) sw;
-			if (cast.inventoryIndex != slot) {
+			// this needs to handle different recipe component types.
+			// this will mean we check against both item and fluid slots with this index ...
+			if (sw.inventoryIndex != slot) {
 				continue;
 			}
 
 			// so input i in the recipe goes in machine slot. Now just see if this matches
 			// it.
-			RecipeComponent ingredient = recipe.getInputs().get(i);
+			RecipeComponent ingredient = recipeComponents.get(i);
 
+			// note: this checks type, so if we're in the wrong type, it will return false, which is good.
+			// odd, but it works ...
 			if (ingredient.isFulfilledBy(inputWrapper, false)) {
 				return true;
 			}

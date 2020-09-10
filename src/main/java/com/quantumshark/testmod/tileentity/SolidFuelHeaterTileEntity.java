@@ -151,7 +151,7 @@ public class SolidFuelHeaterTileEntity extends MachineTileEntityBase {
 	public boolean isItemValid(int slot, ItemStack stack) {
 		return getFuelBurnTime(stack) > 0;
 	}
-
+	
 	public float getBurnProgression() {
 		if (currentBurnItem == null || currentBurnItemDuration == 0) {
 			return 0;

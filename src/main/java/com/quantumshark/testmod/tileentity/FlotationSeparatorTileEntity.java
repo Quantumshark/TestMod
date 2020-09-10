@@ -15,7 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -24,8 +23,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class FlotationSeparatorTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	private ShaftPowerDefImpl shaft;
@@ -160,6 +157,8 @@ public class FlotationSeparatorTileEntity extends MachineTileEntitySingleRecipeT
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
 		if (slot == 1) {
+			return isItemValidForFluidSlot(slot, 0, stack, true, true);
+			/*
 			if (stack.getItem() == Items.BUCKET
 					|| (stack.getContainerItem() != null && stack.getContainerItem().getItem() == Items.BUCKET)) {
 				return true;
@@ -170,6 +169,7 @@ public class FlotationSeparatorTileEntity extends MachineTileEntitySingleRecipeT
 				return true;
 			}
 			return false;
+			*/
 		} else {
 			return super.isItemValid(slot, stack);
 		}

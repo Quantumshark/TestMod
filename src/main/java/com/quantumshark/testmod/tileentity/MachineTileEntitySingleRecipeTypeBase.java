@@ -76,7 +76,7 @@ public abstract class MachineTileEntitySingleRecipeTypeBase extends MachineTileE
 		outputSlotCount += getNonRecipeOutputSlotCount();
 		
 		inventory = new MachineItemHandler(inputSlotCount + catalystSlotCount + outputSlotCount, this);
-		fluidInventory = new MachineFluidHandler(inputFluidSlotCount + catalystFluidSlotCount + outputFluidSlotCount);
+		fluidInventory = new MachineFluidHandler(inputFluidSlotCount + catalystFluidSlotCount + outputFluidSlotCount, this);
 	}
 	
 	private final SlotWrapper[] inputSlots;

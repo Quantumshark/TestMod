@@ -10,8 +10,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class MachineFluidHandler implements IFluidHandler, INBTSerializable<CompoundNBT> {
-	public MachineFluidHandler(int tankCount) {
+	private ISlotValidator slotValidator;
+
+	public MachineFluidHandler(int tankCount, ISlotValidator slotValidator) {
 		tanks = NonNullList.create();
+		this.slotValidator = slotValidator;
 		for (int i = 0; i < tankCount; ++i) {
 			// default size = 1 bucket
 			tanks.add(new TankFluidHandler(FluidAttributes.BUCKET_VOLUME));
@@ -84,21 +87,52 @@ public class MachineFluidHandler implements IFluidHandler, INBTSerializable<Comp
 
 	@Override
 	public boolean isFluidValid(int tank, FluidStack stack) {
-		throw new IllegalStateException("unexpected call of MachineFluidHandler");
+		if (slotValidator == null) {
+			return true;
+		}
+		return slotValidator.isFluidValid(tank, stack);
 	}
 
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
-		throw new IllegalStateException("unexpected call of MachineFluidHandler");
+		return fill(resource, action, false);
+	}
+
+	public int fill(FluidStack resource, FluidAction action, boolean jfdi) {
+		for (int i = 0; i < tanks.size(); ++i) {
+			if (!jfdi && !isFluidValid(i, resource)) {
+				continue;
+			}
+			TankFluidHandler tank = tanks.get(i);
+			int ret = tank.fill(resource, action);
+			if (ret > 0) {
+				return ret;
+			}
+		}
+		return 0;
 	}
 
 	@Override
 	public FluidStack drain(FluidStack resource, FluidAction action) {
-		throw new IllegalStateException("unexpected call of MachineFluidHandler");
+		for (int i = 0; i < tanks.size(); ++i) {
+			TankFluidHandler tank = tanks.get(i);
+			FluidStack ret = tank.drain(resource, action);
+			if (!ret.isEmpty()) {
+				return ret;
+			}
+		}
+		return FluidStack.EMPTY;
 	}
 
 	@Override
 	public FluidStack drain(int maxDrain, FluidAction action) {
-		throw new IllegalStateException("unexpected call of MachineFluidHandler");
+		for (int i = 0; i < tanks.size(); ++i) {
+			TankFluidHandler tank = tanks.get(i);
+			FluidStack ret = tank.drain(maxDrain, action);
+			if (!ret.isEmpty()) {
+				return ret;
+			}
+		}
+		return FluidStack.EMPTY;
 	}
 }

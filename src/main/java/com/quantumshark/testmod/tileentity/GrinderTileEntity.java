@@ -15,7 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -24,8 +23,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	private ShaftPowerDefImpl shaft;
@@ -153,6 +150,8 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
 		if (slot == 1) {
+			return isItemValidForFluidSlot(slot, 0, stack, false, true);
+			/*
 			if (stack.getItem() == Items.BUCKET) {
 				return true;
 			}
@@ -162,6 +161,7 @@ public class GrinderTileEntity extends MachineTileEntitySingleRecipeTypeBase {
 				return true;
 			}
 			return false;
+			*/
 		} else {
 			return super.isItemValid(slot, stack);
 		}
