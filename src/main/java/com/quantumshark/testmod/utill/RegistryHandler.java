@@ -140,6 +140,7 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> ANDESITEDIORITEBLEND = ITEMS.register("andesite_diorite_blend", ItemBase::new);
 	public static final RegistryObject<Item> GRANITESANDBLEND = ITEMS.register("granite_sand_blend", ItemBase::new);
 	public static final RegistryObject<Item> COPPERINGOT = ITEMS.register("copper_ingot", ItemBase::new);
+	public static final RegistryObject<Item> STEELINGOT = ITEMS.register("steel_ingot", ItemBase::new);
 	public static final RegistryObject<Item> BLASTBRICK = ITEMS.register("blast_brick", ItemBase::new);
 	public static final RegistryObject<Item> TINYTANK = ITEMS.register("tiny_tank", ()->new TankItem(2000));
 	
