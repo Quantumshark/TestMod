@@ -19,18 +19,26 @@ import com.quantumshark.testmod.blocks.ThermalGlass;
 import com.quantumshark.testmod.blocks.FluoriteBlock;
 import com.quantumshark.testmod.blocks.FluoriteOre;
 import com.quantumshark.testmod.container.BlastFurnaceContainer;
+import com.quantumshark.testmod.container.CatalyticCrackingChamberContainer;
 import com.quantumshark.testmod.container.GrinderContainer;
+import com.quantumshark.testmod.container.PolymerisationChamberContainer;
 import com.quantumshark.testmod.container.SolidFuelHeaterContainer;
+import com.quantumshark.testmod.container.ThermalCrackingChamberContainer;
 import com.quantumshark.testmod.container.FlotationSeparatorContainer;
+import com.quantumshark.testmod.container.FractionalDistillationChamberContainer;
 import com.quantumshark.testmod.items.BlockItemBase;
 import com.quantumshark.testmod.items.ItemBase;
 import com.quantumshark.testmod.items.TankItem;
 import com.quantumshark.testmod.tileentity.BlastFurnaceTileEntity;
+import com.quantumshark.testmod.tileentity.CatalyticCrackingChamberTileEntity;
 import com.quantumshark.testmod.tileentity.GrinderTileEntity;
+import com.quantumshark.testmod.tileentity.PolymerisationChamberTileEntity;
 import com.quantumshark.testmod.tileentity.SolidFuelHeaterTileEntity;
+import com.quantumshark.testmod.tileentity.ThermalCrackingChamberTileEntity;
 import com.quantumshark.testmod.tileentity.WoodenShaftTileEntity;
 import com.quantumshark.testmod.tileentity.CopperHeatPipeTileEntity;
 import com.quantumshark.testmod.tileentity.FlotationSeparatorTileEntity;
+import com.quantumshark.testmod.tileentity.FractionalDistillationChamberTileEntity;
 import com.quantumshark.testmod.tools.ModItemTier;
 
 import net.minecraft.item.ArmorItem;
@@ -176,6 +184,11 @@ public class RegistryHandler {
 	public static final RegistryObject<Block> COPPER_HEAT_PIPE_BLOCK = BLOCKS.register("copper_heat_pipe", ()-> new CopperHeatPipeBlock(Block.Properties.from(Blocks.OAK_PLANKS).notSolid()));
 	public static final RegistryObject<Block> SOLID_FUEL_HEATER_BLOCK = BLOCKS.register("solid_fuel_heater", () -> new SolidFuelHeaterBlock(Block.Properties.from(Blocks.FURNACE)));
 	public static final RegistryObject<Block> FLOTATION_SEPARATOR_BLOCK = BLOCKS.register("flotation_separator", () -> new FlotationSeparatorBlock(Block.Properties.from(Blocks.FURNACE)));
+
+	public static final RegistryObject<Block> FRACTIONAL_DISTILLATION_CHAMBER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> THERMAL_CRACKING_CHAMBER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> CATALYTIC_CRACKING_CHAMBER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
+	public static final RegistryObject<Block> POLYMERISATION_CHAMBER_BLOCK = BLOCKS.register("grinder", () -> new GrinderBlock(Block.Properties.from(Blocks.FURNACE)));
 	
 	// Machine Block Items
 	public static final RegistryObject<Item> GRINDER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(GRINDER_BLOCK.get()));
@@ -185,6 +198,12 @@ public class RegistryHandler {
 	public static final RegistryObject<Item> SOLID_FUEL_HEATER_BLOCK_ITEM = ITEMS.register("solid_fuel_heater", () -> new BlockItemBase(SOLID_FUEL_HEATER_BLOCK.get()));
 	public static final RegistryObject<Item> FLOTATION_SEPARATOR_BLOCK_ITEM = ITEMS.register("flotation_separator", () -> new BlockItemBase(FLOTATION_SEPARATOR_BLOCK.get()));
 
+	public static final RegistryObject<Item> FRACTIONAL_DISTILLATION_CHAMBERR_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(FRACTIONAL_DISTILLATION_CHAMBER_BLOCK.get()));
+	public static final RegistryObject<Item> THERMAL_CRACKING_CHAMBER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(THERMAL_CRACKING_CHAMBER_BLOCK.get()));
+	public static final RegistryObject<Item> CATALYTIC_CRACKING_CHAMBER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(CATALYTIC_CRACKING_CHAMBER_BLOCK.get()));
+	public static final RegistryObject<Item> POLYMERISATION_CHAMBER_BLOCK_ITEM = ITEMS.register("grinder", () -> new BlockItemBase(POLYMERISATION_CHAMBER_BLOCK.get()));
+
+	
 	// tile entity types
 	public static final RegistryObject<TileEntityType<GrinderTileEntity>> GRINDER_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("grinder", () -> TileEntityType.Builder
@@ -204,6 +223,19 @@ public class RegistryHandler {
 	public static final RegistryObject<TileEntityType<FlotationSeparatorTileEntity>> FLOTATION_SEPARATOR_TILE_ENTITY = TILE_ENTITY_TYPES
 			.register("flotation_separator", () -> TileEntityType.Builder
 					.create(FlotationSeparatorTileEntity::new, FLOTATION_SEPARATOR_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<FractionalDistillationChamberTileEntity>> FRACTIONAL_DISTILLATION_CHAMBER_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("fractional_distillation_chamber", () -> TileEntityType.Builder
+					.create(FractionalDistillationChamberTileEntity::new, FRACTIONAL_DISTILLATION_CHAMBER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<ThermalCrackingChamberTileEntity>> THERMAL_CRACKING_CHAMBER_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("thermal_cracking_chamber", () -> TileEntityType.Builder
+					.create(ThermalCrackingChamberTileEntity::new, THERMAL_CRACKING_CHAMBER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<CatalyticCrackingChamberTileEntity>> CATALYTIC_CRACKING_CHAMBER_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("catalytic_cracking_chamber", () -> TileEntityType.Builder
+					.create(CatalyticCrackingChamberTileEntity::new, CATALYTIC_CRACKING_CHAMBER_BLOCK.get()).build(null));
+	public static final RegistryObject<TileEntityType<PolymerisationChamberTileEntity>> POLYMERISATION_CHAMBER_TILE_ENTITY = TILE_ENTITY_TYPES
+			.register("polymerisation_chamber", () -> TileEntityType.Builder
+					.create(PolymerisationChamberTileEntity::new, POLYMERISATION_CHAMBER_BLOCK.get()).build(null));
+	
 	
 	// Containers
 	public static final RegistryObject<ContainerType<GrinderContainer>> GRINDER_CONTAINER = CONTAINER_TYPES
@@ -213,7 +245,15 @@ public class RegistryHandler {
 	public static final RegistryObject<ContainerType<SolidFuelHeaterContainer>> SOLID_FUEL_HEATER_CONTAINER = CONTAINER_TYPES
 			.register("solid_fuel_heater", () -> IForgeContainerType.create(SolidFuelHeaterContainer::new));	
 	public static final RegistryObject<ContainerType<FlotationSeparatorContainer>> FLOTATION_SEPARATOR_CONTAINER = CONTAINER_TYPES
-			.register("flotation_separator", () -> IForgeContainerType.create(FlotationSeparatorContainer::new));	
+			.register("flotation_separator", () -> IForgeContainerType.create(FlotationSeparatorContainer::new));
+	public static final RegistryObject<ContainerType<FractionalDistillationChamberContainer>> FRACTIONAL_DISTILLATION_CHAMBER_CONTAINER = CONTAINER_TYPES
+			.register("fractional_distillation_chamber", () -> IForgeContainerType.create(FractionalDistillationChamberContainer::new));	
+	public static final RegistryObject<ContainerType<ThermalCrackingChamberContainer>> THERMAL_CRACKING_CHAMBER_CONTAINER = CONTAINER_TYPES
+			.register("thermal_cracking_chamber", () -> IForgeContainerType.create(ThermalCrackingChamberContainer::new));	
+	public static final RegistryObject<ContainerType<CatalyticCrackingChamberContainer>> CATALYTIC_CRACKING_CHAMBER_CONTAINER = CONTAINER_TYPES
+			.register("catalytic_cracking_chamber", () -> IForgeContainerType.create(CatalyticCrackingChamberContainer::new));	
+	public static final RegistryObject<ContainerType<PolymerisationChamberContainer>> POLYMERISATION_CHAMBER_CONTAINER = CONTAINER_TYPES
+			.register("polymerisation_chamber", () -> IForgeContainerType.create(PolymerisationChamberContainer::new));	
 	
 	// Capabilities
 	@CapabilityInject(IShaftPower.class)

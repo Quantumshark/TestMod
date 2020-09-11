@@ -98,4 +98,9 @@ public class RecipeTemplate {
 	public static final RecipeTemplate GRINDER = new RecipeTemplate("input", "", "output:Item,juice:Fluid");
 	public static final RecipeTemplate BLAST_FURNACE = new RecipeTemplate("input,extra,reducer", "", "output,slag");
 	public static final RecipeTemplate FLOTATION_SEPARATOR = new RecipeTemplate("input", "oil:Fluid", "output,remnant");
+
+	public static final RecipeTemplate FRACTIONAL_DISTILLATION_CHAMBER = new RecipeTemplate("input:Fluid,coolant:Fluid", "", "first,second,third");
+	public static final RecipeTemplate THERMAL_CRACKING_CHAMBER = new RecipeTemplate("input:Fluid", "", "output:Fluid");
+	public static final RecipeTemplate POLYMERISATION_CHAMBER = new RecipeTemplate("input:Fluid", "catalyst", "output");
+	public static final RecipeTemplate CATALYTIC_CRACKING_CHAMBER = new RecipeTemplate("input:Fluid", "catalyst", "output:Fluid");
 }
