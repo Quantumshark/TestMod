@@ -27,7 +27,7 @@ public class BlastFurnaceTileEntity extends MachineTileEntitySingleRecipeTypeBas
 
 	public BlastFurnaceTileEntity() {
 		super(RegistryHandler.BLAST_FURNACE_TILE_ENTITY.get());
-		heat = new HeatCapabilityProvider(1000000, 5000, 850);
+		heat = new HeatCapabilityProvider(1000000, 5000, 550);
 	}
 
 	@Override

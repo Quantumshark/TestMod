@@ -5,9 +5,9 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ToolType;
 
-public class BlastBricks extends Block {
+public class BlastBricksBlock extends Block {
 	
-	public BlastBricks() {
+	public BlastBricksBlock() {
 		super(Block.Properties.create(Material.ROCK)
 				.hardnessAndResistance(4.2f, 42f)
 				.sound(SoundType.STONE)

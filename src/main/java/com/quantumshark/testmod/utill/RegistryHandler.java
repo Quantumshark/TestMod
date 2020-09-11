@@ -3,6 +3,7 @@ package com.quantumshark.testmod.utill;
 import com.quantumshark.testmod.CrudeOilFluidBase;
 import com.quantumshark.testmod.TestMod;
 import com.quantumshark.testmod.armor.ModArmorMaterial;
+import com.quantumshark.testmod.blocks.BlastBricksBlock;
 import com.quantumshark.testmod.blocks.BlastFurnaceBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalBlock;
 import com.quantumshark.testmod.blocks.BlueCrystalOre;
@@ -104,7 +105,8 @@ public class RegistryHandler {
 	public static final RegistryObject<CrudeOilBlock> CRUDE_OIL_BLOCK = BLOCKS.register("crude_oil", CrudeOilBlock::new);
 	
 	// Blocks
-	public static final RegistryObject<Block> BLASTBRICKS_BLOCK = BLOCKS.register("blast_bricks", BlueCrystalBlock::new);
+	public static final RegistryObject<Block> BLASTBRICKS_BLOCK = BLOCKS.register("blast_bricks", BlastBricksBlock::new);
+	public static final RegistryObject<Block> BLASTFURNACEHOUSING_BLOCK = BLOCKS.register("blast_furnace_housing", BlastBricksBlock::new);
 	public static final RegistryObject<Block> BLUECRYSTALBLOCK_BLOCK = BLOCKS.register("blue_crystal_block", BlueCrystalBlock::new);
 	public static final RegistryObject<Block> BLUECRYSTALORE_BLOCK = BLOCKS.register("blue_crystal_ore", BlueCrystalOre::new);
 	public static final RegistryObject<Block> FLUORITEBLOCK_BLOCK = BLOCKS.register("fluorite_block", FluoriteBlock::new);
@@ -124,6 +126,7 @@ public class RegistryHandler {
 	
 	// Block Items
 	public static final RegistryObject<Item> BLASTBRICKS_BLOCK_ITEM = ITEMS.register("blast_bricks", () -> new BlockItemBase(BLASTBRICKS_BLOCK.get()));
+	public static final RegistryObject<Item> BLASTFURNACEHOUSING_BLOCK_ITEM = ITEMS.register("blast_furnace_housing", () -> new BlockItemBase(BLASTFURNACEHOUSING_BLOCK.get()));
 	public static final RegistryObject<Item> BLUECRYSTALBLOCK_BLOCK_ITEM = ITEMS.register("blue_crystal_block", () -> new BlockItemBase(BLUECRYSTALBLOCK_BLOCK.get()));
 	public static final RegistryObject<Item> BLUECRYSTALORE_BLOCK_ITEM = ITEMS.register("blue_crystal_ore", () -> new BlockItemBase(BLUECRYSTALORE_BLOCK.get()));
 	public static final RegistryObject<Item> FLUORITEBLOCK_BLOCK_ITEM = ITEMS.register("fluorite_block", () -> new BlockItemBase(FLUORITEBLOCK_BLOCK.get()));
